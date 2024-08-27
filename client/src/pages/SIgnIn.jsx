@@ -66,7 +66,7 @@ const SignIn = () => {
                             className="absolute inset-y-0 right-0 top-3 pr-3 flex items-center justify-center h-full cursor-pointer"
                             onClick={() => setShowPassword(!showPassword)}
                         >
-                            {showPassword ? <FaEyeSlash size={24} className="text-gray-600" /> : <FaEye size={24} className="text-gray-600" />}
+                            {showPassword ? <FaEye size={24} className="text-gray-600" /> : <FaEyeSlash size={24} className="text-gray-600" />}
                         </div>
                     </div>
                     {error && <p className="text-red-500 text-sm">{error}</p>}

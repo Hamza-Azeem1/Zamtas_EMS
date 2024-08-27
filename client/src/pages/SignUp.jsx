@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import Api from '../common/index';
 import axios from 'axios';
 
@@ -7,6 +8,7 @@ const SignUp = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
@@ -53,13 +55,19 @@ const SignUp = () => {
                 <div className="mb-4">
                     <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
                     <input
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         id="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm"
                     />
+                    <div
+                        className="absolute inset-y-0 right-0 top-3 pr-3 flex items-center justify-center h-full cursor-pointer"
+                        onClick={() => setShowPassword(!showPassword)}
+                    >
+                        {showPassword ? <FaEye size={24} className="text-gray-600" /> : <FaEyeSlash size={24} className="text-gray-600" />}
+                    </div>
                 </div>
                 {error && <p className="text-red-500">{error}</p>}
                 <button type="submit" className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md">Sign Up</button>

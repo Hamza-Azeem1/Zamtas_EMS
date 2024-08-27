@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Api from '../common';
-import { FaEdit, FaTrash, FaUserPlus, FaTimes } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaUserPlus, FaTimes, FaEye } from 'react-icons/fa';
 
 const Employees = () => {
     const [employees, setEmployees] = useState([]);
@@ -246,17 +246,20 @@ const Employees = () => {
                                     <FaEdit size={20} />
                                 </button>
                                 <button
-                                    className="text-red-500 hover:text-red-700"
+                                    className="text-red-500 hover:text-red-700 mr-2"
                                     onClick={() => handleDeleteClick(employee._id)}
                                 >
                                     <FaTrash size={20} />
+                                </button>
+                                <button className="text-green-500 hover:text-green-700">
+                                    <FaEye size={20} />
                                 </button>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
-        </div>
+        </div >
     );
 };
 
