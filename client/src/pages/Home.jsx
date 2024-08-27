@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Dashboard from '../components/Dashboard';
 import Employees from '../components/Employees';
 import Tasks from '../components/Tasks';
+import { TbLogout2 } from "react-icons/tb";
 
 const Home = () => {
     const [activeMenu, setActiveMenu] = useState('dashboard');
@@ -60,10 +61,11 @@ const Home = () => {
                     </ul>
                 </nav>
                 <button
-                    className="mt-8 w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded"
+                    className="mt-8 w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded flex items-center justify-center gap-2"
                     onClick={handleLogout}
                 >
-                    Logout
+                    <TbLogout2 size={25} />
+                    <span>Logout</span>
                 </button>
             </div>
 

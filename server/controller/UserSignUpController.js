@@ -8,7 +8,7 @@ function validatePassword(password) {
 
 async function userSignUpController(req, res) {
     try {
-        const { email, password, name } = req.body;
+        const { email, password, name, department } = req.body;
 
         if (!email) {
             throw new Error("Please provide email");
@@ -21,6 +21,9 @@ async function userSignUpController(req, res) {
         }
         if (!name) {
             throw new Error("Please provide name");
+        }
+        if (!department) {
+            throw new Error("Please provide department");
         }
 
         const user = await userModel.findOne({ email });

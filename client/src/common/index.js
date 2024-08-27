@@ -1,15 +1,22 @@
-const backendDomin = import.meta.env.VITE_API_URL
+const backendDomain = import.meta.env.VITE_API_URL;
 
 const Api = {
     signUp: {
-        url: `${backendDomin}/api/sign-up`,
+        url: `${backendDomain}/api/sign-up`,
         method: "post"
     },
     signIn: {
-        url: `${backendDomin}/api/sign-in`,
+        url: `${backendDomain}/api/sign-in`,
         method: "post"
     },
+    getEmployee: {
+        url: `${backendDomain}/api/employees`,
+        method: "get"
+    },
+    deleteEmployee: {
+        url: `${backendDomain}/api/employees/:id`,
+        method: "delete"
+    },
+};
 
-}
-
-export default Api
+export default Api;
