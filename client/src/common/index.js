@@ -17,6 +17,18 @@ const Api = {
         url: `${backendDomain}/api/employees/:id`,
         method: "delete"
     },
+    updateRole: {
+        url: `${backendDomain}/api/employees/:id/role`,
+        method: "put"
+    },
+    EmployeeDetails: {
+        url: `${backendDomain}/api/employees/:id`,
+        method: "get"
+    },
+    updateEmployee: {
+        url: `${backendDomain}/api/employees/:id`,
+        method: "put"
+    },
 };
 
 export default Api;
