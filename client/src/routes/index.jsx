@@ -5,6 +5,7 @@ import UserHome from '../pages/UserHome';
 import Dashboard from '../components/Dashboard';
 import Employees from '../components/Employees';
 import Tasks from '../components/Tasks';
+import PageNotFound from '../pages/PageNotFound';
 
 const router = createBrowserRouter([
     {
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
     {
         path: '/user-home',
         element: <UserHome />,
+    },
+    {
+        path: '*',
+        element: <PageNotFound />,
     },
 ]);
 

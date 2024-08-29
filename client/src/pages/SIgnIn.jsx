@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Api from '../common/index';
 import axios from 'axios';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
@@ -77,6 +77,11 @@ const SignIn = () => {
                         Sign In
                     </button>
                 </form>
+                <div className="mt-4 text-center">
+                    <Link to="/forgot-password" className="text-blue-600 hover:underline">
+                        Forgot Password?
+                    </Link>
+                </div>
             </div>
         </div>
 
