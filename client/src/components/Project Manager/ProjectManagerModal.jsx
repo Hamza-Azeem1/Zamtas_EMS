@@ -34,7 +34,7 @@ const ProjectManagerModal = ({ isOpen, onClose, onAdd }) => {
         const { name, contact, email, department } = formData;
 
         if (!/^[A-Za-z\s]+$/.test(name)) return "Name should only contain alphabets and spaces.";
-        if (!/^\d{10}$/.test(contact)) return "Contact should be a 10-digit number.";
+        if (!/^\d{11}$/.test(contact)) return "Contact should be a 11-digit number.";
         if (!/^[\w-.]+@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email)) return "Invalid email format.";
         if (!/^[A-Za-z\s]+$/.test(department)) return "Department should only contain alphabets and spaces.";
 

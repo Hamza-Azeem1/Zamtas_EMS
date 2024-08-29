@@ -1,10 +1,29 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import ProjectManagerModal from './ProjectManagerModal';
 import ProjectManagerTable from './ProjectManagerTable';
+import Spinner from '../spinner';
+import axios from 'axios';
+import Api from '../../common/index';
 
 const ProjectManagers = () => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [managers, setManagers] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    const fetchProjectManagers = async () => {
+        try {
+            const { data } = await axios.get(Api.getProjectManager.url);
+            setManagers(data.data);
+        } catch (error) {
+            console.error('Error fetching project managers:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchProjectManagers();
+    }, []);
 
     const handleAddProjectManager = useCallback((newManager) => {
         setManagers(prevManagers => [...prevManagers, newManager]);
@@ -19,7 +38,13 @@ const ProjectManagers = () => {
             >
                 Add Project Manager
             </button>
-            <ProjectManagerTable managers={managers} setManagers={setManagers} />
+            {isLoading ? (
+                <div className="flex justify-center items-center h-64">
+                    <Spinner />
+                </div>
+            ) : (
+                <ProjectManagerTable managers={managers} />
+            )}
             <ProjectManagerModal
                 isOpen={isModalOpen}
                 onClose={() => setModalOpen(false)}

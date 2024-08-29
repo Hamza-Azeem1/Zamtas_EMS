@@ -3,11 +3,13 @@ import axios from 'axios';
 import Api from '../common';
 import { FaEdit, FaTrash, FaUserPlus, FaTimes, FaEye, FaEyeSlash } from 'react-icons/fa';
 import ROLE from '../common/role';
+import Spinner from './spinner';
 
 const Employees = () => {
     const [employees, setEmployees] = useState([]);
     const [userDetails, setUserDetails] = useState(null);
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [showDetailsModal, setShowDetailsModal] = useState(false);
     const [error, setError] = useState('');
     const [showForm, setShowForm] = useState(false);
@@ -44,6 +46,8 @@ const Employees = () => {
             }
         } catch (error) {
             setError("Error fetching employees: " + error.message);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -449,198 +453,203 @@ const Employees = () => {
                     </div>
                 </div>
             )}
-            <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg">
-                <thead className='bg-gray-200 text-gray-800 uppercase text-sm font-semibold'>
-                    <tr>
-                        <th className="py-2 px-3 border-b border-gray-300">Name</th>
-                        <th className="py-2 px-3 border-b border-gray-300">Email</th>
-                        <th className="py-2 px-3 border-b border-gray-300">Designation</th>
-                        <th className="py-2 px-3 border-b border-gray-300">Department</th>
-                        <th className="py-2 px-3 border-b border-gray-300">Role</th>
-                        <th className="py-2 px-3 border-b border-gray-300">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {employees.map((employee, index) => (
-                        <tr key={employee._id} className={`transition-colors duration-150 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100`}>
-                            <td className="py-3 px-6 border-b border-gray-300 text-center text-base">{employee.name}</td>
-                            <td className="py-3 px-6 border-b border-gray-300 text-center text-base">{employee.email}</td>
-                            <td className="py-3 px-6 border-b border-gray-300 text-center text-base">{employee.designation || 'N/A'}</td>
-                            <td className="py-3 px-6 border-b border-gray-300 text-center text-base">{employee.department || 'N/A'}</td>
-                            <td className="py-3 px-6 border-b border-gray-300 text-center text-base">{employee.role}</td>
-                            <td className="py-3 px-6 border-b border-gray-300 text-center text-base">
-                                <button className="text-blue-500 hover:text-blue-700 mr-2" onClick={() => handleEditClick(employee)}>
-                                    <FaEdit size={20} />
-                                </button>
-                                <button
-                                    className="text-red-500 hover:text-red-700 mr-2"
-                                    onClick={() => handleDeleteClick(employee._id)}
-                                >
-                                    <FaTrash size={20} />
-                                </button>
-                                <button
-                                    className="text-green-500 hover:text-green-700"
-                                    onClick={() => fetchUserDetails(employee._id)}
-                                >
-                                    <FaEye size={20} />
-                                </button>
+            {isLoading ? (
+                <Spinner />
+            ) : (
+                <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg">
+                    <thead className='bg-gray-200 text-gray-800 uppercase text-sm font-semibold'>
+                        <tr>
+                            <th className="py-2 px-3 border-b border-gray-300">Name</th>
+                            <th className="py-2 px-3 border-b border-gray-300">Email</th>
+                            <th className="py-2 px-3 border-b border-gray-300">Designation</th>
+                            <th className="py-2 px-3 border-b border-gray-300">Department</th>
+                            <th className="py-2 px-3 border-b border-gray-300">Role</th>
+                            <th className="py-2 px-3 border-b border-gray-300">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {employees.map((employee, index) => (
+                            <tr key={employee._id} className={`transition-colors duration-150 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100`}>
+                                <td className="py-3 px-6 border-b border-gray-300 text-center text-base">{employee.name}</td>
+                                <td className="py-3 px-6 border-b border-gray-300 text-center text-base">{employee.email}</td>
+                                <td className="py-3 px-6 border-b border-gray-300 text-center text-base">{employee.designation || 'N/A'}</td>
+                                <td className="py-3 px-6 border-b border-gray-300 text-center text-base">{employee.department || 'N/A'}</td>
+                                <td className="py-3 px-6 border-b border-gray-300 text-center text-base">{employee.role}</td>
+                                <td className="py-3 px-6 border-b border-gray-300 text-center text-base">
+                                    <button className="text-blue-500 hover:text-blue-700 mr-2" onClick={() => handleEditClick(employee)}>
+                                        <FaEdit size={20} />
+                                    </button>
+                                    <button
+                                        className="text-red-500 hover:text-red-700 mr-2"
+                                        onClick={() => handleDeleteClick(employee._id)}
+                                    >
+                                        <FaTrash size={20} />
+                                    </button>
+                                    <button
+                                        className="text-green-500 hover:text-green-700"
+                                        onClick={() => fetchUserDetails(employee._id)}
+                                    >
+                                        <FaEye size={20} />
+                                    </button>
 
-                                {showDetailsModal && userDetails && (
-                                    <div className="fixed inset-0 bg-gray-600 bg-opacity-20 overflow-y-auto h-full w-full" id="details-modal">
-                                        <div className="relative top-20 mx-auto p-6 border w-3/4 md:w-2/3 lg:w-1/2 shadow-lg rounded-md bg-white">
-                                            <div className="text-center mb-4">
-                                                <h3 className="text-xl leading-6 font-medium text-gray-900">User Details</h3>
-                                                {error && (
-                                                    <div className="mb-4 p-2 bg-red-100 text-red-700 border border-red-300 rounded">
-                                                        {error}
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <form onSubmit={handleUpdate} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                <div className="col-span-2 text-center">
-                                                    <div className="mb-4">
-                                                        <div className="relative w-32 h-32 mx-auto">
-                                                            <label
-                                                                htmlFor="profile-picture-upload"
-                                                                className="flex items-center justify-center w-full h-full bg-gray-200 rounded-full cursor-pointer overflow-hidden"
-                                                            >
-                                                                {userDetails.profilePicture ? (
-                                                                    <img
-                                                                        src={userDetails.profilePicture}
-                                                                        alt="Profile Preview"
-                                                                        className="object-cover w-full h-full"
+                                    {showDetailsModal && userDetails && (
+                                        <div className="fixed inset-0 bg-gray-600 bg-opacity-20 overflow-y-auto h-full w-full" id="details-modal">
+                                            <div className="relative top-20 mx-auto p-6 border w-3/4 md:w-2/3 lg:w-1/2 shadow-lg rounded-md bg-white">
+                                                <div className="text-center mb-4">
+                                                    <h3 className="text-xl leading-6 font-medium text-gray-900">User Details</h3>
+                                                    {error && (
+                                                        <div className="mb-4 p-2 bg-red-100 text-red-700 border border-red-300 rounded">
+                                                            {error}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <form onSubmit={handleUpdate} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    <div className="col-span-2 text-center">
+                                                        <div className="mb-4">
+                                                            <div className="relative w-32 h-32 mx-auto">
+                                                                <label
+                                                                    htmlFor="profile-picture-upload"
+                                                                    className="flex items-center justify-center w-full h-full bg-gray-200 rounded-full cursor-pointer overflow-hidden"
+                                                                >
+                                                                    {userDetails.profilePicture ? (
+                                                                        <img
+                                                                            src={userDetails.profilePicture}
+                                                                            alt="Profile Preview"
+                                                                            className="object-cover w-full h-full"
+                                                                        />
+                                                                    ) : (
+                                                                        <span className="text-gray-600">Add Profile Picture</span>
+                                                                    )}
+                                                                    <input
+                                                                        type="file"
+                                                                        id="profile-picture-upload"
+                                                                        accept="image/*"
+                                                                        onChange={e => setUserDetails({ ...userDetails, profilePicture: e.target.files[0] })}
+                                                                        className="hidden"
                                                                     />
-                                                                ) : (
-                                                                    <span className="text-gray-600">Add Profile Picture</span>
-                                                                )}
-                                                                <input
-                                                                    type="file"
-                                                                    id="profile-picture-upload"
-                                                                    accept="image/*"
-                                                                    onChange={e => setUserDetails({ ...userDetails, profilePicture: e.target.files[0] })}
-                                                                    className="hidden"
-                                                                />
-                                                            </label>
+                                                                </label>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div className="col-span-1 text-left">
-                                                    <label htmlFor="name" className="block text-sm font-medium text-gray-700">Full Name</label>
-                                                    <input
-                                                        type="text"
-                                                        name="name"
-                                                        value={userDetails.name}
-                                                        onChange={e => setUserDetails({ ...userDetails, name: e.target.value })}
-                                                        placeholder="Full Name"
-                                                        className="mb-2 p-3 border rounded w-full"
-                                                        required
-                                                    />
-                                                </div>
+                                                    <div className="col-span-1 text-left">
+                                                        <label htmlFor="name" className="block text-sm font-medium text-gray-700">Full Name</label>
+                                                        <input
+                                                            type="text"
+                                                            name="name"
+                                                            value={userDetails.name}
+                                                            onChange={e => setUserDetails({ ...userDetails, name: e.target.value })}
+                                                            placeholder="Full Name"
+                                                            className="mb-2 p-3 border rounded w-full"
+                                                            required
+                                                        />
+                                                    </div>
 
-                                                <div className="col-span-1 text-left">
-                                                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                                                    <input
-                                                        type="email"
-                                                        name="email"
-                                                        value={userDetails.email}
-                                                        onChange={e => setUserDetails({ ...userDetails, email: e.target.value })}
-                                                        placeholder="Email"
-                                                        className="mb-2 p-3 border rounded w-full"
-                                                        required
-                                                    />
-                                                </div>
-                                                <div className="col-span-1 text-left">
-                                                    <label htmlFor="designation" className="block text-sm font-medium text-gray-700">Designation</label>
-                                                    <input
-                                                        type="text"
-                                                        name="designation"
-                                                        value={userDetails.designation}
-                                                        onChange={e => setUserDetails({ ...userDetails, designation: e.target.value })}
-                                                        placeholder="Designation"
-                                                        className="mb-2 p-3 border rounded w-full"
-                                                        required
-                                                    />
-                                                </div>
-                                                <div className="col-span-1 text-left">
-                                                    <label htmlFor="department" className="block text-sm font-medium text-gray-700">Department</label>
-                                                    <input
-                                                        type="text"
-                                                        name="department"
-                                                        value={userDetails.department}
-                                                        onChange={e => setUserDetails({ ...userDetails, department: e.target.value })}
-                                                        placeholder="Department"
-                                                        className="mb-2 p-3 border rounded w-full"
-                                                        required
-                                                    />
-                                                </div>
-                                                <div className="col-span-1 text-left">
-                                                    <label htmlFor="dob" className="block text-sm font-medium text-gray-700">Date of Birth</label>
-                                                    <input
-                                                        type="date"
-                                                        name="dob"
-                                                        value={formatDate(userDetails.dob)}
-                                                        onChange={e => setUserDetails({ ...userDetails, dob: e.target.value })}
-                                                        className="mb-2 p-3 border rounded w-full"
-                                                    />
-                                                </div>
-                                                <div className="col-span-1 text-left">
-                                                    <label htmlFor="mobileNo" className="block text-sm font-medium text-gray-700">Mobile Number</label>
-                                                    <input
-                                                        type="tel"
-                                                        name="mobileNo"
-                                                        value={userDetails.mobileNo}
-                                                        onChange={e => setUserDetails({ ...userDetails, mobileNo: e.target.value })}
-                                                        placeholder="Mobile Number"
-                                                        className="mb-2 p-3 border rounded w-full"
-                                                    />
-                                                </div>
-                                                <div className="col-span-1 text-left">
-                                                    <label htmlFor="cnic" className="block text-sm font-medium text-gray-700">CNIC</label>
-                                                    <input
-                                                        type="text"
-                                                        name="cnic"
-                                                        value={userDetails.cnic}
-                                                        onChange={e => setUserDetails({ ...userDetails, cnic: e.target.value })}
-                                                        placeholder="CNIC"
-                                                        className="mb-2 p-3 border rounded w-full"
-                                                    />
-                                                </div>
-                                                <div className="col-span-2 text-left">
-                                                    <label htmlFor="address" className="block text-sm font-medium text-gray-700">Address</label>
-                                                    <input
-                                                        type="text"
-                                                        name="address"
-                                                        value={userDetails.address}
-                                                        onChange={e => setUserDetails({ ...userDetails, address: e.target.value })}
-                                                        placeholder="Address"
-                                                        className="mb-2 p-3 border rounded w-full"
-                                                    />
-                                                </div>
-                                                <div className="col-span-2 text-center">
-                                                    <button
-                                                        type="submit"
-                                                        className="px-6 py-3 bg-green-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300"
-                                                    >
-                                                        Update Details
-                                                    </button>
-                                                </div>
-                                            </form>
-                                            <button
-                                                onClick={() => setShowDetailsModal(false)}
-                                                className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
-                                            >
-                                                <FaTimes size={24} />
-                                            </button>
+                                                    <div className="col-span-1 text-left">
+                                                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                                                        <input
+                                                            type="email"
+                                                            name="email"
+                                                            value={userDetails.email}
+                                                            onChange={e => setUserDetails({ ...userDetails, email: e.target.value })}
+                                                            placeholder="Email"
+                                                            className="mb-2 p-3 border rounded w-full"
+                                                            required
+                                                        />
+                                                    </div>
+                                                    <div className="col-span-1 text-left">
+                                                        <label htmlFor="designation" className="block text-sm font-medium text-gray-700">Designation</label>
+                                                        <input
+                                                            type="text"
+                                                            name="designation"
+                                                            value={userDetails.designation}
+                                                            onChange={e => setUserDetails({ ...userDetails, designation: e.target.value })}
+                                                            placeholder="Designation"
+                                                            className="mb-2 p-3 border rounded w-full"
+                                                            required
+                                                        />
+                                                    </div>
+                                                    <div className="col-span-1 text-left">
+                                                        <label htmlFor="department" className="block text-sm font-medium text-gray-700">Department</label>
+                                                        <input
+                                                            type="text"
+                                                            name="department"
+                                                            value={userDetails.department}
+                                                            onChange={e => setUserDetails({ ...userDetails, department: e.target.value })}
+                                                            placeholder="Department"
+                                                            className="mb-2 p-3 border rounded w-full"
+                                                            required
+                                                        />
+                                                    </div>
+                                                    <div className="col-span-1 text-left">
+                                                        <label htmlFor="dob" className="block text-sm font-medium text-gray-700">Date of Birth</label>
+                                                        <input
+                                                            type="date"
+                                                            name="dob"
+                                                            value={formatDate(userDetails.dob)}
+                                                            onChange={e => setUserDetails({ ...userDetails, dob: e.target.value })}
+                                                            className="mb-2 p-3 border rounded w-full"
+                                                        />
+                                                    </div>
+                                                    <div className="col-span-1 text-left">
+                                                        <label htmlFor="mobileNo" className="block text-sm font-medium text-gray-700">Mobile Number</label>
+                                                        <input
+                                                            type="tel"
+                                                            name="mobileNo"
+                                                            value={userDetails.mobileNo}
+                                                            onChange={e => setUserDetails({ ...userDetails, mobileNo: e.target.value })}
+                                                            placeholder="Mobile Number"
+                                                            className="mb-2 p-3 border rounded w-full"
+                                                        />
+                                                    </div>
+                                                    <div className="col-span-1 text-left">
+                                                        <label htmlFor="cnic" className="block text-sm font-medium text-gray-700">CNIC</label>
+                                                        <input
+                                                            type="text"
+                                                            name="cnic"
+                                                            value={userDetails.cnic}
+                                                            onChange={e => setUserDetails({ ...userDetails, cnic: e.target.value })}
+                                                            placeholder="CNIC"
+                                                            className="mb-2 p-3 border rounded w-full"
+                                                        />
+                                                    </div>
+                                                    <div className="col-span-2 text-left">
+                                                        <label htmlFor="address" className="block text-sm font-medium text-gray-700">Address</label>
+                                                        <input
+                                                            type="text"
+                                                            name="address"
+                                                            value={userDetails.address}
+                                                            onChange={e => setUserDetails({ ...userDetails, address: e.target.value })}
+                                                            placeholder="Address"
+                                                            className="mb-2 p-3 border rounded w-full"
+                                                        />
+                                                    </div>
+                                                    <div className="col-span-2 text-center">
+                                                        <button
+                                                            type="submit"
+                                                            className="px-6 py-3 bg-green-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300"
+                                                        >
+                                                            Update Details
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                                <button
+                                                    onClick={() => setShowDetailsModal(false)}
+                                                    className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+                                                >
+                                                    <FaTimes size={24} />
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
+                                    )}
 
 
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
+
             {editRole && (
                 <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full" id="edit-modal">
                     <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">

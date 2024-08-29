@@ -3,10 +3,12 @@ import axios from 'axios';
 import ClientModal from './ClientModal';
 import ClientTable from './ClientTable';
 import Api from '../../common/index';
+import Spinner from '../spinner';
 
 const Client = () => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [clients, setClients] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     const fetchClients = async () => {
         try {
@@ -14,6 +16,8 @@ const Client = () => {
             setClients(data.data);
         } catch (error) {
             console.error('Error fetching clients:', error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -34,14 +38,17 @@ const Client = () => {
             >
                 Add Client
             </button>
-            <ClientTable clients={clients} />
+            {isLoading ? (
+                <Spinner />
+            ) : (
+                <ClientTable clients={clients} />
+            )}
             <ClientModal
                 isOpen={isModalOpen}
                 onClose={() => setModalOpen(false)}
                 onAdd={handleAddClient}
             />
         </div>
-
     );
 };
 

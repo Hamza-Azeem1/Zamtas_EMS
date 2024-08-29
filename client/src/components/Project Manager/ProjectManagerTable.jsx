@@ -1,22 +1,6 @@
-import { useEffect } from 'react';
-import axios from 'axios';
-import Api from '../../common/index';
 import PropTypes from 'prop-types';
 
-const ProjectManagerTable = ({ managers, setManagers }) => {
-    const fetchProjectManagers = async () => {
-        try {
-            const { data } = await axios.get(Api.getProjectManager.url);
-            setManagers(data.data);
-        } catch (error) {
-            console.error('Error fetching project managers:', error);
-        }
-    };
-
-    useEffect(() => {
-        fetchProjectManagers();
-    }, []);
-
+const ProjectManagerTable = ({ managers }) => {
     return (
         <div className="overflow-x-auto">
             <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg">
@@ -39,13 +23,12 @@ const ProjectManagerTable = ({ managers, setManagers }) => {
                     ))}
                 </tbody>
             </table>
-        </div >
+        </div>
     );
 };
 
 ProjectManagerTable.propTypes = {
     managers: PropTypes.array.isRequired,
-    setManagers: PropTypes.func.isRequired
 };
 
 export default ProjectManagerTable;
