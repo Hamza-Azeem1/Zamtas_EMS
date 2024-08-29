@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import ProjectModal from './ProjectModal';
 import ProjectsTable from './ProjectsTable';
 import { FaPlusSquare } from 'react-icons/fa';
-import Spinner from '../spinner';
+import Spinner from '../Spinner';
 
 const Projects = () => {
     const [isModalOpen, setModalOpen] = useState(false);

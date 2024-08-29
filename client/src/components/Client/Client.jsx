@@ -3,7 +3,7 @@ import axios from 'axios';
 import ClientModal from './ClientModal';
 import ClientTable from './ClientTable';
 import Api from '../../common/index';
-import Spinner from '../spinner';
+import Spinner from '../Spinner';
 
 const Client = () => {
     const [isModalOpen, setModalOpen] = useState(false);

@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import ProjectManagerModal from './ProjectManagerModal';
 import ProjectManagerTable from './ProjectManagerTable';
-import Spinner from '../spinner';
+import Spinner from '../Spinner';
 import axios from 'axios';
 import Api from '../../common/index';
 
