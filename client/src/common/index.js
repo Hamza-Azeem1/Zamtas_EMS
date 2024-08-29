@@ -29,6 +29,30 @@ const Api = {
         url: `${backendDomain}/api/employees/:id`,
         method: "put"
     },
+    addProject: {
+        url: `${backendDomain}/api/projects`,
+        method: "post"
+    },
+    getProject: {
+        url: `${backendDomain}/api/projects`,
+        method: "get"
+    },
+    addClient: {
+        url: `${backendDomain}/api/clients`,
+        method: "post"
+    },
+    getClient: {
+        url: `${backendDomain}/api/clients`,
+        method: "get"
+    },
+    addProjectManager: {
+        url: `${backendDomain}/api/project-managers`,
+        method: "post"
+    },
+    getProjectManager: {
+        url: `${backendDomain}/api/project-managers`,
+        method: "get"
+    },
 };
 
 export default Api;

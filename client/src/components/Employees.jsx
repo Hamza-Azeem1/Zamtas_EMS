@@ -240,18 +240,18 @@ const Employees = () => {
 
     return (
         <div className="relative">
-            <p className="mb-4">Here you can manage your employees, add new ones, or update/delete existing records.</p>
+            <p className="mb-4">Here you can manage your Team, add new Memebrs, or update/delete existing records.</p>
             <button
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 flex items-center"
                 onClick={() => setShowForm(true)}
             >
-                <FaUserPlus className="mr-2" /> Add New Employee
+                <FaUserPlus className="mr-2" /> Add New Team Member
             </button>
             {showForm && (
                 <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full mb-5" id="my-modal">
                     <div className="relative top-20 mx-auto p-6 border w-3/4 md:w-2/3 lg:w-1/2 shadow-lg rounded-md bg-white">
                         <div className="text-center mb-4">
-                            <h3 className="text-xl leading-6 font-medium text-gray-900">Add New Employee</h3>
+                            <h3 className="text-xl leading-6 font-medium text-gray-900">Add New Member</h3>
                             {error && (
                                 <div className="mb-4 p-2 bg-red-100 text-red-700 border border-red-300 rounded">
                                     {error}
@@ -339,7 +339,7 @@ const Employees = () => {
                                     name="designation"
                                     value={newEmployee.designation}
                                     onChange={handleInputChange}
-                                    placeholder="Employee Designation"
+                                    placeholder="Team Member's Designation"
                                     className="mb-2 p-3 border rounded w-full"
                                     required
                                 />
@@ -351,7 +351,7 @@ const Employees = () => {
                                     name="department"
                                     value={newEmployee.department}
                                     onChange={handleInputChange}
-                                    placeholder="Employee Department"
+                                    placeholder="Team Member's Department"
                                     className="mb-2 p-3 border rounded w-full"
                                     required
                                 />
@@ -385,12 +385,12 @@ const Employees = () => {
                                     name="cnic"
                                     value={newEmployee.cnic}
                                     onChange={handleInputChange}
-                                    placeholder="Employee CNIC"
+                                    placeholder="Team Member's CNIC"
                                     className="mb-2 p-3 border rounded w-full"
                                 />
                             </div>
                             <div className="col-span-2">
-                                <label htmlFor="address" className="block text-sm font-medium text-gray-700">Employee Address</label>
+                                <label htmlFor="address" className="block text-sm font-medium text-gray-700">Team Member Address</label>
                                 <input
                                     type="text"
                                     name="address"
@@ -405,7 +405,7 @@ const Employees = () => {
                                     type="submit"
                                     className="px-6 py-3 bg-green-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300"
                                 >
-                                    Add Employee
+                                    Add Member
                                 </button>
                             </div>
                         </form>
@@ -424,7 +424,7 @@ const Employees = () => {
                     <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
                         <div className="mt-3 text-center">
                             <h3 className="text-lg leading-6 font-medium text-gray-900">Confirm Deletion</h3>
-                            <p>Are you sure you want to delete this employee?</p>
+                            <p>Are you sure you want to delete this Team Member?</p>
                             <div className="mt-4">
                                 <button
                                     onClick={confirmDelete}

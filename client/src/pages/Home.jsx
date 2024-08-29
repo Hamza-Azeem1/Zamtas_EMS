@@ -4,6 +4,9 @@ import Dashboard from '../components/Dashboard';
 import Employees from '../components/Employees';
 import Tasks from '../components/Tasks';
 import { TbLogout2 } from "react-icons/tb";
+import Projects from '../components/Projects/Projects';
+import Client from '../components/Client/Client';
+import ProjectManager from '../components/Project Manager/ProjectManager';
 
 const Home = () => {
     const [activeMenu, setActiveMenu] = useState('dashboard');
@@ -18,7 +21,13 @@ const Home = () => {
         switch (activeMenu) {
             case 'dashboard':
                 return <Dashboard />;
-            case 'employees':
+            case 'client':
+                return <Client />;
+            case 'projectmanager':
+                return <ProjectManager />;
+            case 'projects':
+                return <Projects />;
+            case 'Team':
                 return <Employees />;
             case 'tasks':
                 return <Tasks />;
@@ -44,10 +53,34 @@ const Home = () => {
                         </li>
                         <li className="mb-4">
                             <button
-                                className={`w-full text-left py-2 px-4 rounded ${activeMenu === 'employees' ? 'bg-gray-700' : ''}`}
-                                onClick={() => setActiveMenu('employees')}
+                                className={`w-full text-left py-2 px-4 rounded ${activeMenu === 'client' ? 'bg-gray-700' : ''}`}
+                                onClick={() => setActiveMenu('client')}
                             >
-                                Employees
+                                Clients
+                            </button>
+                        </li>
+                        <li className="mb-4">
+                            <button
+                                className={`w-full text-left py-2 px-4 rounded ${activeMenu === 'projectmanager' ? 'bg-gray-700' : ''}`}
+                                onClick={() => setActiveMenu('projectmanager')}
+                            >
+                                Project Managers
+                            </button>
+                        </li>
+                        <li className="mb-4">
+                            <button
+                                className={`w-full text-left py-2 px-4 rounded ${activeMenu === 'projects' ? 'bg-gray-700' : ''}`}
+                                onClick={() => setActiveMenu('projects')}
+                            >
+                                Projects
+                            </button>
+                        </li>
+                        <li className="mb-4">
+                            <button
+                                className={`w-full text-left py-2 px-4 rounded ${activeMenu === 'Team' ? 'bg-gray-700' : ''}`}
+                                onClick={() => setActiveMenu('Team')}
+                            >
+                                Team Memebrs
                             </button>
                         </li>
                         <li className="mb-4">
