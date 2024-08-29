@@ -3,7 +3,7 @@ import axios from 'axios';
 import Api from '../common';
 import { FaEdit, FaTrash, FaUserPlus, FaTimes, FaEye, FaEyeSlash } from 'react-icons/fa';
 import ROLE from '../common/role';
-import Spinner from './spinner';
+import Spinner from './Spinner';
 
 const Employees = () => {
     const [employees, setEmployees] = useState([]);
