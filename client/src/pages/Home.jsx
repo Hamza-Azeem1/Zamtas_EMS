@@ -105,7 +105,7 @@ const Home = () => {
                     </ul>
                 </nav>
                 <button
-                    className="mt-44 w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded flex items-center justify-center gap-2"
+                    className="mt-32 w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded flex items-center justify-center gap-2"
                     onClick={handleLogout}
                 >
                     <TbLogout2 size={25} />

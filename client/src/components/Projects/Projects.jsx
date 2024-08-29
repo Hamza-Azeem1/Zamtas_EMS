@@ -14,11 +14,9 @@ const Projects = () => {
         setRefreshKey(prev => prev + 1);
     };
 
-
     const fetchData = async () => {
         setIsLoading(true);
         try {
-
             await new Promise(resolve => setTimeout(resolve, 2000));
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -45,7 +43,9 @@ const Projects = () => {
                     <Spinner />
                 </div>
             ) : (
-                <ProjectsTable key={refreshKey} />
+                <div className="overflow-x-auto">
+                    <ProjectsTable key={refreshKey} />
+                </div>
             )}
             <ProjectModal
                 isOpen={isModalOpen}
