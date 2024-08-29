@@ -74,11 +74,6 @@ const Employees = () => {
             }
         });
 
-        // Log FormData content for debugging
-        for (let [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
-        }
-
         try {
             const response = await axios.put(Api.updateEmployee.url.replace(':id', userDetails._id), formData, {
                 headers: {
@@ -87,7 +82,14 @@ const Employees = () => {
             });
             if (response.data.success) {
                 setShowDetailsModal(false);
-                fetchUserDetails(userDetails._id);
+
+                // Update the employees list with the new data
+                setEmployees(prevEmployees =>
+                    prevEmployees.map(emp =>
+                        emp._id === userDetails._id ? { ...emp, ...response.data.data } : emp
+                    )
+                );
+
                 setError('');
             } else {
                 setError(response.data.message);
