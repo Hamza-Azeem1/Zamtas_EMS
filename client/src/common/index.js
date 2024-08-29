@@ -37,6 +37,10 @@ const Api = {
         url: `${backendDomain}/api/projects`,
         method: "get"
     },
+    checkProjectId: {
+        url: `${backendDomain}/api/check-project-id/:projectId`,
+        method: "get"
+    },
     addClient: {
         url: `${backendDomain}/api/clients`,
         method: "post"

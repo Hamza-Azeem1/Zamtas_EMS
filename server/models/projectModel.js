@@ -3,69 +3,41 @@ const mongoose = require('mongoose');
 const projectSchema = new mongoose.Schema({
     projectName: {
         type: String,
-        required: true,
-        match: /^[A-Za-z\s]+$/, // Only alphabets and spaces
-        trim: true
+        required: true
     },
     projectId: {
         type: String,
-        required: true,
-        unique: true,
-        match: /^[A-Za-z0-9]+$/, // Alphanumeric
-        trim: true
+        required: true
     },
-    clientName: {
-        type: String,
-        required: true,
-        match: /^[A-Za-z\s]+$/, // Only alphabets and spaces
-        trim: true
+    clientId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Client',
+        required: true
     },
     clientContact: {
         type: String,
-        required: true,
-        match: /^[0-9]+$/, // Only numbers
-        trim: true
+        required: true
     },
     startDate: {
         type: Date,
-        required: true,
-        validate: {
-            validator: function (v) {
-                return v instanceof Date && !isNaN(v);
-            },
-            message: 'Invalid start date'
-        }
+        required: true
     },
     endDate: {
         type: Date,
-        required: true,
-        validate: {
-            validator: function (v) {
-                return v instanceof Date && !isNaN(v);
-            },
-            message: 'Invalid end date'
-        }
+        required: true
     },
     projectManager: {
-        type: String,
-        required: true,
-        match: /^[A-Za-z\s]+$/, // Only alphabets and spaces
-        trim: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ProjectManager',
+        required: true
     },
     location: {
         type: String,
-        required: true,
-        match: /^[A-Za-z\s]+$/, // Only alphabets and spaces
-        trim: true
+        required: true
     },
     budget: {
         type: Number,
-        required: true,
-        min: [0, 'Budget must be positive']
-    },
-    status: {
-        type: String,
-        default: 'Active'
+        required: true
     }
 });
 

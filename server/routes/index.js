@@ -5,7 +5,7 @@ const userSignUpController = require('../controller/UserSignUpController');
 const getEmployeesController = require('../controller/getEmployeesController');
 const { deleteEmployeeController, updateRoleController, getUserDetailsController, updateUserDetailsController } = require('../controller/employeeController');
 const upload = require('../config/multer');
-const { addProjectController, getProjectsController } = require('../controller/projectController');
+const { addProjectController, getProjectsController, checkProjectIdController } = require('../controller/projectController');
 const { addClientController, getClientsController } = require('../controller/clientController');
 const { addProjectManagerController, getProjectManagersController } = require('../controller/projectManagerController');
 
@@ -20,6 +20,7 @@ router.put('/employees/:id', upload.single('profilePicture'), updateUserDetailsC
 
 router.post('/projects', addProjectController);
 router.get('/projects', getProjectsController);
+router.get('/check-project-id/:projectId', checkProjectIdController);
 
 router.post('/clients', addClientController);
 router.get('/clients', getClientsController);

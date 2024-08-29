@@ -1,24 +1,25 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import ProjectManagerModal from './ProjectManagerModal';
 import ProjectManagerTable from './ProjectManagerTable';
 
 const ProjectManagers = () => {
     const [isModalOpen, setModalOpen] = useState(false);
+    const [managers, setManagers] = useState([]);
 
-    const handleAddProjectManager = () => {
+    const handleAddProjectManager = useCallback((newManager) => {
+        setManagers(prevManagers => [...prevManagers, newManager]);
         setModalOpen(false);
-        // Refresh the table or re-fetch data if necessary
-    };
+    }, []);
 
     return (
-        <div className="p-6 space-y-4">
+        <div className="p-6 bg-gray-50 rounded-lg shadow-md space-y-4">
             <button
                 onClick={() => setModalOpen(true)}
-                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-sm transition-transform transform hover:scale-105 flex items-center"
             >
                 Add Project Manager
             </button>
-            <ProjectManagerTable />
+            <ProjectManagerTable managers={managers} setManagers={setManagers} />
             <ProjectManagerModal
                 isOpen={isModalOpen}
                 onClose={() => setModalOpen(false)}

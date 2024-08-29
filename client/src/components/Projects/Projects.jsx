@@ -13,13 +13,12 @@ const Projects = () => {
     };
 
     return (
-        <div className="p-6 space-y-4">
-
+        <div className="p-6 bg-gray-50 rounded-lg shadow-md space-y-4">
             <button
-                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mb-4 mt-5 flex items-center"
+                className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-2 px-6 rounded-lg shadow-sm transition-transform transform hover:scale-105 flex items-center"
                 onClick={() => setModalOpen(true)}
             >
-                <FaPlusSquare className="mr-2" />
+                <FaPlusSquare className="mr-2 text-xl" />
                 Add New Project
             </button>
             <ProjectsTable key={refreshKey} />
@@ -29,6 +28,7 @@ const Projects = () => {
                 onAdd={handleAddProject}
             />
         </div>
+
     );
 };
 

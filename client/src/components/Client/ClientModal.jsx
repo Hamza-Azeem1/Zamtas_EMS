@@ -51,14 +51,13 @@ const ClientModal = ({ isOpen, onClose, onAdd }) => {
 
         const formattedData = {
             ...formData,
-            clientBudget: Number(formData.clientBudget) // Ensure budget is a number
+            clientBudget: Number(formData.clientBudget)
         };
 
         try {
             const response = await axios.post(Api.addClient.url, formattedData);
-            console.log('Success:', response.data);
-            onAdd(); // Refresh clients list
-            onClose(); // Close modal
+            onAdd(response.data.data);
+            onClose();
         } catch (error) {
             console.error('Error adding client:', error.response ? error.response.data : error.message);
             setError(error.response?.data?.message || 'Error adding client. Please try again.');

@@ -239,10 +239,10 @@ const Employees = () => {
     };
 
     return (
-        <div className="relative">
+        <div className="p-6 bg-gray-50 rounded-lg shadow-md space-y-4">
             <p className="mb-4">Here you can manage your Team, add new Memebrs, or update/delete existing records.</p>
             <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 flex items-center"
+                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-sm transition-transform transform hover:scale-105 flex items-center"
                 onClick={() => setShowForm(true)}
             >
                 <FaUserPlus className="mr-2" /> Add New Team Member
@@ -449,26 +449,26 @@ const Employees = () => {
                     </div>
                 </div>
             )}
-            <table className="min-w-full bg-white border border-gray-300">
-                <thead>
+            <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-lg">
+                <thead className='bg-gray-200 text-gray-800 uppercase text-sm font-semibold'>
                     <tr>
-                        <th className="py-2 px-4 border-b text-center">Name</th>
-                        <th className="py-2 px-4 border-b text-center">Email</th>
-                        <th className="py-2 px-4 border-b text-center">Designation</th>
-                        <th className="py-2 px-4 border-b text-center">Department</th>
-                        <th className="py-2 px-4 border-b text-center">Role</th>
-                        <th className="py-2 px-4 border-b text-center">Action</th>
+                        <th className="py-2 px-3 border-b border-gray-300">Name</th>
+                        <th className="py-2 px-3 border-b border-gray-300">Email</th>
+                        <th className="py-2 px-3 border-b border-gray-300">Designation</th>
+                        <th className="py-2 px-3 border-b border-gray-300">Department</th>
+                        <th className="py-2 px-3 border-b border-gray-300">Role</th>
+                        <th className="py-2 px-3 border-b border-gray-300">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {employees.map(employee => (
-                        <tr key={employee._id}>
-                            <td className="py-2 px-4 border-b text-center">{employee.name}</td>
-                            <td className="py-2 px-4 border-b text-center">{employee.email}</td>
-                            <td className="py-2 px-4 border-b text-center">{employee.designation || 'N/A'}</td>
-                            <td className="py-2 px-4 border-b text-center">{employee.department || 'N/A'}</td>
-                            <td className="py-2 px-4 border-b text-center">{employee.role}</td>
-                            <td className="py-2 px-4 border-b text-center">
+                    {employees.map((employee, index) => (
+                        <tr key={employee._id} className={`transition-colors duration-150 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100`}>
+                            <td className="py-3 px-6 border-b border-gray-300 text-center text-base">{employee.name}</td>
+                            <td className="py-3 px-6 border-b border-gray-300 text-center text-base">{employee.email}</td>
+                            <td className="py-3 px-6 border-b border-gray-300 text-center text-base">{employee.designation || 'N/A'}</td>
+                            <td className="py-3 px-6 border-b border-gray-300 text-center text-base">{employee.department || 'N/A'}</td>
+                            <td className="py-3 px-6 border-b border-gray-300 text-center text-base">{employee.role}</td>
+                            <td className="py-3 px-6 border-b border-gray-300 text-center text-base">
                                 <button className="text-blue-500 hover:text-blue-700 mr-2" onClick={() => handleEditClick(employee)}>
                                     <FaEdit size={20} />
                                 </button>

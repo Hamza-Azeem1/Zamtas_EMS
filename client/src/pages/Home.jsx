@@ -7,6 +7,7 @@ import { TbLogout2 } from "react-icons/tb";
 import Projects from '../components/Projects/Projects';
 import Client from '../components/Client/Client';
 import ProjectManager from '../components/Project Manager/ProjectManager';
+import Inverntory from '../components/Inventory/Inverntory';
 
 const Home = () => {
     const [activeMenu, setActiveMenu] = useState('dashboard');
@@ -31,6 +32,8 @@ const Home = () => {
                 return <Employees />;
             case 'tasks':
                 return <Tasks />;
+            case 'inventory':
+                return <Inverntory />;
             default:
                 return <Dashboard />;
         }
@@ -39,7 +42,7 @@ const Home = () => {
     return (
         <div className="flex h-screen bg-gray-100">
             {/* Sidebar */}
-            <div className="w-64 bg-gray-800 text-white p-6">
+            <div className="w-64 bg-gray-800 text-white p-6 fixed h-full">
                 <h2 className="text-2xl font-semibold mb-6">Admin Panel</h2>
                 <nav>
                     <ul>
@@ -80,7 +83,7 @@ const Home = () => {
                                 className={`w-full text-left py-2 px-4 rounded ${activeMenu === 'Team' ? 'bg-gray-700' : ''}`}
                                 onClick={() => setActiveMenu('Team')}
                             >
-                                Team Memebrs
+                                Team Members
                             </button>
                         </li>
                         <li className="mb-4">
@@ -91,10 +94,18 @@ const Home = () => {
                                 Tasks
                             </button>
                         </li>
+                        <li className="mb-4">
+                            <button
+                                className={`w-full text-left py-2 px-4 rounded ${activeMenu === 'inventory' ? 'bg-gray-700' : ''}`}
+                                onClick={() => setActiveMenu('inventory')}
+                            >
+                                Inventory Management
+                            </button>
+                        </li>
                     </ul>
                 </nav>
                 <button
-                    className="mt-8 w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded flex items-center justify-center gap-2"
+                    className="mt-44 w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded flex items-center justify-center gap-2"
                     onClick={handleLogout}
                 >
                     <TbLogout2 size={25} />
@@ -103,13 +114,14 @@ const Home = () => {
             </div>
 
             {/* Main content */}
-            <div className="flex-1 p-10">
+            <div className="flex-1 ml-64 p-10">
                 <h1 className="text-3xl font-semibold mb-6">
                     {activeMenu.charAt(0).toUpperCase() + activeMenu.slice(1)}
                 </h1>
                 {renderContent()}
             </div>
         </div>
+
     );
 };
 

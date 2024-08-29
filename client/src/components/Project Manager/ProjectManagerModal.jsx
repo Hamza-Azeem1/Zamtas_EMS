@@ -51,8 +51,7 @@ const ProjectManagerModal = ({ isOpen, onClose, onAdd }) => {
 
         try {
             const response = await axios.post(Api.addProjectManager.url, formData);
-            console.log('Success:', response.data);
-            onAdd();
+            onAdd(response.data.data); // Pass the new manager data to the parent component
             onClose();
         } catch (error) {
             console.error('Error adding project manager:', error.response ? error.response.data : error.message);

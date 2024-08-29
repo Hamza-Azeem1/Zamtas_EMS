@@ -8,11 +8,11 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
     const [formData, setFormData] = useState({
         projectName: '',
         projectId: '',
-        clientName: '',
+        clientId: '',
         clientContact: '',
         startDate: '',
         endDate: '',
-        projectManager: '',
+        projectManagerId: '',
         location: '',
         budget: ''
     });
@@ -46,11 +46,11 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
         setFormData({
             projectName: '',
             projectId: '',
-            clientName: '',
+            clientId: '',
             clientContact: '',
             startDate: '',
             endDate: '',
-            projectManager: '',
+            projectManagerId: '',
             location: '',
             budget: ''
         });
@@ -60,6 +60,22 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+        if (name === 'projectId') {
+            checkProjectIdExists(value);
+        }
+    };
+
+    const checkProjectIdExists = async (projectId) => {
+        try {
+            const response = await axios.get(`${Api.checkProjectId.url.replace(':projectId', projectId)}`);
+            if (response.data.exists) {
+                setError('A project with this ID already exists. Please use a different Project ID.');
+            } else {
+                setError('');
+            }
+        } catch (error) {
+            console.error('Error checking project ID:', error);
+        }
     };
 
     const handleClientChange = (e) => {
@@ -69,7 +85,7 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
         if (selectedClient) {
             setFormData(prev => ({
                 ...prev,
-                clientName: selectedClient._id,
+                clientId: selectedClient._id,
                 clientContact: selectedClient.clientContact,
                 budget: selectedClient.clientBudget
             }));
@@ -79,22 +95,22 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
     const handleProjectManagerChange = (e) => {
         setFormData(prev => ({
             ...prev,
-            projectManager: e.target.value
+            projectManagerId: e.target.value
         }));
     };
 
     const validateForm = () => {
-        const { projectName, projectId, clientName, clientContact, startDate, endDate, budget } = formData;
+        const { projectName, projectId, clientId, clientContact, startDate, endDate, budget } = formData;
 
         if (!/^[A-Za-z\s]+$/.test(projectName)) return "Project Name should only contain alphabets and spaces.";
         if (!/^[A-Za-z0-9]+$/.test(projectId)) return "Project ID should be alphanumeric.";
-        if (!clientName) return "Please select a client.";
+        if (!clientId) return "Please select a client.";
         if (!/^[0-9]+$/.test(clientContact)) return "Client Contact should only contain numbers.";
         if (isNaN(Date.parse(startDate))) return "Invalid Start Date.";
         if (isNaN(Date.parse(endDate))) return "Invalid End Date.";
         if (new Date(startDate) >= new Date(endDate)) return "Start Date must be before End Date.";
         if (isNaN(budget) || budget < 0) return "Budget must be a positive number.";
-        if (!formData.projectManager) return "Please select a Project Manager.";
+        if (!formData.projectManagerId) return "Please select a Project Manager.";
 
         return '';
     };
@@ -107,6 +123,11 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
             return;
         }
 
+        if (error) {
+            // If there's an error (like projectId already exists), don't submit
+            return;
+        }
+
         const formattedData = {
             ...formData,
             startDate: new Date(formData.startDate).toISOString(),
@@ -116,8 +137,7 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
 
         try {
             const response = await axios.post(Api.addProject.url, formattedData);
-            console.log('Success:', response.data);
-            onAdd();
+            onAdd(response.data.data);
             onClose();
         } catch (error) {
             console.error('Error adding project:', error.response ? error.response.data : error.message);
@@ -169,8 +189,8 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
                             Client Name:
                         </label>
                         <select
-                            name="clientName"
-                            value={formData.clientName}
+                            name="clientId"
+                            value={formData.clientId}
                             onChange={handleClientChange}
                             required
                             className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
@@ -228,8 +248,8 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
                             Project Manager:
                         </label>
                         <select
-                            name="projectManager"
-                            value={formData.projectManager}
+                            name="projectManagerId"
+                            value={formData.projectManagerId}
                             onChange={handleProjectManagerChange}
                             required
                             className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
@@ -266,12 +286,16 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
                             onChange={handleChange}
                             required
                             className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
-                            readOnly
                         />
                     </div>
-                    <button type="submit" className="bg-blue-500 text-white py-3 px-6 rounded col-span-2 hover:bg-blue-600">
-                        Add Project
-                    </button>
+                    <div className="col-span-2 flex justify-end">
+                        <button
+                            type="submit"
+                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                        >
+                            Save Project
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
