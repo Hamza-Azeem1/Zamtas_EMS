@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Dashboard from '../components/Dashboard';
 import Employees from '../components/Team/Employees';
-import Tasks from '../components/Tasks';
+import Tasks from '../components/Task/Tasks';
 import { TbLogout2 } from "react-icons/tb";
 import Projects from '../components/Projects/Projects';
 import Client from '../components/Client/Client';

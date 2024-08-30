@@ -4,7 +4,7 @@ import Home from '../pages/Home';
 import UserHome from '../pages/UserHome';
 import Dashboard from '../components/Dashboard';
 import Employees from '../components/Team/Employees';
-import Tasks from '../components/Tasks';
+import Tasks from '../components/Task/Tasks';
 import PageNotFound from '../pages/PageNotFound';
 
 const router = createBrowserRouter([
