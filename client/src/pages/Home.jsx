@@ -7,7 +7,7 @@ import { TbLogout2 } from "react-icons/tb";
 import Projects from '../components/Projects/Projects';
 import Client from '../components/Client/Client';
 import ProjectManager from '../components/Project Manager/ProjectManager';
-import Inverntory from '../components/Inventory/Inverntory';
+import Inventory from '../components/Inventory/Inventory';
 
 const Home = () => {
     const [activeMenu, setActiveMenu] = useState('dashboard');
@@ -33,7 +33,7 @@ const Home = () => {
             case 'tasks':
                 return <Tasks />;
             case 'inventory':
-                return <Inverntory />;
+                return <Inventory />;
             default:
                 return <Dashboard />;
         }
