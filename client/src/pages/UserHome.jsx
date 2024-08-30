@@ -1,31 +1,21 @@
-import { FaSignOutAlt } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
-
-const UserHome = () => {
-
-    const navigate = useNavigate();
-
-    const handleLogout = async () => {
-        localStorage.removeItem('token');
-        navigate('/');
-    };
-
+function UserHome() {
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-                <h1 className="text-2xl font-semibold mb-4 text-gray-700">
-                    Welcome, {'Team Member'}!
-                </h1>
-                <button
-                    onClick={handleLogout}
-                    className="flex items-center justify-center w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300"
-                >
-                    <FaSignOutAlt className="mr-2" />
+        <div className="h-screen bg-gray-100">
+            <header className="flex justify-between px-4 py-4 bg-white shadow-md">
+                <h1 className="text-xl font-bold text-gray-800">Welcome {'User'}! </h1>
+                <div className="bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer">
                     Logout
-                </button>
-            </div>
+                </div>
+            </header>
+            <main>
+                <div>
+                    <p>
+                        Task Allocation
+                    </p>
+                </div>
+            </main>
         </div>
     );
-};
+}
 
 export default UserHome;
