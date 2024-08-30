@@ -24,7 +24,7 @@ const Home = () => {
                 return <Dashboard />;
             case 'client':
                 return <Client />;
-            case 'projectmanager':
+            case 'project Manager':
                 return <ProjectManager />;
             case 'projects':
                 return <Projects />;
@@ -64,8 +64,8 @@ const Home = () => {
                         </li>
                         <li className="mb-4">
                             <button
-                                className={`w-full text-left py-2 px-4 rounded ${activeMenu === 'projectmanager' ? 'bg-gray-700' : ''}`}
-                                onClick={() => setActiveMenu('projectmanager')}
+                                className={`w-full text-left py-2 px-4 rounded ${activeMenu === 'project Manager' ? 'bg-gray-700' : ''}`}
+                                onClick={() => setActiveMenu('project Manager')}
                             >
                                 Project Managers
                             </button>

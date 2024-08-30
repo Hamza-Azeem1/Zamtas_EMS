@@ -1,14 +1,19 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Api from '../../common/index';
+import Pagination from '../Pagination';
 
 const ProjectsTable = () => {
     const [projects, setProjects] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [projectsPerPage] = useState(10);
 
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const response = await axios.get(Api.getProject.url);
+                const response = await axios.get(Api.getProject.url, {
+                    timeout: 5000,
+                });
                 setProjects(response.data.data);
             } catch (error) {
                 console.error('Error fetching projects:', error);
@@ -17,6 +22,14 @@ const ProjectsTable = () => {
 
         fetchProjects();
     }, []);
+
+    // Get current projects
+    const indexOfLastProject = currentPage * projectsPerPage;
+    const indexOfFirstProject = indexOfLastProject - projectsPerPage;
+    const currentProjects = projects.slice(indexOfFirstProject, indexOfLastProject);
+
+    // Change page
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
         <div className="overflow-x-auto">
@@ -34,22 +47,45 @@ const ProjectsTable = () => {
                     </tr>
                 </thead>
                 <tbody className="text-gray-800 text-base">
-                    {projects.map((project, index) => (
-                        <tr key={project._id} className={`transition-colors duration-150 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100`}>
-                            <td className="py-4 px-6 border-b border-gray-300 text-center">{project.projectName}</td>
-                            <td className="py-4 px-6 border-b border-gray-300 text-center">{project.clientId?.clientName}</td>
-                            <td className="py-4 px-6 border-b border-gray-300 text-center">{project.clientContact}</td>
-                            <td className="py-4 px-6 border-b border-gray-300 text-center">{new Date(project.startDate).toLocaleDateString()}</td>
-                            <td className="py-4 px-6 border-b border-gray-300 text-center">{new Date(project.endDate).toLocaleDateString()}</td>
-                            <td className="py-4 px-6 border-b border-gray-300 text-center">{project.projectManager?.name}</td>
-                            <td className="py-4 px-6 border-b border-gray-300 text-center">{project.location}</td>
-                            <td className="py-4 px-6 border-b border-gray-300 text-center">{project.budget.toFixed(2)}</td>
+                    {currentProjects.map((project, index) => (
+                        <tr
+                            key={project._id}
+                            className={`transition-colors duration-150 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100`}
+                        >
+                            <td className="py-4 px-6 border-b border-gray-300 text-center">
+                                {project.projectName}
+                            </td>
+                            <td className="py-4 px-6 border-b border-gray-300 text-center">
+                                {project.clientId?.clientName}
+                            </td>
+                            <td className="py-4 px-6 border-b border-gray-300 text-center">
+                                {project.clientContact}
+                            </td>
+                            <td className="py-4 px-6 border-b border-gray-300 text-center">
+                                {new Date(project.startDate).toLocaleDateString()}
+                            </td>
+                            <td className="py-4 px-6 border-b border-gray-300 text-center">
+                                {new Date(project.endDate).toLocaleDateString()}
+                            </td>
+                            <td className="py-4 px-6 border-b border-gray-300 text-center">
+                                {project.projectManager?.name}
+                            </td>
+                            <td className="py-4 px-6 border-b border-gray-300 text-center">
+                                {project.location}
+                            </td>
+                            <td className="py-4 px-6 border-b border-gray-300 text-center">
+                                {project.budget}
+                            </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
+            <Pagination
+                currentPage={currentPage}
+                totalPages={Math.ceil(projects.length / projectsPerPage)}
+                onPageChange={paginate}
+            />
         </div>
-
     );
 };
 

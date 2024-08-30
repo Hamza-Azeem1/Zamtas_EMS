@@ -3,11 +3,14 @@ import ProjectModal from './ProjectModal';
 import ProjectsTable from './ProjectsTable';
 import { FaPlusSquare } from 'react-icons/fa';
 import Spinner from '../Spinner';
+import axios from 'axios';
+import Api from '../../common/index';
 
 const Projects = () => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [refreshKey, setRefreshKey] = useState(0);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [projects, setProjects] = useState([]);
 
     const handleAddProject = () => {
         setModalOpen(false);
@@ -17,7 +20,8 @@ const Projects = () => {
     const fetchData = async () => {
         setIsLoading(true);
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            const response = await axios.get(Api.getProject.url);
+            setProjects(response.data.data);
         } catch (error) {
             console.error('Error fetching data:', error);
         } finally {
@@ -44,7 +48,7 @@ const Projects = () => {
                 </div>
             ) : (
                 <div className="overflow-x-auto">
-                    <ProjectsTable key={refreshKey} />
+                    <ProjectsTable projects={projects} />
                 </div>
             )}
             <ProjectModal
