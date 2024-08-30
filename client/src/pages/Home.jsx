@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Dashboard from '../components/Dashboard';
-import Employees from '../components/Employees';
+import Employees from '../components/Team/Employees';
 import Tasks from '../components/Tasks';
 import { TbLogout2 } from "react-icons/tb";
 import Projects from '../components/Projects/Projects';
