@@ -24,10 +24,10 @@ const Home = () => {
                 return <Dashboard />;
             case 'client':
                 return <Client />;
-            case 'project Manager':
-                return <ProjectManager />;
             case 'projects':
                 return <Projects />;
+            case 'project Manager':
+                return <ProjectManager />;
             case 'Team':
                 return <Employees />;
             case 'tasks':
@@ -64,14 +64,6 @@ const Home = () => {
                         </li>
                         <li className="mb-4">
                             <button
-                                className={`w-full text-left py-2 px-4 rounded ${activeMenu === 'project Manager' ? 'bg-gray-700' : ''}`}
-                                onClick={() => setActiveMenu('project Manager')}
-                            >
-                                Project Managers
-                            </button>
-                        </li>
-                        <li className="mb-4">
-                            <button
                                 className={`w-full text-left py-2 px-4 rounded ${activeMenu === 'projects' ? 'bg-gray-700' : ''}`}
                                 onClick={() => setActiveMenu('projects')}
                             >
@@ -80,10 +72,19 @@ const Home = () => {
                         </li>
                         <li className="mb-4">
                             <button
+                                className={`w-full text-left py-2 px-4 rounded ${activeMenu === 'project Manager' ? 'bg-gray-700' : ''}`}
+                                onClick={() => setActiveMenu('project Manager')}
+                            >
+                                Project Managers
+                            </button>
+                        </li>
+
+                        <li className="mb-4">
+                            <button
                                 className={`w-full text-left py-2 px-4 rounded ${activeMenu === 'Team' ? 'bg-gray-700' : ''}`}
                                 onClick={() => setActiveMenu('Team')}
                             >
-                                Team Members
+                                Teams
                             </button>
                         </li>
                         <li className="mb-4">
