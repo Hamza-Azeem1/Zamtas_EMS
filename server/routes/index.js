@@ -8,6 +8,7 @@ const upload = require('../config/multer');
 const { addProjectController, getProjectsController, checkProjectIdController } = require('../controller/projectController');
 const { addClientController, getClientsController } = require('../controller/clientController');
 const { addProjectManagerController, getProjectManagersController } = require('../controller/projectManagerController');
+const { addTaskController, getTasksController, getProjectDetailsController } = require('../controller/taskController');
 
 router.post('/sign-up', userSignUpController);
 router.post('/sign-in', userSignInController);
@@ -27,5 +28,11 @@ router.get('/clients', getClientsController);
 
 router.post('/project-managers', addProjectManagerController);
 router.get('/project-managers', getProjectManagersController);
+
+
+router.post('/tasks', addTaskController);
+router.get('/tasks', getTasksController);
+router.get('/projects/:projectId', getProjectDetailsController);
+
 
 module.exports = router

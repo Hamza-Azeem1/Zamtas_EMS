@@ -57,6 +57,18 @@ const Api = {
         url: `${backendDomain}/api/project-managers`,
         method: "get"
     },
+    addTask: {
+        url: `${backendDomain}/api/tasks`,
+        method: "post"
+    },
+    getTask: {
+        url: `${backendDomain}/api/tasks`,
+        method: "get"
+    },
+    getProjectDetail: {
+        url: `${backendDomain}/api/projects/:projectId`,
+        method: "get"
+    },
 };
 
 export default Api;
