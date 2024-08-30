@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Api from '../../common/index';
+import Spinner from '../Spinner';
 
 const TaskTable = () => {
     const [tasks, setTasks] = useState([]);
@@ -19,7 +20,7 @@ const TaskTable = () => {
             });
     }, []);
 
-    if (isLoading) return <p>Loading tasks...</p>;
+    if (isLoading) return <Spinner />;
     if (error) return <p>Error fetching tasks: {error}</p>;
 
     const getStatusColor = (status) => {

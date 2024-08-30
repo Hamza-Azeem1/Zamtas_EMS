@@ -97,20 +97,21 @@ const Dashboard = () => {
             ) : (
                 <>
                     {/* Cards Section */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
                         {cards.map((card, index) => (
                             <div
                                 key={index}
-                                className="p-6 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 flex items-center space-x-4"
+                                className="p-6 bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-2xl transition-shadow duration-300 flex items-center space-x-4 transform hover:scale-105"
                             >
-                                <card.icon className="text-5xl text-blue-500" />
+                                <card.icon className="text-4xl text-blue-500" />
                                 <div>
-                                    <h3 className="text-lg font-semibold text-gray-800">{card.title}</h3>
-                                    <p className="text-2xl font-bold text-gray-900">{card.count}</p>
+                                    <h3 className="text-xl font-semibold text-gray-800 mb-1">{card.title}</h3>
+                                    <p className="text-3xl font-medium text-center text-gray-900">{card.count}</p>
                                 </div>
                             </div>
                         ))}
                     </div>
+
                     {/* Tabs Section */}
                     <h3 className='text-2xl font-semibold mb-4 mt-4'>Task Overview</h3>
                     <div className="bg-white p-4 rounded-lg shadow-md">
