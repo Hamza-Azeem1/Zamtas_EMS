@@ -8,7 +8,7 @@ const upload = require('../config/multer');
 const { addProjectController, getProjectsController, checkProjectIdController } = require('../controller/projectController');
 const { addClientController, getClientsController } = require('../controller/clientController');
 const { addProjectManagerController, getProjectManagersController } = require('../controller/projectManagerController');
-const { addTaskController, getTasksController, getProjectDetailsController } = require('../controller/taskController');
+const { addTaskController, getTasksController, getProjectDetailsController, getUserTasksController } = require('../controller/taskController');
 const authMiddleware = require('../middleware/authMiddleware');
 
 router.post('/sign-up', userSignUpController);
@@ -32,6 +32,8 @@ router.get('/project-managers', getProjectManagersController);
 router.post('/tasks', addTaskController);
 router.get('/tasks', getTasksController);
 router.get('/projects/:projectId', getProjectDetailsController);
+router.get('/user-tasks', getUserTasksController);
+
 
 
 // Protected Routes
