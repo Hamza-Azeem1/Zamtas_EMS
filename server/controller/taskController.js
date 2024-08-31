@@ -31,6 +31,9 @@ async function getTasksController(req, res) {
             .populate('project')
             .populate('projectManager')
             .populate('assignedTo');
+
+        console.log('Fetched tasks:', tasks);  // Log fetched tasks
+
         res.status(200).json({
             message: 'Tasks fetched successfully',
             data: tasks,
@@ -45,6 +48,31 @@ async function getTasksController(req, res) {
         });
     }
 }
+
+
+const getUserTasksController = async (req, res) => {
+    try {
+        const userId = req.user._id; // Assuming middleware attaches user data to req
+        const tasks = await Task.find({ assignedTo: userId })
+            .populate('project', 'name') // Only populate project name
+            .populate('projectManager', 'name') // Only populate project manager name
+            .populate('assignedTo', 'name'); // Only populate assigned user's name
+
+        res.status(200).json({
+            message: 'Tasks fetched successfully',
+            data: tasks,
+            success: true,
+            error: false
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Failed to fetch tasks',
+            error: true,
+            success: false
+        });
+    }
+};
+
 
 // Get project details by projectId
 async function getProjectDetailsController(req, res) {
@@ -76,5 +104,6 @@ async function getProjectDetailsController(req, res) {
 module.exports = {
     addTaskController,
     getTasksController,
+    getUserTasksController,
     getProjectDetailsController
 };

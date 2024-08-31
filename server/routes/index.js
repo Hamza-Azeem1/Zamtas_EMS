@@ -10,6 +10,7 @@ const { addClientController, getClientsController } = require('../controller/cli
 const { addProjectManagerController, getProjectManagersController } = require('../controller/projectManagerController');
 const { addTaskController, getTasksController, getProjectDetailsController, getUserTasksController } = require('../controller/taskController');
 const authMiddleware = require('../middleware/authMiddleware');
+const auth = require('../middleware/auth');
 
 router.post('/sign-up', userSignUpController);
 
@@ -32,9 +33,8 @@ router.get('/project-managers', getProjectManagersController);
 router.post('/tasks', addTaskController);
 router.get('/tasks', getTasksController);
 router.get('/projects/:projectId', getProjectDetailsController);
-router.get('/user-tasks', getUserTasksController);
 
-
+router.get('/user-tasks', auth, getUserTasksController);
 
 // Protected Routes
 router.use(authMiddleware);
