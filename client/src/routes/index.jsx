@@ -1,11 +1,12 @@
 import { createBrowserRouter } from 'react-router-dom';
-import SignIn from '../pages/SIgnIn';
+import SignIn from '../pages/SignIn';
 import Home from '../pages/Home';
 import UserHome from '../pages/UserHome';
 import Dashboard from '../components/Dashboard';
 import Employees from '../components/Team/Employees';
 import Tasks from '../components/Task/Tasks';
 import PageNotFound from '../pages/PageNotFound';
+import ProtectedRoute from '../common/ProtectedRoute';
 
 const router = createBrowserRouter([
     {
@@ -14,7 +15,7 @@ const router = createBrowserRouter([
     },
     {
         path: '/home',
-        element: <Home />,
+        element: <ProtectedRoute><Home /></ProtectedRoute>,
         children: [
             {
                 path: '',
@@ -36,7 +37,7 @@ const router = createBrowserRouter([
     },
     {
         path: '/user-home',
-        element: <UserHome />,
+        element: <ProtectedRoute><UserHome /></ProtectedRoute>,
     },
     {
         path: '*',

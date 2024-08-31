@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Api from '../common/index';
 import axios from 'axios';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import Api from '../common/index';
 
 const SignIn = () => {
     const [email, setEmail] = useState('');
@@ -14,10 +14,11 @@ const SignIn = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post(Api.signIn.url, { email, password });
+            const response = await axios.post(Api.signIn.url, { email, password }, { withCredentials: true });
             if (response.data.success) {
-                const { data } = response;
-                if (data.data.role === 'ADMIN') {
+                const { token, role } = response.data.data;
+                localStorage.setItem('token', token);  // Save token to localStorage
+                if (role === 'ADMIN') {
                     navigate('/home');
                 } else {
                     navigate('/user-home');
@@ -29,6 +30,8 @@ const SignIn = () => {
             setError(err.response ? err.response.data.message : 'Something went wrong');
         }
     };
+
+
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 py-6 sm:py-12">
