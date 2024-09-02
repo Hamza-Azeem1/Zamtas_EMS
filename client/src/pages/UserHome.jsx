@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { FaSignOutAlt, FaTasks, FaInfoCircle, FaTimes, FaUpload, FaCheck } from 'react-icons/fa';
+import { FaList, FaPlay, FaHourglassHalf, FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
 import Api from '../common/index';
 import Modal from 'react-modal';
+import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
 
 Modal.setAppElement('#root');
 
@@ -18,6 +21,7 @@ function UserHome() {
     const [completeImagePreview, setCompleteImagePreview] = useState(null);
     const [showCompleteSection, setShowCompleteSection] = useState(false);
     const [taskStatus, setTaskStatus] = useState('');
+    const [activeTab, setActiveTab] = useState(0); // State for active tab
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -167,9 +171,26 @@ function UserHome() {
     if (loading) return <p>Loading tasks...</p>;
     if (error) return <p>Error loading tasks: {error}</p>;
 
+    const getTaskCountByStatus = (status) => {
+        return tasks.filter(task => task.status === status).length;
+    };
+
+    const pendingTasksCount = tasks.filter(task => task.status !== 'Done').length;
+
+    const filteredTasks = tasks.filter(task => {
+        switch (activeTab) {
+            case 0: return true; // All
+            case 1: return task.status === 'Started';
+            case 2: return task.status === 'In Progress';
+            case 3: return task.status === 'Done';
+            case 4: return task.status === 'Delayed';
+            default: return true;
+        }
+    });
+
     return (
         <div className="min-h-screen bg-gray-50">
-            <header className="flex justify-between px-6 py-4 bg-white shadow-md">
+            <header className="flex flex-wrap items-center justify-between px-6 py-4 bg-white shadow-md">
                 <h1 className="text-2xl font-bold text-gray-800 flex items-center">
                     <FaTasks className="mr-2" /> Your Tasks
                 </h1>
@@ -183,50 +204,153 @@ function UserHome() {
             <main className="p-6">
                 <div className="mb-6">
                     <h2 className="text-xl font-bold text-gray-800">
-                        Total Tasks: {tasks.length}
+                        Total Pending Tasks: {pendingTasksCount}
                     </h2>
                 </div>
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {tasks.map((task) => (
-                        <div key={task._id} className="bg-white rounded-lg shadow-md overflow-hidden flex items-center p-4">
-                            <div className="flex-grow">
-                                <h3 className="text-xl font-semibold text-gray-800">{task.title}</h3>
-                                <p className="text-gray-600">Assigned By: {task.projectManager.name}</p>
-                                <p className={`text-gray-600 ${getStatusColor(task.status)}`}>
-                                    Status: {task.status}
-                                </p>
-
+                <Tabs selectedIndex={activeTab} onSelect={index => setActiveTab(index)}>
+                    <TabList className="flex flex-wrap space-x-4 mb-6 border-b border-gray-300">
+                        <Tab className="py-2 px-4 cursor-pointer flex items-center border-b-2 hover:text-blue-600 transition duration-300">
+                            <FaList className="mr-2" /> All ({tasks.length})
+                        </Tab>
+                        <Tab className="py-2 px-4 cursor-pointer flex items-center border-b-2 hover:text-yellow-600 transition duration-300">
+                            <FaPlay className="mr-2" /> Started ({getTaskCountByStatus('Started')})
+                        </Tab>
+                        <Tab className="py-2 px-4 cursor-pointer flex items-center border-b-2 hover:text-pink-600 transition duration-300">
+                            <FaHourglassHalf className="mr-2" /> In Progress ({getTaskCountByStatus('In Progress')})
+                        </Tab>
+                        <Tab className="py-2 px-4 cursor-pointer flex items-center border-b-2 hover:text-green-600 transition duration-300">
+                            <FaCheckCircle className="mr-2" /> Done ({getTaskCountByStatus('Done')})
+                        </Tab>
+                        <Tab className="py-2 px-4 cursor-pointer flex items-center border-b-2 hover:text-red-600 transition duration-300">
+                            <FaExclamationCircle className="mr-2" /> Delayed ({getTaskCountByStatus('Delayed')})
+                        </Tab>
+                    </TabList>
+                    <div className="space-y-6">
+                        <TabPanel>
+                            <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                                {filteredTasks.map((task) => (
+                                    <div key={task._id} className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col p-4">
+                                        <div className="flex-grow">
+                                            <h3 className="text-xl font-semibold text-gray-800">{task.title}</h3>
+                                            <p className="text-gray-600">Assigned By: {task.projectManager.name}</p>
+                                            <p className={`text-gray-600 ${getStatusColor(task.status)}`}>
+                                                Status: {task.status}
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={() => openModal(task)}
+                                            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 flex items-center mt-4"
+                                        >
+                                            <FaInfoCircle className="mr-2" /> View Details
+                                        </button>
+                                    </div>
+                                ))}
                             </div>
-                            <button
-                                onClick={() => openModal(task)}
-                                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 flex items-center"
-                            >
-                                <FaInfoCircle className="mr-2" /> View Details
-                            </button>
-                        </div>
-                    ))}
-                </div>
+                        </TabPanel>
+                        <TabPanel>
+                            <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                                {filteredTasks.filter(task => task.status === 'Started').map((task) => (
+                                    <div key={task._id} className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col p-4">
+                                        <div className="flex-grow">
+                                            <h3 className="text-xl font-semibold text-gray-800">{task.title}</h3>
+                                            <p className="text-gray-600">Assigned By: {task.projectManager.name}</p>
+                                            <p className={`text-gray-600 ${getStatusColor(task.status)}`}>
+                                                Status: {task.status}
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={() => openModal(task)}
+                                            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 flex items-center mt-4"
+                                        >
+                                            <FaInfoCircle className="mr-2" /> View Details
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </TabPanel>
+                        <TabPanel>
+                            <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                                {filteredTasks.filter(task => task.status === 'In Progress').map((task) => (
+                                    <div key={task._id} className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col p-4">
+                                        <div className="flex-grow">
+                                            <h3 className="text-xl font-semibold text-gray-800">{task.title}</h3>
+                                            <p className="text-gray-600">Assigned By: {task.projectManager.name}</p>
+                                            <p className={`text-gray-600 ${getStatusColor(task.status)}`}>
+                                                Status: {task.status}
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={() => openModal(task)}
+                                            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 flex items-center mt-4"
+                                        >
+                                            <FaInfoCircle className="mr-2" /> View Details
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </TabPanel>
+                        <TabPanel>
+                            <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                                {filteredTasks.filter(task => task.status === 'Done').map((task) => (
+                                    <div key={task._id} className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col p-4">
+                                        <div className="flex-grow">
+                                            <h3 className="text-xl font-semibold text-gray-800">{task.title}</h3>
+                                            <p className="text-gray-600">Assigned By: {task.projectManager.name}</p>
+                                            <p className={`text-gray-600 ${getStatusColor(task.status)}`}>
+                                                Status: {task.status}
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={() => openModal(task)}
+                                            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 flex items-center mt-4"
+                                        >
+                                            <FaInfoCircle className="mr-2" /> View Details
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </TabPanel>
+                        <TabPanel>
+                            <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                                {filteredTasks.filter(task => task.status === 'Delayed').map((task) => (
+                                    <div key={task._id} className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col p-4">
+                                        <div className="flex-grow">
+                                            <h3 className="text-xl font-semibold text-gray-800">{task.title}</h3>
+                                            <p className="text-gray-600">Assigned By: {task.projectManager.name}</p>
+                                            <p className={`text-gray-600 ${getStatusColor(task.status)}`}>
+                                                Status: {task.status}
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={() => openModal(task)}
+                                            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 flex items-center mt-4"
+                                        >
+                                            <FaInfoCircle className="mr-2" /> View Details
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </TabPanel>
+                    </div>
+                </Tabs>
             </main>
-
             {selectedTask && (
                 <Modal
                     isOpen={!!selectedTask}
                     onRequestClose={closeModal}
                     contentLabel="Task Details"
-                    className="flex flex-col items-center bg-white rounded-lg p-6 shadow-lg max-w-4xl mx-auto"
-                    overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+                    className="modal max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg relative"
+                    overlayClassName="overlay fixed inset-0 bg-black bg-opacity-50"
                 >
-                    <div className="relative w-full">
-                        <button
-                            onClick={closeModal}
-                            className="absolute top-2 right-2 text-red-500 hover:text-red-600 transition duration-300"
-                        >
-                            <FaTimes size={24} />
-                        </button>
-                        <h2 className="text-2xl font-semibold mb-4">{selectedTask.title}</h2>
+                    <button onClick={closeModal} className="absolute top-4 right-4 text-red-600 text-2xl z-10">
+                        <FaTimes />
+                    </button>
+                    <h2 className="text-2xl font-bold mb-4">Task Details</h2>
+                    <div className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <p className="text-lg font-base mb-2"><strong>Category:</strong> {selectedTask.category}</p>
+                                <p className="text-lg font-base mb-2"><strong>Title:</strong> {selectedTask.title}</p>
+                                <p className="text-lg font-base mb-2"><strong>Description:</strong> {selectedTask.description}</p>
                                 <p className="text-lg font-base mb-2"><strong>Location:</strong> {selectedTask.project.location}</p>
                             </div>
                             <div>
@@ -235,7 +359,6 @@ function UserHome() {
                                 <p className={`text-lg font-base mb-2 ${getStatusColor(selectedTask.status)}`}>
                                     <strong>Status:</strong> {selectedTask.status}
                                 </p>
-
                             </div>
                         </div>
                         {!showCompleteSection && taskStatus !== 'Done' && (
@@ -244,8 +367,9 @@ function UserHome() {
                                 <div className="flex items-center space-x-4">
                                     <label className="flex flex-col items-center px-4 py-2 bg-white text-blue rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue-500 hover:text-white">
                                         <FaUpload className="w-8 h-8" />
-                                        <span className="mt-2 text-base leading-normal">Select Start Image</span>
-                                        <input type='file' className="hidden" onChange={(e) => handleImageUpload(e, 'start')} />
+                                        <span className="mt-2 text-base leading-normal">
+                                            <input type='file' className="hidden" onChange={(e) => handleImageUpload(e, 'start')} />
+                                        </span>
                                     </label>
                                     {startImagePreview && (
                                         <div className="w-24 h-24 relative">
@@ -294,6 +418,8 @@ function UserHome() {
                         )}
                     </div>
                 </Modal>
+
+
             )}
         </div>
     );
