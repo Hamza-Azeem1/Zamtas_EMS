@@ -2,12 +2,36 @@ const Task = require('../models/taskModel');
 const Project = require('../models/projectModel');
 const User = require('../models/userModel');
 const cloudinary = require('../config/cloudinary');
+const twilio = require('twilio');
+
+const accountSid = process.env.ACCOUNT_SID;
+const authToken = process.env.AUTH_TOKEN;
+const twilioNumber = process.env.TWILIO_NUM
+const client = twilio(accountSid, authToken);
 
 // Add a new task
 async function addTaskController(req, res) {
     try {
         const task = new Task(req.body);
         await task.save();
+
+        const assignedUser = await User.findById(task.assignedTo);
+        let mobileNo = assignedUser.mobileNo;
+
+        if (mobileNo && !mobileNo.startsWith('+')) {
+            mobileNo = `+92${mobileNo.slice(1)}`;
+        }
+
+        // Send WhatsApp notification
+        if (mobileNo) {
+            await client.messages.create({
+                body: `Hello ${assignedUser.name}!. A new task has been assigned to you. Please check your portal for details.`,
+                from: twilioNumber,
+                to: mobileNo
+            });
+        }
+
+
         res.status(201).json({
             message: 'Task added successfully',
             data: task,
