@@ -366,12 +366,12 @@ function UserHome() {
                     <h2 className="text-2xl font-bold mb-4">Task Details</h2>
                     <div className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
+                            <div className="border border-gray-300 p-4 rounded-lg shadow-sm">
                                 <p className="text-lg font-base mb-2"><strong>Title:</strong> {selectedTask.title}</p>
                                 <p className="text-lg font-base mb-2"><strong>Category:</strong> {selectedTask.category}</p>
                                 <p className="text-lg font-base mb-2"><strong>Location:</strong> {selectedTask.project.location}</p>
                             </div>
-                            <div>
+                            <div className="border border-gray-300 p-4 rounded-lg shadow-sm">
                                 <p className="text-lg font-base mb-2"><strong>Assigned By:</strong> {selectedTask.projectManager.name}</p>
                                 <p className="text-lg font-base mb-2"><strong>End Date:</strong> {new Date(selectedTask.endDate).toLocaleDateString()}</p>
                                 <p className={`text-lg font-base mb-2 ${getStatusColor(selectedTask.status)}`}>
@@ -380,7 +380,7 @@ function UserHome() {
                             </div>
                         </div>
                         {!showCompleteSection && taskStatus !== 'Done' && (
-                            <div className="mt-4">
+                            <div className="mt-4 border border-gray-300 p-4 rounded-lg shadow-sm">
                                 <h3 className="text-lg font-semibold mb-2">Start Task</h3>
                                 <div className="flex items-center space-x-4">
                                     <label className="flex flex-col items-center px-4 py-2 bg-white text-blue rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue-500 hover:text-white">
@@ -391,7 +391,7 @@ function UserHome() {
                                     </label>
                                     {startImagePreview && (
                                         <div className="w-24 h-24 relative">
-                                            <img src={startImagePreview} alt="Start Preview" className="w-full h-full object-cover" />
+                                            <img src={startImagePreview} alt="Start Preview" className="w-full h-full object-cover border border-gray-300 rounded-lg" />
                                         </div>
                                     )}
                                 </div>
@@ -406,7 +406,7 @@ function UserHome() {
                         )}
 
                         {showCompleteSection && (
-                            <div className="mt-4">
+                            <div className="mt-4 border border-gray-300 p-4 rounded-lg shadow-sm">
                                 <h3 className="text-lg font-semibold mb-2">Complete Task</h3>
                                 <div className="flex items-center space-x-4">
                                     <label className="flex flex-col items-center px-4 py-2 bg-white text-blue rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue-500 hover:text-white">
@@ -416,7 +416,7 @@ function UserHome() {
                                     </label>
                                     {completeImagePreview && (
                                         <div className="w-24 h-24 relative">
-                                            <img src={completeImagePreview} alt="Complete Preview" className="w-full h-full object-cover" />
+                                            <img src={completeImagePreview} alt="Complete Preview" className="w-full h-full object-cover border border-gray-300 rounded-lg" />
                                         </div>
                                     )}
                                 </div>
@@ -431,7 +431,7 @@ function UserHome() {
                         )}
 
                         {taskStatus === 'Done' && (
-                            <div className="mt-4 text-center text-green-500">
+                            <div className="mt-4 text-center text-green-500 border border-gray-300 p-4 rounded-lg shadow-sm">
                                 <h3 className="text-lg font-semibold">Task Completed</h3>
                                 <p>Your task is marked as completed.</p>
                             </div>
@@ -441,9 +441,10 @@ function UserHome() {
                         <p className="text-red-500 mt-4">{modalError}</p> // Display error message in modal
                     )}
                 </Modal>
-
-
             )}
+
+
+
         </div>
     );
 }
