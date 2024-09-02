@@ -5,6 +5,7 @@ import { FaSignOutAlt, FaTasks, FaInfoCircle, FaTimes, FaUpload, FaCheck } from 
 import { FaList, FaPlay, FaHourglassHalf, FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
 import Api from '../common/index';
 import Modal from 'react-modal';
+import Spinner from '../components/Spinner';
 import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 
@@ -21,7 +22,9 @@ function UserHome() {
     const [completeImagePreview, setCompleteImagePreview] = useState(null);
     const [showCompleteSection, setShowCompleteSection] = useState(false);
     const [taskStatus, setTaskStatus] = useState('');
-    const [activeTab, setActiveTab] = useState(0); // State for active tab
+    const [modalError, setModalError] = useState('');
+    const [loadingImage, setLoadingImage] = useState(false); // Added state for image upload loading
+    const [activeTab, setActiveTab] = useState(0);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -80,6 +83,8 @@ function UserHome() {
         setStartImagePreview(null);
         setCompleteImagePreview(null);
         setTaskStatus(task.status);
+        setModalError('');
+        setLoadingImage(false); // Reset loading state on opening
 
         if (task.status === 'In Progress') {
             setShowCompleteSection(true);
@@ -98,6 +103,8 @@ function UserHome() {
         setCompleteImagePreview(null);
         setTaskStatus('');
         setShowCompleteSection(false);
+        setModalError('');
+        setLoadingImage(false); // Reset loading state on closing
     };
 
     const handleImageUpload = (event, type) => {
@@ -119,9 +126,11 @@ function UserHome() {
 
     const handleStartTask = async () => {
         if (!startImage) {
-            setError('Please upload an image to start the task.');
+            setModalError('Please upload an image to start the task.');
             return;
         }
+
+        setLoadingImage(true); // Set loading state to true
 
         const formData = new FormData();
         formData.append('taskId', selectedTask._id);
@@ -138,16 +147,21 @@ function UserHome() {
             fetchTasks();
             setShowCompleteSection(true);
             setTaskStatus('In Progress');
+            setModalError('');
         } catch (error) {
-            setError(error.response?.data?.message || 'Error starting task');
+            setModalError(error.response?.data?.message || 'Error starting task');
+        } finally {
+            setLoadingImage(false); // Reset loading state
         }
     };
 
     const handleCompleteTask = async () => {
         if (!completeImage) {
-            setError('Please upload an image to complete the task.');
+            setModalError('Please upload an image to complete the task.');
             return;
         }
+
+        setLoadingImage(true); // Set loading state to true
 
         const formData = new FormData();
         formData.append('taskId', selectedTask._id);
@@ -163,12 +177,15 @@ function UserHome() {
             });
             fetchTasks();
             setTaskStatus('Done');
+            setModalError('');
         } catch (error) {
-            setError(error.response?.data?.message || 'Error completing task');
+            setModalError(error.response?.data?.message || 'Error completing task');
+        } finally {
+            setLoadingImage(false); // Reset loading state
         }
     };
 
-    if (loading) return <p>Loading tasks...</p>;
+    if (loading) return <Spinner />;
     if (error) return <p>Error loading tasks: {error}</p>;
 
     const getTaskCountByStatus = (status) => {
@@ -187,6 +204,7 @@ function UserHome() {
             default: return true;
         }
     });
+
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -350,7 +368,7 @@ function UserHome() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <p className="text-lg font-base mb-2"><strong>Title:</strong> {selectedTask.title}</p>
-                                <p className="text-lg font-base mb-2"><strong>Description:</strong> {selectedTask.description}</p>
+                                <p className="text-lg font-base mb-2"><strong>Category:</strong> {selectedTask.category}</p>
                                 <p className="text-lg font-base mb-2"><strong>Location:</strong> {selectedTask.project.location}</p>
                             </div>
                             <div>
@@ -380,8 +398,9 @@ function UserHome() {
                                 <button
                                     onClick={handleStartTask}
                                     className="mt-4 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-300 flex items-center"
+                                    disabled={loadingImage}
                                 >
-                                    <FaCheck className="mr-2" /> Start Task
+                                    {loadingImage ? <Spinner /> : <FaUpload className="mr-2" />} Start Task
                                 </button>
                             </div>
                         )}
@@ -404,8 +423,9 @@ function UserHome() {
                                 <button
                                     onClick={handleCompleteTask}
                                     className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 flex items-center"
+                                    disabled={loadingImage}
                                 >
-                                    <FaCheck className="mr-2" /> Complete Task
+                                    {loadingImage ? <Spinner /> : <FaCheck className="mr-2" />} Complete Task
                                 </button>
                             </div>
                         )}
@@ -417,6 +437,9 @@ function UserHome() {
                             </div>
                         )}
                     </div>
+                    {modalError && (
+                        <p className="text-red-500 mt-4">{modalError}</p> // Display error message in modal
+                    )}
                 </Modal>
 
 
