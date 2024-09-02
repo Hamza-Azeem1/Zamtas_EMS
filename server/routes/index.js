@@ -8,10 +8,11 @@ const upload = require('../config/multer');
 const { addProjectController, getProjectsController, checkProjectIdController } = require('../controller/projectController');
 const { addClientController, getClientsController } = require('../controller/clientController');
 const { addProjectManagerController, getProjectManagersController } = require('../controller/projectManagerController');
-const { addTaskController, getTasksController, getProjectDetailsController, getUserTasksController } = require('../controller/taskController');
+const { addTaskController, getTasksController, getProjectDetailsController, getUserTasksController, completeTaskController, startTaskController } = require('../controller/taskController');
 const authMiddleware = require('../middleware/authMiddleware');
 const auth = require('../middleware/auth');
 
+router.post('/sign-in', userSignInController);
 router.post('/sign-up', userSignUpController);
 
 router.get('/employees', getEmployeesController);
@@ -35,11 +36,10 @@ router.get('/tasks', getTasksController);
 router.get('/projects/:projectId', getProjectDetailsController);
 
 router.get('/user-tasks', auth, getUserTasksController);
+router.post('/task-start', upload.single('startImage'), startTaskController);
+router.post('/task-submit', upload.single('completeImage'), completeTaskController);
 
 // Protected Routes
 router.use(authMiddleware);
-
-// Auth Routes
-router.post('/sign-in', userSignInController);
 
 module.exports = router;

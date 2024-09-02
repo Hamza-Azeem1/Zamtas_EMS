@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import axios from 'axios';
-import Api from '../../common/index';
 import PropTypes from 'prop-types';
+import Api from '../../common/index';
 import ROLE from '../../common/role';
 
-const TaskModal = ({ isOpen, onClose }) => {
+const TaskModal = ({ isOpen, onClose, taskDetails, onAdd }) => {
     const [task, setTask] = useState({
         title: '',
         category: 'Installation',
@@ -16,13 +16,12 @@ const TaskModal = ({ isOpen, onClose }) => {
         assignedTo: '',
         status: 'Started'
     });
-
     const [projects, setProjects] = useState([]);
     const [projectManagers, setProjectManagers] = useState([]);
     const [employees, setEmployees] = useState([]);
 
     useEffect(() => {
-        if (isOpen) {
+        if (isOpen && !taskDetails) {
             axios.get(Api.getProject.url)
                 .then(res => setProjects(res.data.data || []))
                 .catch(err => console.error(err));
@@ -37,10 +36,20 @@ const TaskModal = ({ isOpen, onClose }) => {
                     setEmployees(filteredEmployees);
                 })
                 .catch(err => console.error(err));
-        } else {
-            resetForm(); // Reset form when modal closes
+        } else if (taskDetails) {
+            setTask(taskDetails);
         }
-    }, [isOpen]);
+    }, [isOpen, taskDetails]);
+
+    const getStatusColor = (status) => {
+        switch (status) {
+            case 'Started':
+                return 'text-yellow-400 font-medium';
+            default:
+                return '';
+        }
+    };
+
 
     const resetForm = () => {
         setTask({
@@ -85,7 +94,8 @@ const TaskModal = ({ isOpen, onClose }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         axios.post(Api.addTask.url, task)
-            .then(() => {
+            .then(res => {
+                onAdd(res.data);
                 onClose();
             })
             .catch(err => console.error(err));
@@ -95,141 +105,218 @@ const TaskModal = ({ isOpen, onClose }) => {
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl h-auto overflow-auto">
+            <div className="bg-white p-6 rounded-lg shadow-lg max-w-screen-lg w-full h-auto overflow-auto">
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-xl font-bold mb-4">Add Task</h2>
-                    <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+                    <h2 className="text-xl font-bold">{taskDetails ? 'View Task' : 'Add Task'}</h2>
+                    <button onClick={() => {
+                        onClose();
+                        if (!taskDetails) resetForm();
+                    }} className="text-gray-500 hover:text-gray-700">
                         <FaTimes size={24} />
                     </button>
                 </div>
-                <form onSubmit={handleSubmit} className="flex flex-wrap gap-4">
-                    <div className="flex-1 min-w-[200px]">
-                        <label className="block mb-1" htmlFor="title">Title</label>
-                        <input
-                            type="text"
-                            id="title"
-                            name="title"
-                            value={task.title}
-                            onChange={handleChange}
-                            className="w-full border rounded-lg p-2"
-                            required
-                        />
+                {taskDetails ? (
+                    <div className="flex flex-col md:flex-row gap-6 max-h-[calc(100vh-150px)] overflow-y-auto">
+                        <div className="flex-1">
+                            <h3 className="text-lg font-semibold mb-4">Task Details</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <p className="font-medium">Title:</p>
+                                    <p>{task.title}</p>
+                                </div>
+                                <div>
+                                    <p className="font-medium">Category:</p>
+                                    <p>{task.category}</p>
+                                </div>
+                                <div>
+                                    <p className="font-medium">Project:</p>
+                                    <p>{task.project.projectName}</p>
+                                </div>
+                                <div>
+                                    <p className="font-medium">Project Manager:</p>
+                                    <p>{task.projectManager.name}</p>
+                                </div>
+                                <div>
+                                    <p className="font-medium">Start Date:</p>
+                                    <p>{new Date(task.startDate).toLocaleDateString()}</p>
+                                </div>
+                                <div>
+                                    <p className="font-medium">Due Date:</p>
+                                    <p>{new Date(task.endDate).toLocaleDateString()}</p>
+                                </div>
+                                <div>
+                                    <p className="font-medium">Assigned To:</p>
+                                    <p>{task.assignedTo.name}</p>
+                                </div>
+                                <div>
+                                    <p className="font-medium">Status:</p>
+                                    <p className={`text-${getStatusColor(task.status)}`}>{task.status}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex-1">
+                            <h3 className="text-lg font-semibold mb-4">Images</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <p className="font-medium">Start Image:</p>
+                                    {task.startImage ? (
+                                        <img
+                                            src={task.startImage}
+                                            alt="Start"
+                                            className="w-full h-48 object-cover rounded-lg border border-gray-300 mt-2"
+                                        />
+                                    ) : (
+                                        <p>No start image available</p>
+                                    )}
+                                </div>
+                                <div>
+                                    <p className="font-medium">Complete Image:</p>
+                                    {task.completeImage ? (
+                                        <img
+                                            src={task.completeImage}
+                                            alt="Complete"
+                                            className="w-full h-48 object-cover rounded-lg border border-gray-300 mt-2"
+                                        />
+                                    ) : (
+                                        <p>No complete image available</p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div className="flex-1 min-w-[200px]">
-                        <label className="block mb-1" htmlFor="category">Task Category</label>
-                        <select
-                            id="category"
-                            name="category"
-                            value={task.category}
-                            onChange={handleChange}
-                            className="w-full border rounded-lg p-2"
-                        >
-                            <option value="Installation">Installation</option>
-                            <option value="Service">Service</option>
-                        </select>
-                    </div>
-                    <div className="flex-1 min-w-[200px]">
-                        <label className="block mb-1" htmlFor="project">Project</label>
-                        <select
-                            id="project"
-                            name="project"
-                            value={task.project || ''}
-                            onChange={handleProjectChange}
-                            className="w-full border rounded-lg p-2"
-                            required
-                        >
-                            <option value="">Select Project</option>
-                            {projects.length === 0 ? (
-                                <option>Loading...</option>
-                            ) : (
-                                projects.map(project => (
-                                    <option key={project._id} value={project._id}>{project.projectName}</option>
-                                ))
-                            )}
-                        </select>
-                    </div>
-                    <div className="flex-1 min-w-[200px]">
-                        <label className="block mb-1" htmlFor="projectManager">Project Manager</label>
-                        <select
-                            id="projectManager"
-                            name="projectManager"
-                            value={task.projectManager || ''}
-                            onChange={handleChange}
-                            className="w-full border rounded-lg p-2"
-                            disabled={!task.project}
-                        >
-                            <option value="">Select Project Manager</option>
-                            {projectManagers.map(manager => (
-                                <option key={manager._id} value={manager._id}>{manager.name}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div>
-                        <label className="block mb-1" htmlFor="startDate">Start Date</label>
-                        <input
-                            type="date"
-                            id="startDate"
-                            name="startDate"
-                            value={task.startDate}
-                            onChange={handleChange}
-                            className="w-full border rounded-lg p-2"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label className="block mb-1" htmlFor="endDate">Due Date</label>
-                        <input
-                            type="date"
-                            id="endDate"
-                            name="endDate"
-                            value={task.endDate}
-                            onChange={handleChange}
-                            className="w-full border rounded-lg p-2"
-                            required
-                        />
-                    </div>
-                    <div className="flex-1 min-w-[200px]">
-                        <label className="block mb-1" htmlFor="assignedTo">Assigned To</label>
-                        <select
-                            id="assignedTo"
-                            name="assignedTo"
-                            value={task.assignedTo || ''}
-                            onChange={handleChange}
-                            className="w-full border rounded-lg p-2"
-                            required
-                        >
-                            <option value="">Select Team Member</option>
-                            {employees.map(emp => (
-                                <option key={emp._id} value={emp._id}>{emp.name}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="flex-1 min-w-[200px]">
-                        <label className="block mb-1" htmlFor="status">Status</label>
-                        <select
-                            id="status"
-                            name="status"
-                            value={task.status || ''}
-                            onChange={handleChange}
-                            className="w-full border rounded-lg p-2"
-                        >
-                            <option value="Started" className='text-yellow-400 font-medium'>Started</option>
-                            <option value="Delayed" className='text-red-800 font-medium'>Delayed</option>
-                            <option value="Done" className='text-green-800 font-medium'>Done</option>
-                        </select>
-                    </div>
-                    <div className="flex justify-end w-full mt-4">
-                        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-lg">Add Task</button>
-                    </div>
-                </form>
+                ) : (
+                    <form onSubmit={handleSubmit} className="flex flex-wrap gap-4">
+                        <div className="flex-1 min-w-[200px]">
+                            <label className="block mb-1" htmlFor="title">Title</label>
+                            <input
+                                type="text"
+                                id="title"
+                                name="title"
+                                value={task.title}
+                                onChange={handleChange}
+                                className="w-full border rounded-lg p-2"
+                                required
+                            />
+                        </div>
+                        <div className="flex-1 min-w-[200px]">
+                            <label className="block mb-1" htmlFor="category">Task Category</label>
+                            <select
+                                id="category"
+                                name="category"
+                                value={task.category}
+                                onChange={handleChange}
+                                className="w-full border rounded-lg p-2"
+                            >
+                                <option value="Installation">Installation</option>
+                                <option value="Service">Service</option>
+                            </select>
+                        </div>
+                        <div className="flex-1 min-w-[200px]">
+                            <label className="block mb-1" htmlFor="project">Project</label>
+                            <select
+                                id="project"
+                                name="project"
+                                value={task.project || ''}
+                                onChange={handleProjectChange}
+                                className="w-full border rounded-lg p-2"
+                                required
+                            >
+                                <option value="">Select Project</option>
+                                {projects.length === 0 ? (
+                                    <option>Loading...</option>
+                                ) : (
+                                    projects.map(project => (
+                                        <option key={project._id} value={project._id}>{project.projectName}</option>
+                                    ))
+                                )}
+                            </select>
+                        </div>
+                        <div className="flex-1 min-w-[200px]">
+                            <label className="block mb-1" htmlFor="projectManager">Project Manager</label>
+                            <select
+                                id="projectManager"
+                                name="projectManager"
+                                value={task.projectManager || ''}
+                                onChange={handleChange}
+                                className="w-full border rounded-lg p-2"
+                                disabled={!task.project}
+                            >
+                                <option value="">Select Project Manager</option>
+                                {projectManagers.map(manager => (
+                                    <option key={manager._id} value={manager._id}>{manager.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block mb-1" htmlFor="startDate">Start Date</label>
+                            <input
+                                type="date"
+                                id="startDate"
+                                name="startDate"
+                                value={task.startDate}
+                                onChange={handleChange}
+                                className="w-full border rounded-lg p-2"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block mb-1" htmlFor="endDate">Due Date</label>
+                            <input
+                                type="date"
+                                id="endDate"
+                                name="endDate"
+                                value={task.endDate}
+                                onChange={handleChange}
+                                className="w-full border rounded-lg p-2"
+                                required
+                            />
+                        </div>
+                        <div className="flex-1 min-w-[200px]">
+                            <label className="block mb-1" htmlFor="assignedTo">Assigned To</label>
+                            <select
+                                id="assignedTo"
+                                name="assignedTo"
+                                value={task.assignedTo || ''}
+                                onChange={handleChange}
+                                className="w-full border rounded-lg p-2"
+                                required
+                            >
+                                <option value="">Select Team Member</option>
+                                {employees.map(emp => (
+                                    <option key={emp._id} value={emp._id}>{emp.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="flex-1 min-w-[200px]">
+                            <label className="block mb-1" htmlFor="status">Status</label>
+                            <select
+                                id="status"
+                                name="status"
+                                value={task.status || ''}
+                                onChange={handleChange}
+                                className="w-full border rounded-lg p-2"
+                            >
+                                <option value="Started" className='text-yellow-400 font-medium'>Started</option>
+                                <option value="Delayed" className='text-red-800 font-medium'>Delayed</option>
+                                <option value="Done" className='text-green-800 font-medium'>Done</option>
+                            </select>
+                        </div>
+                        <div className="flex justify-end w-full mt-4">
+                            <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-lg">Add Task</button>
+                        </div>
+                    </form>
+                )}
             </div>
         </div>
+
     );
 };
 
 TaskModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired
+    onClose: PropTypes.func.isRequired,
+    taskDetails: PropTypes.object,
+    onAdd: PropTypes.func
 };
 
 export default TaskModal;

@@ -1,6 +1,7 @@
 const Task = require('../models/taskModel');
 const Project = require('../models/projectModel');
 const User = require('../models/userModel');
+const cloudinary = require('../config/cloudinary');
 
 // Add a new task
 async function addTaskController(req, res) {
@@ -14,7 +15,7 @@ async function addTaskController(req, res) {
             error: false
         });
     } catch (err) {
-        console.error('Error adding task:', err);  // Add this line for more detailed error logging
+        console.error('Error adding task:', err);
         res.status(500).json({
             message: err.message || 'Server Error',
             error: true,
@@ -23,7 +24,6 @@ async function addTaskController(req, res) {
     }
 }
 
-
 // Get all tasks
 async function getTasksController(req, res) {
     try {
@@ -31,8 +31,6 @@ async function getTasksController(req, res) {
             .populate('project')
             .populate('projectManager')
             .populate('assignedTo');
-
-        console.log('Fetched tasks:', tasks);  // Log fetched tasks
 
         res.status(200).json({
             message: 'Tasks fetched successfully',
@@ -49,14 +47,16 @@ async function getTasksController(req, res) {
     }
 }
 
-
 const getUserTasksController = async (req, res) => {
     try {
-        const userId = req.user._id; // Assuming middleware attaches user data to req
+        const userId = req.user._id;
         const tasks = await Task.find({ assignedTo: userId })
-            .populate('project', 'name') // Only populate project name
-            .populate('projectManager', 'name') // Only populate project manager name
-            .populate('assignedTo', 'name'); // Only populate assigned user's name
+            .populate({
+                path: 'project',
+                select: 'location',
+            })
+            .populate('projectManager', 'name')
+            .populate('assignedTo', 'name');
 
         res.status(200).json({
             message: 'Tasks fetched successfully',
@@ -72,7 +72,6 @@ const getUserTasksController = async (req, res) => {
         });
     }
 };
-
 
 // Get project details by projectId
 async function getProjectDetailsController(req, res) {
@@ -101,9 +100,100 @@ async function getProjectDetailsController(req, res) {
     }
 }
 
+// Start a task
+async function startTaskController(req, res) {
+    try {
+        const { taskId } = req.body;
+        const startImage = req.file;
+
+        if (!startImage) {
+            return res.status(400).json({
+                message: 'Start image is required',
+                error: true,
+                success: false
+            });
+        }
+
+        const result = await cloudinary.uploader.upload(startImage.path);
+
+        const task = await Task.findByIdAndUpdate(taskId, {
+            status: 'In Progress',
+            startImage: result.secure_url
+        }, { new: true });
+
+        if (!task) {
+            return res.status(404).json({
+                message: 'Task not found',
+                error: true,
+                success: false
+            });
+        }
+
+        res.status(200).json({
+            message: 'Task started successfully',
+            data: task,
+            success: true,
+            error: false
+        });
+    } catch (err) {
+        res.status(500).json({
+            message: err.message || 'Server Error',
+            error: true,
+            success: false
+        });
+    }
+}
+
+// Complete a task
+async function completeTaskController(req, res) {
+    try {
+        const { taskId } = req.body;
+        const completeImage = req.file;
+
+        if (!completeImage) {
+            return res.status(400).json({
+                message: 'Completion image is required',
+                error: true,
+                success: false
+            });
+        }
+
+        const result = await cloudinary.uploader.upload(completeImage.path);
+
+        const task = await Task.findByIdAndUpdate(taskId, {
+            status: 'Done',
+            completeImage: result.secure_url
+        }, { new: true });
+
+        if (!task) {
+            return res.status(404).json({
+                message: 'Task not found',
+                error: true,
+                success: false
+            });
+        }
+
+        res.status(200).json({
+            message: 'Task completed successfully',
+            data: task,
+            success: true,
+            error: false
+        });
+    } catch (err) {
+        res.status(500).json({
+            message: err.message || 'Server Error',
+            error: true,
+            success: false
+        });
+    }
+}
+
+
 module.exports = {
     addTaskController,
     getTasksController,
     getUserTasksController,
-    getProjectDetailsController
+    getProjectDetailsController,
+    startTaskController,
+    completeTaskController
 };

@@ -69,6 +69,14 @@ const Api = {
         url: `${backendDomain}/api/user-tasks`,
         method: "get"
     },
+    submitTask: {
+        url: `${backendDomain}/api/task-submit`,
+        method: "post"
+    },
+    startTask: {
+        url: `${backendDomain}/api/task-start`,
+        method: "post"
+    },
     getProjectDetail: {
         url: `${backendDomain}/api/projects/:projectId`,
         method: "get"

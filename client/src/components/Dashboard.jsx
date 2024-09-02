@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import Api from '../common/index';
+import TaskTable from '../components/Task/TaskTable';
+import TaskModal from '../components/Task/TaskModal';
 import Spinner from '../components/Spinner';
-import TaskTable from '../components/Task/TaskTable'; // Import the TaskTable component
+import Api from '../common/index';
 import { FaUsers, FaProjectDiagram, FaUserTie, FaUserFriends } from 'react-icons/fa';
 
 const Dashboard = () => {
@@ -17,9 +18,12 @@ const Dashboard = () => {
         Started: 0,
         Delayed: 0,
         Done: 0,
+        'In Progress': 0,  // Ensure 'In Progress' status is included
         All: 0
     });
     const [isLoading, setIsLoading] = useState(true);
+    const [selectedTask, setSelectedTask] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -44,6 +48,7 @@ const Dashboard = () => {
                     Started: allTasks.filter(task => task.status === 'Started').length,
                     Delayed: allTasks.filter(task => task.status === 'Delayed').length,
                     Done: allTasks.filter(task => task.status === 'Done').length,
+                    'In Progress': allTasks.filter(task => task.status === 'In Progress').length,
                     All: allTasks.length
                 };
 
@@ -72,6 +77,9 @@ const Dashboard = () => {
                 case 'Done':
                     filtered = tasks.filter(task => task.status === 'Done');
                     break;
+                case 'In Progress':
+                    filtered = tasks.filter(task => task.status === 'In Progress');
+                    break;
                 default:
                     filtered = tasks;
             }
@@ -81,6 +89,16 @@ const Dashboard = () => {
         filterTasks();
     }, [activeTab, tasks]);
 
+    const handleViewTask = (task) => {
+        setSelectedTask(task);
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setSelectedTask(null);
+        setIsModalOpen(false);
+    };
+
     const cards = [
         { title: 'Total Clients', count: clientCount, icon: FaUsers },
         { title: 'Total Projects', count: projectCount, icon: FaProjectDiagram },
@@ -89,7 +107,7 @@ const Dashboard = () => {
     ];
 
     return (
-        <div className="p-6 bg-gray-100">
+        <div className="p-6 bg-gray-100 overflow-x-hidden">
             {isLoading ? (
                 <div className="flex justify-center items-center h-screen">
                     <Spinner />
@@ -116,7 +134,7 @@ const Dashboard = () => {
                     <h3 className='text-2xl font-semibold mb-4 mt-4'>Task Overview</h3>
                     <div className="bg-white p-4 rounded-lg shadow-md">
                         <div className="flex space-x-4 mb-6">
-                            {['All', 'Started', 'Delayed', 'Done'].map(status => (
+                            {['All', 'Started', 'In Progress', 'Done', 'Delayed'].map(status => (
                                 <button
                                     key={status}
                                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-300 focus:outline-none ${activeTab === status
@@ -130,11 +148,22 @@ const Dashboard = () => {
                             ))}
                         </div>
                         {filteredTasks.length > 0 ? (
-                            <TaskTable tasks={filteredTasks} />
+                            <div className="overflow-x-auto">
+                                <TaskTable tasks={filteredTasks} onView={handleViewTask} />
+                            </div>
                         ) : (
                             <p className="text-center font-bold text-gray-600">No tasks available for {activeTab} status</p>
                         )}
                     </div>
+
+                    {/* Task Modal */}
+                    {isModalOpen && (
+                        <TaskModal
+                            isOpen={isModalOpen}
+                            onClose={handleCloseModal}
+                            taskDetails={selectedTask}
+                        />
+                    )}
                 </>
             )}
         </div>

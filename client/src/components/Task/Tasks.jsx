@@ -9,6 +9,7 @@ import { TbListDetails } from "react-icons/tb";
 
 const Tasks = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [taskDetails, setTaskDetails] = useState(null);
     const [tasks, setTasks] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
@@ -34,6 +35,11 @@ const Tasks = () => {
         setIsModalOpen(false);
     };
 
+    const handleViewTask = (task) => {
+        setTaskDetails(task);
+        setIsModalOpen(true);
+    };
+
     const indexOfLastTask = currentPage * tasksPerPage;
     const indexOfFirstTask = indexOfLastTask - tasksPerPage;
     const currentTasks = tasks.slice(indexOfFirstTask, indexOfLastTask);
@@ -54,7 +60,7 @@ const Tasks = () => {
                 <Spinner />
             ) : (
                 <>
-                    <TaskTable tasks={currentTasks} />
+                    <TaskTable tasks={currentTasks} onView={handleViewTask} />
                     <Pagination
                         currentPage={currentPage}
                         totalPages={Math.ceil(tasks.length / tasksPerPage)}
@@ -65,7 +71,11 @@ const Tasks = () => {
 
             <TaskModal
                 isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
+                onClose={() => {
+                    setIsModalOpen(false);
+                    setTaskDetails(null);
+                }}
+                taskDetails={taskDetails}
                 onAdd={handleAddTask}
             />
         </div>
