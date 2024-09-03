@@ -26,7 +26,7 @@ const ForgotPassword = () => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-4 sm:px-6 lg:px-8">
             <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full transform transition-all duration-300 hover:scale-105">
                 <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Forgot Password</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -38,18 +38,18 @@ const ForgotPassword = () => {
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="Enter your email"
                             required
-                            className="w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none"
+                            className="w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none sm:text-base text-sm"
                         />
                     </div>
                     <button
                         type="submit"
-                        className="flex items-center justify-center w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+                        className="flex items-center justify-center w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 sm:text-base text-sm"
                     >
                         <FaPaperPlane className="mr-2" /> Send OTP
                     </button>
                 </form>
                 {loading && <div className="spinner mt-4"></div>}
-                {message && <p className="mt-4 text-red-500 text-center">{message}</p>}
+                {message && <p className="mt-4 text-red-500 text-center text-sm sm:text-base">{message}</p>}
             </div>
         </div>
     );

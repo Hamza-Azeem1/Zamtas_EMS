@@ -45,19 +45,19 @@ const ChoosePass = () => {
 
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-4 sm:px-6 lg:px-8">
             <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full transform transition-all duration-300 hover:scale-105">
-                <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Reset Password</h2>
+                <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center sm:text-xl">Reset Password</h2>
                 <form onSubmit={handleSubmit} className="space-y-4 relative">
                     <div className="relative flex items-center border-b border-gray-300 py-2">
-                        <AiOutlineLock className="text-gray-500 mr-3 text-xl" />
+                        <AiOutlineLock className="text-gray-500 mr-3 text-xl sm:text-lg" />
                         <input
                             type={showNewPassword ? "text" : "password"}
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
                             placeholder="Enter new password"
                             required
-                            className="w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none"
+                            className="w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none sm:text-base text-sm"
                         />
                         <div
                             className="absolute inset-y-0 right-0 top-1/2 transform -translate-y-1/2 pr-3 flex items-center cursor-pointer"
@@ -67,14 +67,14 @@ const ChoosePass = () => {
                         </div>
                     </div>
                     <div className="relative flex items-center border-b border-gray-300 py-2">
-                        <FaKey className="text-gray-500 mr-3 text-xl" />
+                        <FaKey className="text-gray-500 mr-3 text-xl sm:text-lg" />
                         <input
                             type={showConfirmPassword ? "text" : "password"}
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
                             placeholder="Confirm new password"
                             required
-                            className="w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none"
+                            className="w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none sm:text-base text-sm"
                         />
                         <div
                             className="absolute inset-y-0 right-0 top-1/2 transform -translate-y-1/2 pr-3 flex items-center cursor-pointer"
@@ -85,15 +85,16 @@ const ChoosePass = () => {
                     </div>
                     <button
                         type="submit"
-                        className="flex items-center justify-center w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+                        className="flex items-center justify-center w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 sm:text-base text-sm"
                     >
                         <FaKey className="mr-2" /> Reset Password
                     </button>
                 </form>
                 {loading && <div className="spinner mt-4"></div>}
-                {message && <p className="mt-4 text-red-500 text-center">{message}</p>}
+                {message && <p className="mt-4 text-red-500 text-center text-sm sm:text-base">{message}</p>}
             </div>
         </div>
+
     );
 };
 
