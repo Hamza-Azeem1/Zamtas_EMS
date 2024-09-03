@@ -35,12 +35,12 @@ const SignIn = () => {
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 py-6 sm:py-12">
-            <div className="text-center mb-8">
-                <h1 className="text-4xl font-bold text-blue-700">Welcome to Zamtas-EMS</h1>
-                <p className="text-2xl text-gray-900 mt-2">&quot;Empowering Your Success&quot;</p>
+            <div className="text-center mb-8 px-4">
+                <h1 className="text-3xl sm:text-4xl font-bold text-blue-700">Welcome to Zamtas-EMS</h1>
+                <p className="text-lg sm:text-2xl text-gray-900 mt-2">&quot;Empowering Your Success&quot;</p>
             </div>
-            <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-sm">
-                <h2 className="text-3xl font-semibold text-center text-blue-600 mb-6">Sign In</h2>
+            <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+                <h2 className="text-2xl sm:text-3xl font-semibold text-center text-blue-600 mb-6">Sign In</h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
