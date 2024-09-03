@@ -185,7 +185,13 @@ function UserHome() {
         }
     };
 
-    if (loading) return <Spinner />;
+    if (loading) {
+        return (
+            <div className="flex justify-center mt-8">
+                <Spinner />
+            </div>
+        );
+    }
     if (error) return <p>Error loading tasks: {error}</p>;
 
     const getTaskCountByStatus = (status) => {
@@ -225,132 +231,196 @@ function UserHome() {
                         Total Pending Tasks: {pendingTasksCount}
                     </h2>
                 </div>
-                <Tabs selectedIndex={activeTab} onSelect={index => setActiveTab(index)}>
-                    <TabList className="flex flex-wrap space-x-4 mb-6 border-b border-gray-300">
-                        <Tab className="py-2 px-4 cursor-pointer flex items-center border-b-2 hover:text-blue-600 transition duration-300">
+                <Tabs selectedIndex={activeTab} onSelect={(index) => setActiveTab(index)}>
+                    <TabList className="flex flex-wrap justify-center space-x-4 mb-6 border-b border-gray-300">
+                        <Tab className="py-2 px-3 cursor-pointer flex items-center border-b-2 hover:text-blue-600 transition duration-300 text-sm sm:text-base">
                             <FaList className="mr-2" /> All ({tasks.length})
                         </Tab>
-                        <Tab className="py-2 px-4 cursor-pointer flex items-center border-b-2 hover:text-yellow-600 transition duration-300">
+                        <Tab className="py-2 px-3 cursor-pointer flex items-center border-b-2 hover:text-yellow-600 transition duration-300 text-sm sm:text-base">
                             <FaPlay className="mr-2" /> Started ({getTaskCountByStatus('Started')})
                         </Tab>
-                        <Tab className="py-2 px-4 cursor-pointer flex items-center border-b-2 hover:text-pink-600 transition duration-300">
+                        <Tab className="py-2 px-3 cursor-pointer flex items-center border-b-2 hover:text-pink-600 transition duration-300 text-sm sm:text-base">
                             <FaHourglassHalf className="mr-2" /> In Progress ({getTaskCountByStatus('In Progress')})
                         </Tab>
-                        <Tab className="py-2 px-4 cursor-pointer flex items-center border-b-2 hover:text-green-600 transition duration-300">
+                        <Tab className="py-2 px-3 cursor-pointer flex items-center border-b-2 hover:text-green-600 transition duration-300 text-sm sm:text-base">
                             <FaCheckCircle className="mr-2" /> Done ({getTaskCountByStatus('Done')})
                         </Tab>
-                        <Tab className="py-2 px-4 cursor-pointer flex items-center border-b-2 hover:text-red-600 transition duration-300">
+                        <Tab className="py-2 px-3 cursor-pointer flex items-center border-b-2 hover:text-red-600 transition duration-300 text-sm sm:text-base">
                             <FaExclamationCircle className="mr-2" /> Delayed ({getTaskCountByStatus('Delayed')})
                         </Tab>
                     </TabList>
                     <div className="space-y-6">
                         <TabPanel>
-                            <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                                {filteredTasks.map((task) => (
-                                    <div key={task._id} className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col p-4">
-                                        <div className="flex-grow">
-                                            <h3 className="text-xl font-semibold text-gray-800">{task.title}</h3>
-                                            <p className="text-gray-600">Assigned By: {task.projectManager.name}</p>
-                                            <p className={`text-gray-600 ${getStatusColor(task.status)}`}>
-                                                Status: {task.status}
-                                            </p>
-                                        </div>
-                                        <button
-                                            onClick={() => openModal(task)}
-                                            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 flex items-center mt-4"
+                            {filteredTasks.length > 0 ? (
+                                <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                                    {filteredTasks.map((task) => (
+                                        <div
+                                            key={task._id}
+                                            className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col p-4"
                                         >
-                                            <FaInfoCircle className="mr-2" /> View Details
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
+                                            <div className="flex-grow">
+                                                <h3 className="text-lg sm:text-xl font-semibold text-gray-800">
+                                                    {task.title}
+                                                </h3>
+                                                <p className="text-gray-600">
+                                                    Assigned By: {task.projectManager.name}
+                                                </p>
+                                                <p className={`text-gray-600 ${getStatusColor(task.status)}`}>
+                                                    Status: {task.status}
+                                                </p>
+                                            </div>
+                                            <button
+                                                onClick={() => openModal(task)}
+                                                className="bg-blue-500 text-white px-3 py-2 rounded-md hover:bg-blue-600 transition duration-300 flex items-center mt-4"
+                                            >
+                                                <FaInfoCircle className="mr-2" /> View Details
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className='text-center text-2xl font-semibold'>No tasks available yet</p>
+                            )}
                         </TabPanel>
                         <TabPanel>
-                            <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                                {filteredTasks.filter(task => task.status === 'Started').map((task) => (
-                                    <div key={task._id} className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col p-4">
-                                        <div className="flex-grow">
-                                            <h3 className="text-xl font-semibold text-gray-800">{task.title}</h3>
-                                            <p className="text-gray-600">Assigned By: {task.projectManager.name}</p>
-                                            <p className={`text-gray-600 ${getStatusColor(task.status)}`}>
-                                                Status: {task.status}
-                                            </p>
-                                        </div>
-                                        <button
-                                            onClick={() => openModal(task)}
-                                            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 flex items-center mt-4"
-                                        >
-                                            <FaInfoCircle className="mr-2" /> View Details
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
+                            {filteredTasks.filter((task) => task.status === 'Started').length > 0 ? (
+                                <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                                    {filteredTasks
+                                        .filter((task) => task.status === 'Started')
+                                        .map((task) => (
+                                            <div
+                                                key={task._id}
+                                                className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col p-4"
+                                            >
+                                                <div className="flex-grow">
+                                                    <h3 className="text-lg sm:text-xl font-semibold text-gray-800">
+                                                        {task.title}
+                                                    </h3>
+                                                    <p className="text-gray-600">
+                                                        Assigned By: {task.projectManager.name}
+                                                    </p>
+                                                    <p className={`text-gray-600 ${getStatusColor(task.status)}`}>
+                                                        Status: {task.status}
+                                                    </p>
+                                                </div>
+                                                <button
+                                                    onClick={() => openModal(task)}
+                                                    className="bg-blue-500 text-white px-3 py-2 rounded-md hover:bg-blue-600 transition duration-300 flex items-center mt-4"
+                                                >
+                                                    <FaInfoCircle className="mr-2" /> View Details
+                                                </button>
+                                            </div>
+                                        ))}
+                                </div>
+                            ) : (
+                                <p className='text-center text-2xl font-semibold'>No tasks started yet</p>
+                            )}
                         </TabPanel>
                         <TabPanel>
-                            <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                                {filteredTasks.filter(task => task.status === 'In Progress').map((task) => (
-                                    <div key={task._id} className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col p-4">
-                                        <div className="flex-grow">
-                                            <h3 className="text-xl font-semibold text-gray-800">{task.title}</h3>
-                                            <p className="text-gray-600">Assigned By: {task.projectManager.name}</p>
-                                            <p className={`text-gray-600 ${getStatusColor(task.status)}`}>
-                                                Status: {task.status}
-                                            </p>
-                                        </div>
-                                        <button
-                                            onClick={() => openModal(task)}
-                                            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 flex items-center mt-4"
-                                        >
-                                            <FaInfoCircle className="mr-2" /> View Details
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
+                            {filteredTasks.filter((task) => task.status === 'In Progress').length > 0 ? (
+                                <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                                    {filteredTasks
+                                        .filter((task) => task.status === 'In Progress')
+                                        .map((task) => (
+                                            <div
+                                                key={task._id}
+                                                className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col p-4"
+                                            >
+                                                <div className="flex-grow">
+                                                    <h3 className="text-lg sm:text-xl font-semibold text-gray-800">
+                                                        {task.title}
+                                                    </h3>
+                                                    <p className="text-gray-600">
+                                                        Assigned By: {task.projectManager.name}
+                                                    </p>
+                                                    <p className={`text-gray-600 ${getStatusColor(task.status)}`}>
+                                                        Status: {task.status}
+                                                    </p>
+                                                </div>
+                                                <button
+                                                    onClick={() => openModal(task)}
+                                                    className="bg-blue-500 text-white px-3 py-2 rounded-md hover:bg-blue-600 transition duration-300 flex items-center mt-4"
+                                                >
+                                                    <FaInfoCircle className="mr-2" /> View Details
+                                                </button>
+                                            </div>
+                                        ))}
+                                </div>
+                            ) : (
+                                <p className='text-center text-2xl font-semibold'>No tasks in progress yet</p>
+                            )}
                         </TabPanel>
                         <TabPanel>
-                            <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                                {filteredTasks.filter(task => task.status === 'Done').map((task) => (
-                                    <div key={task._id} className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col p-4">
-                                        <div className="flex-grow">
-                                            <h3 className="text-xl font-semibold text-gray-800">{task.title}</h3>
-                                            <p className="text-gray-600">Assigned By: {task.projectManager.name}</p>
-                                            <p className={`text-gray-600 ${getStatusColor(task.status)}`}>
-                                                Status: {task.status}
-                                            </p>
-                                        </div>
-                                        <button
-                                            onClick={() => openModal(task)}
-                                            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 flex items-center mt-4"
-                                        >
-                                            <FaInfoCircle className="mr-2" /> View Details
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
+                            {filteredTasks.filter((task) => task.status === 'Done').length > 0 ? (
+                                <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                                    {filteredTasks
+                                        .filter((task) => task.status === 'Done')
+                                        .map((task) => (
+                                            <div
+                                                key={task._id}
+                                                className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col p-4"
+                                            >
+                                                <div className="flex-grow">
+                                                    <h3 className="text-lg sm:text-xl font-semibold text-gray-800">
+                                                        {task.title}
+                                                    </h3>
+                                                    <p className="text-gray-600">
+                                                        Assigned By: {task.projectManager.name}
+                                                    </p>
+                                                    <p className={`text-gray-600 ${getStatusColor(task.status)}`}>
+                                                        Status: {task.status}
+                                                    </p>
+                                                </div>
+                                                <button
+                                                    onClick={() => openModal(task)}
+                                                    className="bg-blue-500 text-white px-3 py-2 rounded-md hover:bg-blue-600 transition duration-300 flex items-center mt-4"
+                                                >
+                                                    <FaInfoCircle className="mr-2" /> View Details
+                                                </button>
+                                            </div>
+                                        ))}
+                                </div>
+                            ) : (
+                                <p className='text-center text-2xl font-semibold'>No tasks done yet</p>
+                            )}
                         </TabPanel>
                         <TabPanel>
-                            <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                                {filteredTasks.filter(task => task.status === 'Delayed').map((task) => (
-                                    <div key={task._id} className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col p-4">
-                                        <div className="flex-grow">
-                                            <h3 className="text-xl font-semibold text-gray-800">{task.title}</h3>
-                                            <p className="text-gray-600">Assigned By: {task.projectManager.name}</p>
-                                            <p className={`text-gray-600 ${getStatusColor(task.status)}`}>
-                                                Status: {task.status}
-                                            </p>
-                                        </div>
-                                        <button
-                                            onClick={() => openModal(task)}
-                                            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 flex items-center mt-4"
-                                        >
-                                            <FaInfoCircle className="mr-2" /> View Details
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
+                            {filteredTasks.filter((task) => task.status === 'Delayed').length > 0 ? (
+                                <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                                    {filteredTasks
+                                        .filter((task) => task.status === 'Delayed')
+                                        .map((task) => (
+                                            <div
+                                                key={task._id}
+                                                className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col p-4"
+                                            >
+                                                <div className="flex-grow">
+                                                    <h3 className="text-lg sm:text-xl font-semibold text-gray-800">
+                                                        {task.title}
+                                                    </h3>
+                                                    <p className="text-gray-600">
+                                                        Assigned By: {task.projectManager.name}
+                                                    </p>
+                                                    <p className={`text-gray-600 ${getStatusColor(task.status)}`}>
+                                                        Status: {task.status}
+                                                    </p>
+                                                </div>
+                                                <button
+                                                    onClick={() => openModal(task)}
+                                                    className="bg-blue-500 text-white px-3 py-2 rounded-md hover:bg-blue-600 transition duration-300 flex items-center mt-4"
+                                                >
+                                                    <FaInfoCircle className="mr-2" /> View Details
+                                                </button>
+                                            </div>
+                                        ))}
+                                </div>
+                            ) : (
+                                <p className='text-center text-2xl font-semibold'>No delayed tasks yet</p>
+                            )}
                         </TabPanel>
                     </div>
                 </Tabs>
+
             </main>
             {selectedTask && (
                 <Modal
