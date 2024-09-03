@@ -81,6 +81,18 @@ const Api = {
         url: `${backendDomain}/api/projects/:projectId`,
         method: "get"
     },
+    forgotPass: {
+        url: `${backendDomain}/api/forgot-password`,
+        method: "post"
+    },
+    verifyOTP: {
+        url: `${backendDomain}/api/verify-otp`,
+        method: "post"
+    },
+    resetPass: {
+        url: `${backendDomain}/api/reset-password`,
+        method: "post"
+    },
 };
 
 export default Api;

@@ -6,6 +6,9 @@ import Dashboard from '../components/Dashboard';
 import Employees from '../components/Team/Employees';
 import Tasks from '../components/Task/Tasks';
 import PageNotFound from '../pages/PageNotFound';
+import ForgotPassword from '../pages/PasswordRecover/ForgotPassword';
+import CheckEmail from '../pages/PasswordRecover/checkEmail';
+import ChoosePass from '../pages/PasswordRecover/choosePass';
 import ProtectedRoute from '../common/ProtectedRoute';
 
 const router = createBrowserRouter([
@@ -38,6 +41,18 @@ const router = createBrowserRouter([
     {
         path: '/user-home',
         element: <ProtectedRoute><UserHome /></ProtectedRoute>,
+    },
+    {
+        path: 'forgot-password',
+        element: <ForgotPassword />,
+    },
+    {
+        path: 'check-email',
+        element: <CheckEmail />,
+    },
+    {
+        path: 'choose-password',
+        element: <ChoosePass />,
     },
     {
         path: '*',

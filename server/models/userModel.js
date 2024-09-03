@@ -45,6 +45,14 @@ const userSchema = new mongoose.Schema({
     profilePicture: {
         type: String,
         required: false
+    },
+    resetPasswordOTP: {
+        type: String,
+        required: false
+    },
+    resetPasswordExpires: {
+        type: Date,
+        required: false
     }
 }, {
     timestamps: true

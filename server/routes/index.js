@@ -11,6 +11,7 @@ const { addProjectManagerController, getProjectManagersController } = require('.
 const { addTaskController, getTasksController, getProjectDetailsController, getUserTasksController, completeTaskController, startTaskController } = require('../controller/taskController');
 const authMiddleware = require('../middleware/authMiddleware');
 const auth = require('../middleware/auth');
+const { sendForgotPasswordOTP, resetPassword, verifyOTP } = require('../controller/forgotPasswordController');
 
 router.post('/sign-in', userSignInController);
 router.post('/sign-up', userSignUpController);
@@ -38,6 +39,10 @@ router.get('/projects/:projectId', getProjectDetailsController);
 router.get('/user-tasks', auth, getUserTasksController);
 router.post('/task-start', upload.single('startImage'), startTaskController);
 router.post('/task-submit', upload.single('completeImage'), completeTaskController);
+
+router.post('/forgot-password', sendForgotPasswordOTP);
+router.post('/verify-otp', verifyOTP);
+router.post('/reset-password', resetPassword);
 
 // Protected Routes
 router.use(authMiddleware);
