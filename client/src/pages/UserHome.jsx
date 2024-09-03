@@ -385,9 +385,8 @@ function UserHome() {
                                 <div className="flex items-center space-x-4">
                                     <label className="flex flex-col items-center px-4 py-2 bg-white text-blue rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:bg-blue-500 hover:text-white">
                                         <FaUpload className="w-8 h-8" />
-                                        <span className="mt-2 text-base leading-normal">
-                                            <input type='file' className="hidden" onChange={(e) => handleImageUpload(e, 'start')} />
-                                        </span>
+                                        <span className="mt-2 text-base leading-normal">Select Start Image</span>
+                                        <input type='file' className="hidden" onChange={(e) => handleImageUpload(e, 'start')} />
                                     </label>
                                     {startImagePreview && (
                                         <div className="w-24 h-24 relative">

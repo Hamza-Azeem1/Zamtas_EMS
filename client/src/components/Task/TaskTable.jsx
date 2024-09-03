@@ -6,7 +6,7 @@ const TaskTable = ({ tasks, onView }) => {
         switch (status) {
             case 'Started':
                 return 'text-yellow-400 font-medium';
-            case 'In Progress':  // Ensure this matches the status value in your database
+            case 'In Progress':
                 return 'text-brown-400 font-medium';
             case 'Delayed':
                 return 'text-red-800 font-medium';
@@ -36,17 +36,17 @@ const TaskTable = ({ tasks, onView }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {tasks.map((task, index) => (
-                        <tr key={task._id} className={`transition-colors duration-150 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100`}>
-                            <td className="py-3 px-3 border-b border-gray-300 text-base">{task.title}</td>
-                            <td className="py-3 px-3 border-b border-gray-300 text-base">{task.category}</td>
+                    {tasks.map((task) => (
+                        <tr key={task._id} className={`transition-colors duration-150 ${task._id % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100`}>
+                            <td className="py-3 px-3 border-b border-gray-300 text-base">{task.title || 'N/A'}</td>
+                            <td className="py-3 px-3 border-b border-gray-300 text-base">{task.category || 'N/A'}</td>
                             <td className="py-3 px-3 border-b border-gray-300 text-base">{task.project?.projectName || 'N/A'}</td>
                             <td className="py-3 px-3 border-b border-gray-300 text-base">{task.projectManager?.name || 'N/A'}</td>
-                            <td className="py-3 px-3 border-b border-gray-300 text-base">{new Date(task.startDate).toLocaleDateString()}</td>
-                            <td className="py-3 px-3 border-b border-gray-300 text-base">{new Date(task.endDate).toLocaleDateString()}</td>
+                            <td className="py-3 px-3 border-b border-gray-300 text-base">{task.startDate ? new Date(task.startDate).toLocaleDateString() : 'N/A'}</td>
+                            <td className="py-3 px-3 border-b border-gray-300 text-base">{task.endDate ? new Date(task.endDate).toLocaleDateString() : 'N/A'}</td>
                             <td className="py-3 px-3 border-b border-gray-300 text-base">{task.assignedTo?.name || 'N/A'}</td>
                             <td className={`py-3 px-3 border-b border-gray-300 text-base ${getStatusColor(task.status)}`}>
-                                {task.status}
+                                {task.status || 'N/A'}
                             </td>
                             <td className="py-3 px-3 border-b border-gray-300 text-center">
                                 <button
@@ -59,7 +59,6 @@ const TaskTable = ({ tasks, onView }) => {
                         </tr>
                     ))}
                 </tbody>
-
             </table>
         </div>
     );

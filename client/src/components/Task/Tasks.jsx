@@ -15,10 +15,15 @@ const Tasks = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [tasksPerPage] = useState(10);
 
+    // Function to fetch tasks from the API
     const fetchTasks = async () => {
         try {
             const { data } = await axios.get(Api.getTask.url);
-            setTasks(data.data);
+            if (data && data.data) {
+                setTasks(data.data);
+            } else {
+                console.error('Unexpected data format:', data);
+            }
         } catch (error) {
             console.error('Error fetching tasks:', error);
         } finally {
@@ -26,24 +31,29 @@ const Tasks = () => {
         }
     };
 
+    // Fetch tasks when component mounts
     useEffect(() => {
         fetchTasks();
     }, []);
 
+    // Function to handle adding a new task
     const handleAddTask = (newTask) => {
         setTasks(prevTasks => [...prevTasks, newTask]);
         setIsModalOpen(false);
     };
 
+    // Function to handle viewing a task
     const handleViewTask = (task) => {
         setTaskDetails(task);
         setIsModalOpen(true);
     };
 
+    // Pagination logic
     const indexOfLastTask = currentPage * tasksPerPage;
     const indexOfFirstTask = indexOfLastTask - tasksPerPage;
     const currentTasks = tasks.slice(indexOfFirstTask, indexOfLastTask);
 
+    // Function to handle page changes
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
@@ -60,12 +70,18 @@ const Tasks = () => {
                 <Spinner />
             ) : (
                 <>
-                    <TaskTable tasks={currentTasks} onView={handleViewTask} />
-                    <Pagination
-                        currentPage={currentPage}
-                        totalPages={Math.ceil(tasks.length / tasksPerPage)}
-                        onPageChange={paginate}
-                    />
+                    {tasks.length > 0 ? (
+                        <>
+                            <TaskTable tasks={currentTasks} onView={handleViewTask} />
+                            <Pagination
+                                currentPage={currentPage}
+                                totalPages={Math.ceil(tasks.length / tasksPerPage)}
+                                onPageChange={paginate}
+                            />
+                        </>
+                    ) : (
+                        <p>No tasks available.</p>
+                    )}
                 </>
             )}
 

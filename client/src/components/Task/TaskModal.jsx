@@ -19,23 +19,30 @@ const TaskModal = ({ isOpen, onClose, taskDetails, onAdd }) => {
     const [projects, setProjects] = useState([]);
     const [projectManagers, setProjectManagers] = useState([]);
     const [employees, setEmployees] = useState([]);
+    const [loading, setLoading] = useState(false); // Add loading state
 
     useEffect(() => {
         if (isOpen && !taskDetails) {
+            setLoading(true);
             axios.get(Api.getProject.url)
                 .then(res => setProjects(res.data.data || []))
-                .catch(err => console.error(err));
+                .catch(err => console.error(err))
+                .finally(() => setLoading(false)); // Hide spinner
 
+            setLoading(true);
             axios.get(Api.getProjectManager.url)
                 .then(res => setProjectManagers(res.data.data || []))
-                .catch(err => console.error(err));
+                .catch(err => console.error(err))
+                .finally(() => setLoading(false)); // Hide spinner
 
+            setLoading(true);
             axios.get(Api.getEmployee.url)
                 .then(res => {
                     const filteredEmployees = res.data.data.filter(emp => emp.role === ROLE.GENERAL); // Filter employees by role
                     setEmployees(filteredEmployees);
                 })
-                .catch(err => console.error(err));
+                .catch(err => console.error(err))
+                .finally(() => setLoading(false)); // Hide spinner
         } else if (taskDetails) {
             setTask(taskDetails);
         }
@@ -49,7 +56,6 @@ const TaskModal = ({ isOpen, onClose, taskDetails, onAdd }) => {
                 return '';
         }
     };
-
 
     const resetForm = () => {
         setTask({
@@ -93,12 +99,14 @@ const TaskModal = ({ isOpen, onClose, taskDetails, onAdd }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setLoading(true); // Show spinner
         axios.post(Api.addTask.url, task)
             .then(res => {
                 onAdd(res.data);
                 onClose();
             })
-            .catch(err => console.error(err));
+            .catch(err => console.error(err))
+            .finally(() => setLoading(false)); // Hide spinner
     };
 
     if (!isOpen) return null;
@@ -115,6 +123,7 @@ const TaskModal = ({ isOpen, onClose, taskDetails, onAdd }) => {
                         <FaTimes size={24} />
                     </button>
                 </div>
+                {loading && <div className="spinner mx-auto mb-4"></div>} {/* Show spinner if loading */}
                 {taskDetails ? (
                     <div className="flex flex-col md:flex-row gap-6 max-h-[calc(100vh-150px)] overflow-y-auto">
                         <div className="flex-1">
@@ -297,18 +306,17 @@ const TaskModal = ({ isOpen, onClose, taskDetails, onAdd }) => {
                                 className="w-full border rounded-lg p-2"
                             >
                                 <option value="Started" className='text-yellow-400 font-medium'>Started</option>
-                                <option value="Delayed" className='text-red-800 font-medium'>Delayed</option>
-                                <option value="Done" className='text-green-800 font-medium'>Done</option>
                             </select>
                         </div>
                         <div className="flex justify-end w-full mt-4">
-                            <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-lg">Add Task</button>
+                            <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-lg" disabled={loading}>
+                                {loading ? 'Adding...' : 'Add Task'}
+                            </button>
                         </div>
                     </form>
                 )}
             </div>
         </div>
-
     );
 };
 

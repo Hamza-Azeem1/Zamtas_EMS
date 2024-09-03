@@ -7,6 +7,7 @@ const twilio = require('twilio');
 const accountSid = process.env.ACCOUNT_SID;
 const authToken = process.env.AUTH_TOKEN;
 const twilioNumber = process.env.TWILIO_NUM
+const twilioWhatsapp = process.env.TWILIO_WHATSAPP
 const client = twilio(accountSid, authToken);
 
 // Add a new task
@@ -25,9 +26,11 @@ async function addTaskController(req, res) {
         // Send WhatsApp notification
         if (mobileNo) {
             await client.messages.create({
-                body: `Hello ${assignedUser.name}!. A new task has been assigned to you. Please check your portal for details.`,
-                from: twilioNumber,
-                to: mobileNo
+                body: `Hello ${assignedUser.name}!. A new task of ${task.category} has been assigned to you. Kindly Login to your Portal using this link: https://zamtas-ems.vercel.app`,
+                //for sms message use twilioNumber instead of twilioWhatsapp
+                //  and mobileNo instead of `whatsapp:${mobileNo}`
+                from: twilioWhatsapp,
+                to: `whatsapp:${mobileNo}`
             });
         }
 
