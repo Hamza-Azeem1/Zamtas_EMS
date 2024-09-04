@@ -1,95 +1,139 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import Api from '../../common/index';
-import { FaTimes } from 'react-icons/fa';
 import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
+import { FaTimes } from 'react-icons/fa';
 
-const ProjectManagerModal = ({ isOpen, onClose, onAdd }) => {
+const ProjectManagerModal = ({ isOpen, onClose, onAdd, onSave, manager, mode }) => {
     const [formData, setFormData] = useState({
         name: '',
         contact: '',
         email: '',
         department: ''
     });
-    const [error, setError] = useState('');
 
     useEffect(() => {
-        if (!isOpen) {
+        if (mode === 'edit' || mode === 'view') {
+            setFormData({
+                name: manager?.name || '',
+                contact: manager?.contact || '',
+                email: manager?.email || '',
+                department: manager?.department || ''
+            });
+        } else {
+            // Clear form data for 'add' mode
             setFormData({
                 name: '',
                 contact: '',
                 email: '',
                 department: ''
             });
-            setError('');
         }
-    }, [isOpen]);
+    }, [manager, mode]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value
+        }));
     };
 
-    const validateForm = () => {
-        const { name, contact, email, department } = formData;
-
-        if (!/^[A-Za-z\s]+$/.test(name)) return "Name should only contain alphabets and spaces.";
-        if (!/^\d{11}$/.test(contact)) return "Contact should be a 11-digit number.";
-        if (!/^[\w-.]+@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(email)) return "Invalid email format.";
-        if (!/^[A-Za-z\s]+$/.test(department)) return "Department should only contain alphabets and spaces.";
-
-        return '';
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const validationError = validateForm();
-        if (validationError) {
-            setError(validationError);
-            return;
-        }
-
-        try {
-            const response = await axios.post(Api.addProjectManager.url, formData);
-            onAdd(response.data.data); // Pass the new manager data to the parent component
-            onClose();
-        } catch (error) {
-            console.error('Error adding project manager:', error.response ? error.response.data : error.message);
-            setError(error.response?.data?.message || 'Error adding project manager. Please try again.');
+    const handleSubmit = () => {
+        if (mode === 'edit') {
+            onSave(manager._id, formData);
+        } else if (mode === 'add') {
+            onAdd(formData);
         }
     };
 
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-5xl mx-4 my-12">
-                <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold">Add Project Manager</h2>
-                    <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-                        <FaTimes size={24} />
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white rounded-lg overflow-hidden shadow-lg w-11/12 md:w-3/4 lg:w-1/2 p-6">
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-semibold text-gray-700">
+                        {mode === 'edit' ? 'Edit Project Manager' : mode === 'view' ? 'View Project Manager' : 'Add Project Manager'}
+                    </h2>
+                    <button
+                        onClick={onClose}
+                        className="text-gray-700 hover:text-gray-900 text-3xl font-bold"
+                    >
+                        <FaTimes />
                     </button>
                 </div>
-                {error && <div className="text-red-500 mb-4">{error}</div>}
-                <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
-                    {Object.keys(formData).map(key => (
-                        <div key={key} className="flex flex-col">
-                            <label className="text-sm font-medium text-gray-700 mb-1">
-                                {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}:
-                            </label>
-                            <input
-                                type={key === 'contact' ? 'tel' : 'text'}
-                                name={key}
-                                value={formData[key]}
-                                onChange={handleChange}
-                                required
-                                className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
-                            />
-                        </div>
-                    ))}
-                    <button type="submit" className="bg-blue-500 text-white py-3 px-6 rounded col-span-2 hover:bg-blue-600">
-                        Add Project Manager
-                    </button>
+                <form className="space-y-4">
+                    <div>
+                        <label className="block text-gray-700 font-medium">Name</label>
+                        <input
+                            type="text"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            readOnly={mode === 'view'}
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-gray-700 font-medium">Contact</label>
+                        <input
+                            type="text"
+                            name="contact"
+                            value={formData.contact}
+                            onChange={handleChange}
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            readOnly={mode === 'view'}
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-gray-700 font-medium">Email</label>
+                        <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            readOnly={mode === 'view'}
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-gray-700 font-medium">Department</label>
+                        <input
+                            type="text"
+                            name="department"
+                            value={formData.department}
+                            onChange={handleChange}
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            readOnly={mode === 'view'}
+                        />
+                    </div>
+                    <div className="mt-6 flex justify-end space-x-4">
+                        {mode === 'view' ? (
+                            <button
+                                type="button"
+                                onClick={onClose}
+                                className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-600"
+                            >
+                                Close
+                            </button>
+                        ) : (
+                            <>
+                                <button
+                                    type="button"
+                                    onClick={handleSubmit}
+                                    className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-600"
+                                >
+                                    {mode === 'add' ? 'Add Project Manager' : 'Save Changes'}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={onClose}
+                                    className="bg-gray-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-gray-600"
+                                >
+                                    Cancel
+                                </button>
+                            </>
+                        )}
+                    </div>
                 </form>
             </div>
         </div>
@@ -99,7 +143,10 @@ const ProjectManagerModal = ({ isOpen, onClose, onAdd }) => {
 ProjectManagerModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    onAdd: PropTypes.func.isRequired
+    onAdd: PropTypes.func.isRequired,
+    onSave: PropTypes.func.isRequired,
+    manager: PropTypes.object,
+    mode: PropTypes.oneOf(['view', 'edit', 'add']).isRequired // Add 'add' mode
 };
 
 export default ProjectManagerModal;

@@ -56,3 +56,22 @@ exports.getProjectsController = async (req, res) => {
         res.status(500).json({ message: 'Failed to retrieve projects.', error: error.message });
     }
 };
+
+exports.updateProjectController = async (req, res) => {
+    try {
+        const { projectId } = req.params;
+        const updateData = req.body;
+
+        const updatedProject = await Project.findOneAndUpdate({ projectId }, updateData, { new: true });
+
+        if (!updatedProject) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+
+        res.status(200).json({ message: 'Project updated successfully!', data: updatedProject });
+    } catch (error) {
+        console.error('Error updating project:', error);
+        res.status(500).json({ message: 'Failed to update project.', error: error.message });
+    }
+};
+

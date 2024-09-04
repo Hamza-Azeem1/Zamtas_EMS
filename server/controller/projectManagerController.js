@@ -37,7 +37,58 @@ async function getProjectManagersController(req, res) {
     }
 }
 
+const updateProjectManagerController = async (req, res) => {
+    try {
+        const { managerId } = req.params;
+        const updatedManager = await ProjectManager.findByIdAndUpdate(
+            managerId,
+            req.body,
+            { new: true }
+        );
+        if (!updatedManager) {
+            return res.status(404).json({ message: 'Manager not found' });
+        }
+        res.status(200).json({
+            message: 'Project Manager updated successfully',
+            data: updatedManager,
+            success: true,
+            error: false
+        });
+    } catch (err) {
+        res.status(500).json({
+            message: err.message || 'Server Error',
+            error: true,
+            success: false
+        });
+    }
+};
+
+const getProjectManagerByIdController = async (req, res) => {
+    try {
+        const { managerId } = req.params;
+        const manager = await ProjectManager.findById(managerId);
+        if (!manager) {
+            return res.status(404).json({ message: 'Manager not found' });
+        }
+        res.status(200).json({
+            message: 'Project Manager fetched successfully',
+            data: manager,
+            success: true,
+            error: false
+        });
+    } catch (err) {
+        res.status(500).json({
+            message: err.message || 'Server Error',
+            error: true,
+            success: false
+        });
+    }
+};
+
+
 module.exports = {
     addProjectManagerController,
-    getProjectManagersController
+    getProjectManagersController,
+    updateProjectManagerController,
+    getProjectManagerByIdController
 };

@@ -57,6 +57,14 @@ const Api = {
         url: `${backendDomain}/api/project-managers`,
         method: "get"
     },
+    updateProjectManager: {
+        url: `${backendDomain}/api/projectManagers/:managerId`,
+        method: "put"
+    },
+    getManager: {
+        url: `${backendDomain}/api/projectManagers/:managerId`,
+        method: "get"
+    },
     addTask: {
         url: `${backendDomain}/api/tasks`,
         method: "post"
@@ -80,6 +88,10 @@ const Api = {
     getProjectDetail: {
         url: `${backendDomain}/api/projects/:projectId`,
         method: "get"
+    },
+    updateProject: {
+        url: `${backendDomain}/api/projects/:projectId`,
+        method: "put"
     },
     forgotPass: {
         url: `${backendDomain}/api/forgot-password`,

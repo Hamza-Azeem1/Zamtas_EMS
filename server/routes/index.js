@@ -5,9 +5,9 @@ const userSignUpController = require('../controller/UserSignUpController');
 const getEmployeesController = require('../controller/getEmployeesController');
 const { deleteEmployeeController, updateRoleController, getUserDetailsController, updateUserDetailsController } = require('../controller/employeeController');
 const upload = require('../config/multer');
-const { addProjectController, getProjectsController, checkProjectIdController } = require('../controller/projectController');
+const { addProjectController, getProjectsController, checkProjectIdController, updateProjectController } = require('../controller/projectController');
 const { addClientController, getClientsController } = require('../controller/clientController');
-const { addProjectManagerController, getProjectManagersController } = require('../controller/projectManagerController');
+const { addProjectManagerController, getProjectManagersController, getProjectManagerByIdController, updateProjectManagerController } = require('../controller/projectManagerController');
 const { addTaskController, getTasksController, getProjectDetailsController, getUserTasksController, completeTaskController, startTaskController } = require('../controller/taskController');
 const authMiddleware = require('../middleware/authMiddleware');
 const auth = require('../middleware/auth');
@@ -25,12 +25,16 @@ router.put('/employees/:id', upload.single('profilePicture'), updateUserDetailsC
 router.post('/projects', addProjectController);
 router.get('/projects', getProjectsController);
 router.get('/check-project-id/:projectId', checkProjectIdController);
+router.put('/projects/:projectId', updateProjectController);
 
 router.post('/clients', addClientController);
 router.get('/clients', getClientsController);
 
 router.post('/project-managers', addProjectManagerController);
 router.get('/project-managers', getProjectManagersController);
+router.put('/projectManagers/:managerId', updateProjectManagerController);
+router.get('/projectManagers/:managerId', getProjectManagerByIdController);
+
 
 router.post('/tasks', addTaskController);
 router.get('/tasks', getTasksController);
