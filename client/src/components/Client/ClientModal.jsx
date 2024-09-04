@@ -4,30 +4,23 @@ import Api from '../../common/index';
 import { FaTimes } from 'react-icons/fa';
 import PropTypes from 'prop-types';
 
-const ClientModal = ({ isOpen, onClose, onAdd }) => {
+const ClientModal = ({ isOpen, onClose, onSave, onUpdate, clientData, modalType }) => {
     const [formData, setFormData] = useState({
         clientName: '',
         clientContact: '',
         clientAddress: '',
-        clientBudget: '',
         clientEmail: '',
         clientContactPerson: '',
     });
     const [error, setError] = useState('');
 
     useEffect(() => {
-        if (!isOpen) {
-            setFormData({
-                clientName: '',
-                clientEmail: '',
-                clientContactPerson: '',
-                clientContact: '',
-                clientAddress: '',
-                clientBudget: ''
-            });
-            setError('');
+        if (clientData) {
+            // Filter out '_id' and '__v' fields
+            const { _id, __v, ...filteredData } = clientData;
+            setFormData(filteredData);
         }
-    }, [isOpen]);
+    }, [clientData]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -35,39 +28,40 @@ const ClientModal = ({ isOpen, onClose, onAdd }) => {
     };
 
     const validateForm = () => {
-        const { clientName, clientContact, clientAddress, clientBudget, clientEmail, clientContactPerson } = formData;
+        const { clientName, clientContact, clientAddress, clientEmail, clientContactPerson } = formData;
 
         if (!/^[A-Za-z\s]+$/.test(clientName)) return "Client Name should only contain alphabets and spaces.";
         if (!/^[0-9]+$/.test(clientContact)) return "Client Contact should only contain numbers.";
         if (!/^[A-Za-z\s]+$/.test(clientAddress)) return "Client Address should only contain alphabets and spaces.";
-        if (isNaN(clientBudget) || clientBudget < 0) return "Budget must be a positive number.";
         if (!/^\S+@\S+\.\S+$/.test(clientEmail)) return "Invalid email format.";
         if (!/^[A-Za-z\s]+$/.test(clientContactPerson)) return "Client Contact Person should only contain alphabets and spaces.";
-
 
         return '';
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (modalType === 'view') return;
+
         const validationError = validateForm();
         if (validationError) {
             setError(validationError);
             return;
         }
 
-        const formattedData = {
-            ...formData,
-            clientBudget: Number(formData.clientBudget)
-        };
-
         try {
-            const response = await axios.post(Api.addClient.url, formattedData);
-            onAdd(response.data.data);
+            let response;
+            if (modalType === 'edit') {
+                response = await axios.put(`${Api.updateClient.url.replace(':id', clientData._id)}`, formData);
+                onUpdate(response.data.data);
+            } else {
+                response = await axios.post(Api.addClient.url, formData);
+                onSave(response.data.data);
+            }
             onClose();
         } catch (error) {
-            console.error('Error adding client:', error.response ? error.response.data : error.message);
-            setError(error.response?.data?.message || 'Error adding client. Please try again.');
+            console.error('Error saving client:', error.response ? error.response.data : error.message);
+            setError(error.response?.data?.message || 'Error saving client. Please try again.');
         }
     };
 
@@ -75,33 +69,44 @@ const ClientModal = ({ isOpen, onClose, onAdd }) => {
 
     return (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg mx-4 my-12">
+            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-5xl mx-4 my-12">
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold">Add Customer</h2>
-                    <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+                    <h2 className="text-2xl font-bold text-gray-800">
+                        {modalType === 'add' ? 'Add Client' : modalType === 'edit' ? 'Edit Client' : 'View Client'}
+                    </h2>
+                    <button onClick={onClose} className="text-gray-500 hover:text-gray-700 transition-colors duration-300">
                         <FaTimes size={24} />
                     </button>
                 </div>
                 {error && <div className="text-red-500 mb-4">{error}</div>}
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    {Object.keys(formData).map(key => (
+                <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
+                    {Object.entries(formData).map(([key, value]) => (
                         <div key={key} className="flex flex-col">
-                            <label className="text-sm font-medium text-gray-700 mb-1">
-                                {key.replace(/([A-Z])/g, ' $1').toUpperCase()}:
+                            <label className="text-sm font-medium text-gray-700 mb-1 capitalize" htmlFor={key}>
+                                {key.replace(/([A-Z])/g, ' $1').trim()}:
                             </label>
                             <input
-                                type={key === 'clientBudget' ? 'number' : 'text'}
+                                id={key}
                                 name={key}
-                                value={formData[key]}
+                                type="text"
+                                value={value}
                                 onChange={handleChange}
+                                className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                                 required
-                                className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
+                                readOnly={modalType === 'view'}
                             />
                         </div>
                     ))}
-                    <button type="submit" className="bg-blue-500 text-white py-3 px-6 rounded hover:bg-blue-600">
-                        Add Customer
-                    </button>
+                    {modalType !== 'view' && (
+                        <div className="col-span-2 flex justify-end mt-6">
+                            <button
+                                type="submit"
+                                className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
+                            >
+                                {modalType === 'edit' ? 'Update Client' : 'Add Client'}
+                            </button>
+                        </div>
+                    )}
                 </form>
             </div>
         </div>
@@ -111,7 +116,10 @@ const ClientModal = ({ isOpen, onClose, onAdd }) => {
 ClientModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    onAdd: PropTypes.func.isRequired,
+    onSave: PropTypes.func,
+    onUpdate: PropTypes.func,
+    clientData: PropTypes.object,
+    modalType: PropTypes.oneOf(['add', 'edit', 'view']).isRequired,
 };
 
 export default ClientModal;

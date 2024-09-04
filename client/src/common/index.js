@@ -49,6 +49,14 @@ const Api = {
         url: `${backendDomain}/api/clients`,
         method: "get"
     },
+    getClientById: {
+        url: `${backendDomain}/api/clients/:id`,
+        method: "get"
+    },
+    updateClient: {
+        url: `${backendDomain}/api/clients/:id`,
+        method: "put"
+    },
     addProjectManager: {
         url: `${backendDomain}/api/project-managers`,
         method: "post"

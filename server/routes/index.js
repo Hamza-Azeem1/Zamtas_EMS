@@ -6,7 +6,7 @@ const getEmployeesController = require('../controller/getEmployeesController');
 const { deleteEmployeeController, updateRoleController, getUserDetailsController, updateUserDetailsController } = require('../controller/employeeController');
 const upload = require('../config/multer');
 const { addProjectController, getProjectsController, checkProjectIdController, updateProjectController } = require('../controller/projectController');
-const { addClientController, getClientsController } = require('../controller/clientController');
+const { addClientController, getClientsController, getClientByIdController, updateClientController } = require('../controller/clientController');
 const { addProjectManagerController, getProjectManagersController, getProjectManagerByIdController, updateProjectManagerController } = require('../controller/projectManagerController');
 const { addTaskController, getTasksController, getProjectDetailsController, getUserTasksController, completeTaskController, startTaskController } = require('../controller/taskController');
 const authMiddleware = require('../middleware/authMiddleware');
@@ -29,6 +29,8 @@ router.put('/projects/:projectId', updateProjectController);
 
 router.post('/clients', addClientController);
 router.get('/clients', getClientsController);
+router.get('/clients/:id', getClientByIdController);
+router.put('/clients/:id', updateClientController);
 
 router.post('/project-managers', addProjectManagerController);
 router.get('/project-managers', getProjectManagersController);

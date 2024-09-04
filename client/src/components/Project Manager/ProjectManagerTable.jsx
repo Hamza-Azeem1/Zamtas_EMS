@@ -26,7 +26,7 @@ const ProjectManagerTable = ({ managers, onEdit, onView }) => {
                 <tbody>
                     {managers.map((manager, index) => (
                         <tr key={manager._id} className={`transition-colors duration-150 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100`}>
-                            <td className="py-3 px-6 border-b border-gray-300 text-center text-base truncate">
+                            <td className="py-3 px-6 border-b border-gray-300 text-center text-base">
                                 {truncateText(manager.name)}
                             </td>
                             <td className="py-3 px-6 border-b border-gray-300 text-center text-base">
