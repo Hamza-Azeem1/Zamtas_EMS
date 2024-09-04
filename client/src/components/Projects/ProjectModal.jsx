@@ -186,7 +186,7 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
                     </div>
                     <div className="flex flex-col">
                         <label className="text-sm font-medium text-gray-700 mb-1">
-                            Client Name:
+                            Customer Name:
                         </label>
                         <select
                             name="clientId"
@@ -205,7 +205,7 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
                     </div>
                     <div className="flex flex-col">
                         <label className="text-sm font-medium text-gray-700 mb-1">
-                            Client Contact:
+                            Customer Contact:
                         </label>
                         <input
                             type="text"

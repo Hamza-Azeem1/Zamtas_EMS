@@ -22,7 +22,7 @@ const Home = () => {
         switch (activeMenu) {
             case 'dashboard':
                 return <Dashboard />;
-            case 'client':
+            case 'customer':
                 return <Client />;
             case 'projects':
                 return <Projects />;
@@ -56,10 +56,10 @@ const Home = () => {
                         </li>
                         <li className="mb-4">
                             <button
-                                className={`w-full text-left py-2 px-4 rounded ${activeMenu === 'client' ? 'bg-gray-700' : ''}`}
-                                onClick={() => setActiveMenu('client')}
+                                className={`w-full text-left py-2 px-4 rounded ${activeMenu === 'customer' ? 'bg-gray-700' : ''}`}
+                                onClick={() => setActiveMenu('customer')}
                             >
-                                Clients
+                                Customer
                             </button>
                         </li>
                         <li className="mb-4">

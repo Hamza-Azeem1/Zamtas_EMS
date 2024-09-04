@@ -21,7 +21,7 @@ async function addClientController(req, res) {
 
 async function getClientsController(req, res) {
     try {
-        const clients = await Client.find({}, 'clientName clientContact clientAddress clientBudget');
+        const clients = await Client.find({}, 'clientName clientContact clientAddress clientBudget clientEmail clientContactPerson');
         res.status(200).json({
             message: "Clients fetched successfully",
             data: clients,

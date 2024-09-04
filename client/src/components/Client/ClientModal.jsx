@@ -9,7 +9,9 @@ const ClientModal = ({ isOpen, onClose, onAdd }) => {
         clientName: '',
         clientContact: '',
         clientAddress: '',
-        clientBudget: ''
+        clientBudget: '',
+        clientEmail: '',
+        clientContactPerson: '',
     });
     const [error, setError] = useState('');
 
@@ -17,6 +19,8 @@ const ClientModal = ({ isOpen, onClose, onAdd }) => {
         if (!isOpen) {
             setFormData({
                 clientName: '',
+                clientEmail: '',
+                clientContactPerson: '',
                 clientContact: '',
                 clientAddress: '',
                 clientBudget: ''
@@ -31,12 +35,15 @@ const ClientModal = ({ isOpen, onClose, onAdd }) => {
     };
 
     const validateForm = () => {
-        const { clientName, clientContact, clientAddress, clientBudget } = formData;
+        const { clientName, clientContact, clientAddress, clientBudget, clientEmail, clientContactPerson } = formData;
 
         if (!/^[A-Za-z\s]+$/.test(clientName)) return "Client Name should only contain alphabets and spaces.";
         if (!/^[0-9]+$/.test(clientContact)) return "Client Contact should only contain numbers.";
         if (!/^[A-Za-z\s]+$/.test(clientAddress)) return "Client Address should only contain alphabets and spaces.";
         if (isNaN(clientBudget) || clientBudget < 0) return "Budget must be a positive number.";
+        if (!/^\S+@\S+\.\S+$/.test(clientEmail)) return "Invalid email format.";
+        if (!/^[A-Za-z\s]+$/.test(clientContactPerson)) return "Client Contact Person should only contain alphabets and spaces.";
+
 
         return '';
     };
@@ -70,7 +77,7 @@ const ClientModal = ({ isOpen, onClose, onAdd }) => {
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg mx-4 my-12">
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold">Add Client</h2>
+                    <h2 className="text-2xl font-bold">Add Customer</h2>
                     <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
                         <FaTimes size={24} />
                     </button>
@@ -93,7 +100,7 @@ const ClientModal = ({ isOpen, onClose, onAdd }) => {
                         </div>
                     ))}
                     <button type="submit" className="bg-blue-500 text-white py-3 px-6 rounded hover:bg-blue-600">
-                        Add Client
+                        Add Customer
                     </button>
                 </form>
             </div>

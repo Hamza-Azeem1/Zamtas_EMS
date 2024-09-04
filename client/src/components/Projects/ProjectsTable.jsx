@@ -85,13 +85,12 @@ const ProjectsTable = () => {
                         <thead className="bg-gray-100 text-gray-900 uppercase text-sm font-semibold">
                             <tr>
                                 <th className="py-2 px-3 border-b border-gray-300">Project Name</th>
-                                <th className="py-2 px-3 border-b border-gray-300">Client Name</th>
-                                <th className="py-2 px-3 border-b border-gray-300">Client Contact</th>
+                                <th className="py-2 px-3 border-b border-gray-300">Customer Name</th>
+                                <th className="py-2 px-3 border-b border-gray-300">Customer Contact</th>
                                 <th className="py-2 px-3 border-b border-gray-300">Start Date</th>
                                 <th className="py-2 px-3 border-b border-gray-300">End Date</th>
                                 <th className="py-2 px-3 border-b border-gray-300">Project Manager</th>
                                 <th className="py-2 px-3 border-b border-gray-300">Location</th>
-                                <th className="py-2 px-3 border-b border-gray-300">Budget</th>
                                 <th className="py-2 px-3 border-b border-gray-300">Actions</th>
                             </tr>
                         </thead>
@@ -108,7 +107,7 @@ const ProjectsTable = () => {
                                         {truncateText(project.clientId?.clientName)}
                                     </td>
                                     <td className="py-4 px-6 border-b border-gray-300 text-center truncate">
-                                        {truncateText(project.clientContact)}
+                                        {project.clientContact}
                                     </td>
                                     <td className="py-4 px-6 border-b border-gray-300 text-center truncate">
                                         {new Date(project.startDate).toLocaleDateString()}
@@ -121,9 +120,6 @@ const ProjectsTable = () => {
                                     </td>
                                     <td className="py-4 px-6 border-b border-gray-300 text-center truncate">
                                         {truncateText(project.location)}
-                                    </td>
-                                    <td className="py-4 px-6 border-b border-gray-300 text-center truncate">
-                                        {truncateText(project.budget)}
                                     </td>
                                     <td className="py-4 px-6 border-b border-gray-300 text-center">
                                         <div className="flex justify-center space-x-4">
