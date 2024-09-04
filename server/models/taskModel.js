@@ -8,7 +8,7 @@ const taskSchema = new mongoose.Schema({
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
     assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    status: { type: String, enum: ['Started', 'Delayed', 'Done', 'In Progress'], default: 'Started' },
+    status: { type: String, enum: ['Assigned', 'Delayed', 'Done', 'In Progress'], default: 'Assigned' },
     startImage: { type: String },
     completeImage: { type: String }
 });

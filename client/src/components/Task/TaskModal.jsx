@@ -14,7 +14,7 @@ const TaskModal = ({ isOpen, onClose, taskDetails, onAdd }) => {
         startDate: '',
         endDate: '',
         assignedTo: '',
-        status: 'Started'
+        status: 'Assigned'
     });
     const [projects, setProjects] = useState([]);
     const [projectManagers, setProjectManagers] = useState([]);
@@ -50,7 +50,7 @@ const TaskModal = ({ isOpen, onClose, taskDetails, onAdd }) => {
 
     const getStatusColor = (status) => {
         switch (status) {
-            case 'Started':
+            case 'Assigned':
                 return 'text-yellow-400 font-medium';
             default:
                 return '';
@@ -66,7 +66,7 @@ const TaskModal = ({ isOpen, onClose, taskDetails, onAdd }) => {
             startDate: '',
             endDate: '',
             assignedTo: '',
-            status: 'Started'
+            status: 'Assigned'
         });
     };
 
@@ -305,7 +305,7 @@ const TaskModal = ({ isOpen, onClose, taskDetails, onAdd }) => {
                                 onChange={handleChange}
                                 className="w-full border rounded-lg p-2"
                             >
-                                <option value="Started" className='text-yellow-400 font-medium'>Started</option>
+                                <option value="Assigned" className='text-yellow-400 font-medium'>Assigned</option>
                             </select>
                         </div>
                         <div className="flex justify-end w-full mt-4">

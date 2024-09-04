@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const TaskTable = ({ tasks, onView }) => {
     const getStatusColor = (status) => {
         switch (status) {
-            case 'Started':
+            case 'Assigned':
                 return 'text-yellow-400 font-medium';
             case 'In Progress':
                 return 'text-brown-400 font-medium';
@@ -16,6 +16,16 @@ const TaskTable = ({ tasks, onView }) => {
                 return '';
         }
     };
+
+    const truncateText = (text) => {
+        if (typeof text !== 'string') return '';
+        const words = text.split(' ');
+        if (words.length > 1) {
+            return `${words[0]}...`;
+        }
+        return text;
+    };
+
 
     if (!tasks.length) return <p>No tasks available.</p>;
 
@@ -38,10 +48,10 @@ const TaskTable = ({ tasks, onView }) => {
                 <tbody>
                     {tasks.map((task) => (
                         <tr key={task._id} className={`transition-colors duration-150 ${task._id % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100`}>
-                            <td className="py-3 px-3 border-b border-gray-300 text-base">{task.title || 'N/A'}</td>
+                            <td className="py-3 px-3 border-b border-gray-300 text-base">{truncateText(task.title) || 'N/A'}</td>
                             <td className="py-3 px-3 border-b border-gray-300 text-base">{task.category || 'N/A'}</td>
-                            <td className="py-3 px-3 border-b border-gray-300 text-base">{task.project?.projectName || 'N/A'}</td>
-                            <td className="py-3 px-3 border-b border-gray-300 text-base">{task.projectManager?.name || 'N/A'}</td>
+                            <td className="py-3 px-3 border-b border-gray-300 text-base">{truncateText(task.project?.projectName) || 'N/A'}</td>
+                            <td className="py-3 px-3 border-b border-gray-300 text-base">{truncateText(task.projectManager?.name) || 'N/A'}</td>
                             <td className="py-3 px-3 border-b border-gray-300 text-base">{task.startDate ? new Date(task.startDate).toLocaleDateString() : 'N/A'}</td>
                             <td className="py-3 px-3 border-b border-gray-300 text-base">{task.endDate ? new Date(task.endDate).toLocaleDateString() : 'N/A'}</td>
                             <td className="py-3 px-3 border-b border-gray-300 text-base">{task.assignedTo?.name || 'N/A'}</td>

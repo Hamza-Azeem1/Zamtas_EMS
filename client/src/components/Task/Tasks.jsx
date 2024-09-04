@@ -37,10 +37,15 @@ const Tasks = () => {
     }, []);
 
     // Function to handle adding a new task
-    const handleAddTask = (newTask) => {
-        setTasks(prevTasks => [...prevTasks, newTask]);
-        setIsModalOpen(false);
+    const handleAddTask = async () => {
+        try {
+            await fetchTasks(); // Refetch tasks to get the latest data
+            setIsModalOpen(false);
+        } catch (error) {
+            console.error('Error fetching tasks after adding:', error);
+        }
     };
+
 
     // Function to handle viewing a task
     const handleViewTask = (task) => {

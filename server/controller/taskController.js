@@ -11,7 +11,7 @@ const twilioWhatsapp = process.env.TWILIO_WHATSAPP
 const client = twilio(accountSid, authToken);
 
 // Add a new task
-async function addTaskController(req, res) {
+const addTaskController = async (req, res) => {
     try {
         const task = new Task(req.body);
         await task.save();
@@ -25,7 +25,7 @@ async function addTaskController(req, res) {
 
         // Send WhatsApp notification
         if (mobileNo) {
-            await client.messages.create({
+            const message = await client.messages.create({
                 body: `Hello ${assignedUser.name}!. A new task of ${task.category} has been assigned to you. Kindly Login to your Portal using this link: https://zamtas-ems.vercel.app`,
                 //for sms message use twilioNumber instead of twilioWhatsapp
                 //  and mobileNo instead of `whatsapp:${mobileNo}`
@@ -34,7 +34,6 @@ async function addTaskController(req, res) {
             });
         }
 
-
         res.status(201).json({
             message: 'Task added successfully',
             data: task,
@@ -42,14 +41,15 @@ async function addTaskController(req, res) {
             error: false
         });
     } catch (err) {
-        console.error('Error adding task:', err);
+        console.error('Error adding task:', err.message);
         res.status(500).json({
             message: err.message || 'Server Error',
             error: true,
             success: false
         });
     }
-}
+};
+
 
 // Get all tasks
 async function getTasksController(req, res) {
