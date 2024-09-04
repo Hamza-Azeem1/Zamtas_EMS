@@ -15,7 +15,7 @@ const Dashboard = () => {
     const [filteredTasks, setFilteredTasks] = useState([]);
     const [activeTab, setActiveTab] = useState('All');
     const [taskCounts, setTaskCounts] = useState({
-        Started: 0,
+        Assigned: 0,
         Delayed: 0,
         Done: 0,
         'In Progress': 0,  // Ensure 'In Progress' status is included
@@ -45,7 +45,7 @@ const Dashboard = () => {
                 setTasks(allTasks);
 
                 const taskCounts = {
-                    Started: allTasks.filter(task => task.status === 'Started').length,
+                    Assigned: allTasks.filter(task => task.status === 'Assigned').length,
                     Delayed: allTasks.filter(task => task.status === 'Delayed').length,
                     Done: allTasks.filter(task => task.status === 'Done').length,
                     'In Progress': allTasks.filter(task => task.status === 'In Progress').length,
@@ -68,8 +68,8 @@ const Dashboard = () => {
         const filterTasks = () => {
             let filtered;
             switch (activeTab) {
-                case 'Started':
-                    filtered = tasks.filter(task => task.status === 'Started');
+                case 'Assigned':
+                    filtered = tasks.filter(task => task.status === 'Assigned');
                     break;
                 case 'Delayed':
                     filtered = tasks.filter(task => task.status === 'Delayed');
@@ -134,7 +134,7 @@ const Dashboard = () => {
                     <h3 className='text-2xl font-semibold mb-4 mt-4'>Task Overview</h3>
                     <div className="bg-white p-4 rounded-lg shadow-md">
                         <div className="flex space-x-4 mb-6">
-                            {['All', 'Started', 'In Progress', 'Done', 'Delayed'].map(status => (
+                            {['All', 'Assigned', 'In Progress', 'Done', 'Delayed'].map(status => (
                                 <button
                                     key={status}
                                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-300 focus:outline-none ${activeTab === status
