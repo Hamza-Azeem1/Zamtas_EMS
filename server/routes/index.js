@@ -12,6 +12,7 @@ const { addTaskController, getTasksController, getProjectDetailsController, getU
 const authMiddleware = require('../middleware/authMiddleware');
 const auth = require('../middleware/auth');
 const { sendForgotPasswordOTP, resetPassword, verifyOTP } = require('../controller/forgotPasswordController');
+const { addProductController, getProductsController, updateProductController, deleteProductController } = require('../controller/productController');
 
 router.post('/sign-in', userSignInController);
 router.post('/sign-up', userSignUpController);
@@ -49,6 +50,13 @@ router.post('/task-submit', upload.single('completeImage'), completeTaskControll
 router.post('/forgot-password', sendForgotPasswordOTP);
 router.post('/verify-otp', verifyOTP);
 router.post('/reset-password', resetPassword);
+
+
+router.post('/products/add', addProductController);
+router.get('/products', getProductsController);
+router.put('/products/:id', updateProductController);
+router.delete('/products/:id', deleteProductController);
+
 
 // Protected Routes
 router.use(authMiddleware);

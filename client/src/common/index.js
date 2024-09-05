@@ -113,6 +113,22 @@ const Api = {
         url: `${backendDomain}/api/reset-password`,
         method: "post"
     },
+    addProduct: {
+        url: `${backendDomain}/api/products/add`,
+        method: "post"
+    },
+    getProduct: {
+        url: `${backendDomain}/api/products`,
+        method: "get"
+    },
+    updateProduct: {
+        url: `${backendDomain}/api/products/:id`,
+        method: "put"
+    },
+    deleteProduct: {
+        url: `${backendDomain}/api/products/:id`,
+        method: "delete"
+    },
 };
 
 export default Api;
