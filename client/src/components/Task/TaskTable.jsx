@@ -1,4 +1,4 @@
-import { FaEye } from 'react-icons/fa';
+import { FaEdit, FaEye } from 'react-icons/fa';
 import PropTypes from 'prop-types';
 
 const TaskTable = ({ tasks, onView }) => {
@@ -59,9 +59,14 @@ const TaskTable = ({ tasks, onView }) => {
                             <td className="py-3 px-3 border-b border-gray-300 text-center">
                                 <button
                                     onClick={() => onView(task)}
-                                    className="text-blue-500 hover:text-blue-700"
+                                    className="text-blue-500 hover:text-blue-700 mr-2"
                                 >
                                     <FaEye />
+                                </button>
+                                <button
+                                    className="text-green-500 hover:text-green-700"
+                                >
+                                    <FaEdit />
                                 </button>
                             </td>
                         </tr>
