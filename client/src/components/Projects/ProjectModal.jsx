@@ -14,29 +14,37 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
         endDate: '',
         projectManagerId: '',
         location: '',
-        budget: ''
+        budget: '',
+        productId: '',
+        quantity: '',
+        category: '',
+        subcategory: '',
+        model: ''
     });
     const [error, setError] = useState('');
     const [clients, setClients] = useState([]);
     const [projectManagers, setProjectManagers] = useState([]);
+    const [products, setProducts] = useState([]);
 
     useEffect(() => {
         if (isOpen) {
-            const fetchClientsAndManagers = async () => {
+            const fetchClientsManagersAndProducts = async () => {
                 try {
-                    const [clientsResponse, managersResponse] = await Promise.all([
+                    const [clientsResponse, managersResponse, productsResponse] = await Promise.all([
                         axios.get(Api.getClient.url),
-                        axios.get(Api.getProjectManager.url)
+                        axios.get(Api.getProjectManager.url),
+                        axios.get(Api.getProduct.url)
                     ]);
                     setClients(clientsResponse.data.data);
                     setProjectManagers(managersResponse.data.data);
+                    setProducts(productsResponse.data.data);
                 } catch (error) {
-                    console.error('Error fetching clients or project managers:', error);
-                    setError('Failed to load clients or project managers. Please try again.');
+                    console.error('Error fetching data:', error);
+                    setError('Failed to load data. Please try again.');
                 }
             };
 
-            fetchClientsAndManagers();
+            fetchClientsManagersAndProducts();
         } else {
             resetForm();
         }
@@ -52,7 +60,12 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
             endDate: '',
             projectManagerId: '',
             location: '',
-            budget: ''
+            budget: '',
+            productId: '',
+            quantity: '',
+            category: '',
+            subcategory: '',
+            model: ''
         });
         setError('');
     };
@@ -62,6 +75,19 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
         setFormData(prev => ({ ...prev, [name]: value }));
         if (name === 'projectId') {
             checkProjectIdExists(value);
+        }
+        if (name === 'productId') {
+            const selectedProduct = products.find(product => product._id === value);
+            if (selectedProduct) {
+                setFormData(prev => ({
+                    ...prev,
+                    productId: selectedProduct._id,
+                    quantity: selectedProduct.quantity,
+                    category: selectedProduct.category,
+                    subcategory: selectedProduct.subcategory || 'N/A',
+                    model: selectedProduct.model
+                }));
+            }
         }
     };
 
@@ -124,7 +150,6 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
         }
 
         if (error) {
-            // If there's an error (like projectId already exists), don't submit
             return;
         }
 
@@ -149,7 +174,7 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
 
     return (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-5xl mx-4 my-12">
+            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-5xl mx-4 my-6 max-h-[90vh] overflow-y-auto">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl font-bold">Add Project</h2>
                     <button onClick={() => { onClose(); resetForm(); }} className="text-gray-500 hover:text-gray-700">
@@ -158,6 +183,7 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
                 </div>
                 {error && <div className="text-red-500 mb-4">{error}</div>}
                 <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
+                    {/* Existing form fields */}
                     <div className="flex flex-col">
                         <label className="text-sm font-medium text-gray-700 mb-1">
                             Project Name:
@@ -186,7 +212,7 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
                     </div>
                     <div className="flex flex-col">
                         <label className="text-sm font-medium text-gray-700 mb-1">
-                            Customer Name:
+                            Client Name:
                         </label>
                         <select
                             name="clientId"
@@ -205,7 +231,7 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
                     </div>
                     <div className="flex flex-col">
                         <label className="text-sm font-medium text-gray-700 mb-1">
-                            Customer Contact:
+                            Client Contact:
                         </label>
                         <input
                             type="text"
@@ -271,7 +297,6 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
                             name="location"
                             value={formData.location}
                             onChange={handleChange}
-                            required
                             className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
                         />
                     </div>
@@ -284,16 +309,91 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
                             name="budget"
                             value={formData.budget}
                             onChange={handleChange}
-                            required
                             className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
                         />
                     </div>
-                    <div className="col-span-2 flex justify-end">
+                    <div className="flex flex-col">
+                        <label className="text-sm font-medium text-gray-700 mb-1">
+                            Product:
+                        </label>
+                        <select
+                            name="productId"
+                            value={formData.productId}
+                            onChange={handleChange}
+                            className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
+                        >
+                            <option value="">Select Product</option>
+                            {products.map(product => (
+                                <option key={product._id} value={product._id}>
+                                    {product.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="flex flex-col">
+                        <label className="text-sm font-medium text-gray-700 mb-1">
+                            Quantity:
+                        </label>
+                        <input
+                            type="number"
+                            name="quantity"
+                            value={formData.quantity}
+                            onChange={handleChange}
+                            className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
+                        />
+                    </div>
+                    <div className="flex flex-col">
+                        <label className="text-sm font-medium text-gray-700 mb-1">
+                            Category:
+                        </label>
+                        <input
+                            type="text"
+                            name="category"
+                            value={formData.category}
+                            onChange={handleChange}
+                            className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
+                            readOnly
+                        />
+                    </div>
+                    <div className="flex flex-col">
+                        <label className="text-sm font-medium text-gray-700 mb-1">
+                            Subcategory:
+                        </label>
+                        <input
+                            type="text"
+                            name="subcategory"
+                            value={formData.subcategory}
+                            onChange={handleChange}
+                            className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
+                            readOnly
+                        />
+                    </div>
+                    <div className="flex flex-col">
+                        <label className="text-sm font-medium text-gray-700 mb-1">
+                            Model:
+                        </label>
+                        <input
+                            type="text"
+                            name="model"
+                            value={formData.model}
+                            onChange={handleChange}
+                            className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
+                            readOnly
+                        />
+                    </div>
+                    <div className="flex justify-end gap-4 mt-6">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600"
+                        >
+                            Cancel
+                        </button>
                         <button
                             type="submit"
-                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                            className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
                         >
-                            Save Project
+                            Save
                         </button>
                     </div>
                 </form>
@@ -305,7 +405,7 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
 ProjectModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    onAdd: PropTypes.func.isRequired
+    onAdd: PropTypes.func.isRequired,
 };
 
 export default ProjectModal;

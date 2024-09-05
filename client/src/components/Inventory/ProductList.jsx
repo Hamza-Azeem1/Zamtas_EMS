@@ -12,7 +12,6 @@ const ProductList = ({ onEditClick, onDelete, onViewClick }) => {
     useEffect(() => {
         axios.get(Api.getProduct.url)
             .then(response => {
-                console.log('API Response:', response.data);
                 if (response.data.success && Array.isArray(response.data.data)) {
                     setProducts(response.data.data);
                 } else {
@@ -47,7 +46,7 @@ const ProductList = ({ onEditClick, onDelete, onViewClick }) => {
                     <tr>
                         <th className="py-2 px-3 border-b border-gray-300">Name</th>
                         <th className="py-2 px-3 border-b border-gray-300">Quantity</th>
-                        <th className="py-2 px-3 border-b border-gray-300">Model</th>
+                        <th className="py-2 px-3 border-b border-gray-300">Category</th>
                         <th className="py-2 px-3 border-b border-gray-300">Actions</th>
                     </tr>
                 </thead>
@@ -57,7 +56,7 @@ const ProductList = ({ onEditClick, onDelete, onViewClick }) => {
                             <tr key={product._id}>
                                 <td className="py-3 px-3 border-b border-gray-300 text-base text-center">{product.name}</td>
                                 <td className="py-3 px-3 border-b border-gray-300 text-base text-center">{product.quantity}</td>
-                                <td className="py-3 px-3 border-b border-gray-300 text-base text-center">{product.model}</td>
+                                <td className="py-3 px-3 border-b border-gray-300 text-base text-center">{product.category}</td>
                                 <td className="py-3 px-3 border-b border-gray-300 text-center">
                                     <button
                                         className="text-blue-500 hover:text-blue-700 mr-2"
@@ -87,7 +86,7 @@ const ProductList = ({ onEditClick, onDelete, onViewClick }) => {
                     )}
                 </tbody>
             </table>
-        </div>
+        </div >
     );
 };
 

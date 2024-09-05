@@ -28,7 +28,6 @@ const ProjectsTable = () => {
         fetchProjects();
     }, []);
 
-
     const handleEditProject = (project) => {
         setEditingProject(project);
     };
@@ -46,13 +45,12 @@ const ProjectsTable = () => {
         setSelectedProject(project);
     };
 
-    // Close modal
     const closeModal = () => {
         setSelectedProject(null);
     };
 
     const truncateText = (text, maxWords = 1) => {
-        if (typeof text !== 'string') return ''; // Return an empty string if text is not a string
+        if (typeof text !== 'string') return '';
 
         const words = text.split(' ');
         if (words.length > maxWords) {
@@ -61,14 +59,10 @@ const ProjectsTable = () => {
         return text;
     };
 
-
-
-    // Get current projects
     const indexOfLastProject = currentPage * projectsPerPage;
     const indexOfFirstProject = indexOfLastProject - projectsPerPage;
     const currentProjects = projects.slice(indexOfFirstProject, indexOfLastProject);
 
-    // Change page
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (

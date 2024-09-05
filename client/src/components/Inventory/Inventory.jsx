@@ -58,7 +58,7 @@ const Inventory = () => {
                     </div>
                 </div>
             )}
-            {showEditModal && (
+            {showEditModal && selectedProduct && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-70 z-50">
                     <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
                         <ProductForm
@@ -69,26 +69,46 @@ const Inventory = () => {
                     </div>
                 </div>
             )}
-            {showViewModal && (
-                <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-70 z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
-                        <h1 className="text-xl font-bold mb-4">View Product</h1>
-                        {selectedProduct && (
-                            <div>
-                                <p><strong>Name:</strong> {selectedProduct.name}</p>
-                                <p><strong>Quantity:</strong> {selectedProduct.quantity}</p>
-                                <p><strong>Model:</strong> {selectedProduct.model}</p>
+            {showViewModal && selectedProduct && (
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75 z-50">
+                    <div className="bg-white rounded-lg shadow-lg overflow-hidden max-w-lg w-full">
+                        <div className="bg-blue-500 p-4">
+                            <h1 className="text-xl font-bold text-white">Product Details</h1>
+                        </div>
+                        <div className="p-6 space-y-4">
+                            <div className="flex items-center space-x-4">
+                                <span className="font-semibold text-gray-600">Name:</span>
+                                <span className="text-gray-800">{selectedProduct.name}</span>
                             </div>
-                        )}
-                        <button
-                            className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition"
-                            onClick={handleCloseModal}
-                        >
-                            Close
-                        </button>
+                            <div className="flex items-center space-x-4">
+                                <span className="font-semibold text-gray-600">Quantity:</span>
+                                <span className="text-gray-800">{selectedProduct.quantity}</span>
+                            </div>
+                            <div className="flex items-center space-x-4">
+                                <span className="font-semibold text-gray-600">Model:</span>
+                                <span className="text-gray-800">{selectedProduct.model}</span>
+                            </div>
+                            <div className="flex items-center space-x-4">
+                                <span className="font-semibold text-gray-600">Category:</span>
+                                <span className="text-gray-800">{selectedProduct.category}</span>
+                            </div>
+                            <div className="flex items-start space-x-4">
+                                <span className="font-semibold text-gray-600">Sub Category:</span>
+                                <span className="text-gray-800">{selectedProduct.subcategory || 'N/A'}</span>
+                            </div>
+                        </div>
+                        <div className="bg-gray-100 px-6 py-4 flex justify-end">
+                            <button
+                                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition"
+                                onClick={handleCloseModal}
+                            >
+                                Close
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
+
         </div>
     );
 };
