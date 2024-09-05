@@ -16,24 +16,26 @@ async function addTaskController(req, res) {
         const task = new Task(req.body);
         await task.save();
 
-        const assignedUser = await User.findById(task.assignedTo);
-        let mobileNo = assignedUser.mobileNo;
+        // Send notifications to all assigned users
+        for (const userId of task.assignedTo) {
+            const assignedUser = await User.findById(userId);
+            if (assignedUser) {
+                let mobileNo = assignedUser.mobileNo;
 
-        if (mobileNo && !mobileNo.startsWith('+')) {
-            mobileNo = `+92${mobileNo.slice(1)}`;
+                if (mobileNo && !mobileNo.startsWith('+')) {
+                    mobileNo = `+92${mobileNo.slice(1)}`;
+                }
+
+                // Send WhatsApp notification
+                if (mobileNo) {
+                    await client.messages.create({
+                        body: `Hello ${assignedUser.name}!. A new task of ${task.category} has been assigned to you. Kindly Login to your Portal using this link: https://zamtas-ems.vercel.app`,
+                        from: twilioWhatsapp,
+                        to: `whatsapp:${mobileNo}`
+                    });
+                }
+            }
         }
-
-        // Send WhatsApp notification
-        if (mobileNo) {
-            await client.messages.create({
-                body: `Hello ${assignedUser.name}!. A new task of ${task.category} has been assigned to you. Kindly Login to your Portal using this link: https://zamtas-ems.vercel.app`,
-                //for sms message use twilioNumber instead of twilioWhatsapp
-                //  and mobileNo instead of `whatsapp:${mobileNo}`
-                from: twilioWhatsapp,
-                to: `whatsapp:${mobileNo}`
-            });
-        }
-
 
         res.status(201).json({
             message: 'Task added successfully',
@@ -57,7 +59,8 @@ async function getTasksController(req, res) {
         const tasks = await Task.find()
             .populate('project')
             .populate('projectManager')
-            .populate('assignedTo');
+            .populate('assignedTo')
+            .populate('teamLead');
 
         res.status(200).json({
             message: 'Tasks fetched successfully',

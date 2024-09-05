@@ -38,9 +38,7 @@ const TaskTable = ({ tasks, onView }) => {
                         <th className="py-2 px-3 border-b border-gray-300 text-left">Category</th>
                         <th className="py-2 px-3 border-b border-gray-300 text-left">Project</th>
                         <th className="py-2 px-3 border-b border-gray-300 text-left">Project Manager</th>
-                        <th className="py-2 px-3 border-b border-gray-300 text-left">Start Date</th>
-                        <th className="py-2 px-3 border-b border-gray-300 text-left">Due Date</th>
-                        <th className="py-2 px-3 border-b border-gray-300 text-left">Assigned To</th>
+                        <th className="py-2 px-3 border-b border-gray-300 text-left">Team Lead</th>
                         <th className="py-2 px-3 border-b border-gray-300 text-left">Status</th>
                         <th className="py-2 px-3 border-b border-gray-300 text-left">Actions</th>
                     </tr>
@@ -52,9 +50,9 @@ const TaskTable = ({ tasks, onView }) => {
                             <td className="py-3 px-3 border-b border-gray-300 text-base">{task.category || 'N/A'}</td>
                             <td className="py-3 px-3 border-b border-gray-300 text-base">{truncateText(task.project?.projectName) || 'N/A'}</td>
                             <td className="py-3 px-3 border-b border-gray-300 text-base">{truncateText(task.projectManager?.name) || 'N/A'}</td>
-                            <td className="py-3 px-3 border-b border-gray-300 text-base">{task.startDate ? new Date(task.startDate).toLocaleDateString() : 'N/A'}</td>
-                            <td className="py-3 px-3 border-b border-gray-300 text-base">{task.endDate ? new Date(task.endDate).toLocaleDateString() : 'N/A'}</td>
-                            <td className="py-3 px-3 border-b border-gray-300 text-base">{task.assignedTo?.name || 'N/A'}</td>
+                            <td className="py-3 px-3 border-b border-gray-300 text-base">
+                                {task.teamLead?.name || 'N/A'}
+                            </td>
                             <td className={`py-3 px-3 border-b border-gray-300 text-base ${getStatusColor(task.status)}`}>
                                 {task.status || 'N/A'}
                             </td>

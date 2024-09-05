@@ -46,7 +46,6 @@ const Tasks = () => {
         }
     };
 
-
     // Function to handle viewing a task
     const handleViewTask = (task) => {
         setTaskDetails(task);
@@ -62,10 +61,10 @@ const Tasks = () => {
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
-        <div className="p-6 bg-gray-50 rounded-lg shadow-md space-y-4">
+        <div className="p-6 bg-white rounded-lg shadow-lg space-y-6">
             <button
                 onClick={() => setIsModalOpen(true)}
-                className="bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105 hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 flex items-center"
+                className="bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 flex items-center"
             >
                 <TbListDetails className="mr-2 text-xl" />
                 Add Task

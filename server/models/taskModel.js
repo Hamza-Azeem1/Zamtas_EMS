@@ -7,7 +7,8 @@ const taskSchema = new mongoose.Schema({
     projectManager: { type: mongoose.Schema.Types.ObjectId, ref: 'ProjectManager', required: true },
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
-    assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    assignedTo: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }],
+    teamLead: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     status: { type: String, enum: ['Assigned', 'Delayed', 'Done', 'In Progress'], default: 'Assigned' },
     startImage: { type: String },
     completeImage: { type: String }
