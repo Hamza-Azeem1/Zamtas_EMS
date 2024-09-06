@@ -14,7 +14,7 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
         endDate: '',
         projectManagerId: '',
         location: '',
-        budget: '',
+        budget: '', // Budget is optional
         productId: '',
         quantity: '',
         category: '',
@@ -60,7 +60,7 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
             endDate: '',
             projectManagerId: '',
             location: '',
-            budget: '',
+            budget: '', // Reset budget field to empty
             productId: '',
             quantity: '',
             category: '',
@@ -82,7 +82,10 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
                 setFormData(prev => ({
                     ...prev,
                     productId: selectedProduct._id,
-                    quantity: '',
+                    quantity: selectedProduct.quantity || '',
+                    category: selectedProduct.category || '',
+                    subcategory: selectedProduct.subcategory || '',
+                    model: selectedProduct.model || ''
                 }));
             }
         }
@@ -110,7 +113,7 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
                 ...prev,
                 clientId: selectedClient._id,
                 clientContact: selectedClient.clientContact,
-                budget: selectedClient.clientBudget
+                budget: selectedClient.clientBudget || '' // Optional budget
             }));
         }
     };
@@ -123,7 +126,7 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
     };
 
     const validateForm = () => {
-        const { projectName, projectId, clientId, clientContact, startDate, endDate, budget } = formData;
+        const { projectName, projectId, clientId, clientContact, startDate, endDate } = formData;
 
         if (!/^[A-Za-z\s]+$/.test(projectName)) return "Project Name should only contain alphabets and spaces.";
         if (!/^[A-Za-z0-9]+$/.test(projectId)) return "Project ID should be alphanumeric.";
@@ -132,10 +135,9 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
         if (isNaN(Date.parse(startDate))) return "Invalid Start Date.";
         if (isNaN(Date.parse(endDate))) return "Invalid End Date.";
         if (new Date(startDate) >= new Date(endDate)) return "Start Date must be before End Date.";
-        if (isNaN(budget) || budget < 0) return "Budget must be a positive number.";
         if (!formData.projectManagerId) return "Please select a Project Manager.";
 
-        return '';
+        return ''; // No error if all validations pass
     };
 
     const handleSubmit = async (e) => {
@@ -154,7 +156,7 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
             ...formData,
             startDate: new Date(formData.startDate).toISOString(),
             endDate: new Date(formData.endDate).toISOString(),
-            budget: Number(formData.budget),
+            budget: formData.budget ? Number(formData.budget) : undefined, // Make budget optional
             quantity: Number(formData.quantity),
         };
 
@@ -298,18 +300,7 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
                             className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
                         />
                     </div>
-                    <div className="flex flex-col">
-                        <label className="text-sm font-medium text-gray-700 mb-1">
-                            Budget:
-                        </label>
-                        <input
-                            type="number"
-                            name="budget"
-                            value={formData.budget}
-                            onChange={handleChange}
-                            className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
-                        />
-                    </div>
+                    {/* Product-related fields */}
                     <div className="flex flex-col">
                         <label className="text-sm font-medium text-gray-700 mb-1">
                             Product:
@@ -333,11 +324,12 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
                             Quantity:
                         </label>
                         <input
-                            type="number"
+                            type="text"
                             name="quantity"
                             value={formData.quantity}
                             onChange={handleChange}
                             className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
+                            readOnly
                         />
                     </div>
                     <div className="flex flex-col">
@@ -379,19 +371,26 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
                             readOnly
                         />
                     </div>
-                    <div className="flex justify-end gap-4 mt-6">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600"
-                        >
-                            Cancel
-                        </button>
+                    <div className="flex flex-col">
+                        <label className="text-sm font-medium text-gray-700 mb-1">
+                            Budget (Optional):
+                        </label>
+                        <input
+                            type="number"
+                            name="budget"
+                            value={formData.budget}
+                            onChange={handleChange}
+                            className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
+                            placeholder="Enter budget (optional)"
+                        />
+                    </div>
+                    {/* Submit button */}
+                    <div className="col-span-2 flex justify-end mt-4">
                         <button
                             type="submit"
-                            className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+                            className="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700"
                         >
-                            Save
+                            Add Project
                         </button>
                     </div>
                 </form>
@@ -403,7 +402,7 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
 ProjectModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    onAdd: PropTypes.func.isRequired,
+    onAdd: PropTypes.func.isRequired
 };
 
 export default ProjectModal;

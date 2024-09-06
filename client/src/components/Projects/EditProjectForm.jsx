@@ -1,3 +1,4 @@
+
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -50,10 +51,10 @@ const EditProjectForm = ({ project, onSave, onCancel }) => {
                         endDate: rest.endDate ? new Date(rest.endDate).toISOString().split('T')[0] : '',
                         projectManagerId: projectManager?._id || '',
                         productId: productId?._id || '',
-                        quantity: rest.quantity || '',
-                        category: rest.category || '',
-                        subcategory: rest.subcategory || '',
-                        model: rest.model || '',
+                        quantity: productId?.quantity || '',
+                        category: productId?.category || '',
+                        subcategory: productId?.subcategory || '',
+                        model: productId?.model || '',
                         budget: rest.budget || ''
                     });
                 }
@@ -90,10 +91,10 @@ const EditProjectForm = ({ project, onSave, onCancel }) => {
         setFormData({
             ...formData,
             productId: selectedProductId,
-            quantity: selectedProduct ? selectedProduct.quantity : '',
-            category: selectedProduct ? selectedProduct.category : '',
-            subcategory: selectedProduct ? selectedProduct.subcategory : '',
-            model: selectedProduct ? selectedProduct.model : ''
+            quantity: selectedProduct?.quantity || '',
+            category: selectedProduct?.category || '',
+            subcategory: selectedProduct?.subcategory || '',
+            model: selectedProduct?.model || ''
         });
     };
 
@@ -101,10 +102,10 @@ const EditProjectForm = ({ project, onSave, onCancel }) => {
         e.preventDefault();
         try {
             const url = `${Api.updateProject.url.replace(':projectId', project._id)}`;
+            const { data } = await axios.put(url, formData);
 
-            await axios.put(url, formData);
-
-            onSave({ ...project, ...formData });
+            onSave(data);
+            onCancel();
         } catch (error) {
             console.error('Error updating project:', error);
         }
@@ -223,6 +224,7 @@ const EditProjectForm = ({ project, onSave, onCancel }) => {
                                 ))}
                             </select>
                         </div>
+
                         <div className="flex flex-col">
                             <label className="text-sm font-medium text-gray-700 mb-1">Quantity:</label>
                             <input
@@ -231,9 +233,9 @@ const EditProjectForm = ({ project, onSave, onCancel }) => {
                                 value={formData.quantity}
                                 onChange={handleChange}
                                 className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
-                                readOnly
                             />
                         </div>
+
                         <div className="flex flex-col">
                             <label className="text-sm font-medium text-gray-700 mb-1">Category:</label>
                             <input
@@ -241,10 +243,11 @@ const EditProjectForm = ({ project, onSave, onCancel }) => {
                                 name="category"
                                 value={formData.category}
                                 onChange={handleChange}
-                                className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
                                 readOnly
+                                className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
                             />
                         </div>
+
                         <div className="flex flex-col">
                             <label className="text-sm font-medium text-gray-700 mb-1">Subcategory:</label>
                             <input
@@ -252,10 +255,11 @@ const EditProjectForm = ({ project, onSave, onCancel }) => {
                                 name="subcategory"
                                 value={formData.subcategory}
                                 onChange={handleChange}
-                                className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
                                 readOnly
+                                className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
                             />
                         </div>
+
                         <div className="flex flex-col">
                             <label className="text-sm font-medium text-gray-700 mb-1">Model:</label>
                             <input
@@ -263,8 +267,8 @@ const EditProjectForm = ({ project, onSave, onCancel }) => {
                                 name="model"
                                 value={formData.model}
                                 onChange={handleChange}
-                                className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
                                 readOnly
+                                className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
                             />
                         </div>
                         <div className="flex flex-col">

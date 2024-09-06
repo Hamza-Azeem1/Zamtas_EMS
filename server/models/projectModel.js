@@ -35,10 +35,6 @@ const projectSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    budget: {
-        type: Number,
-        required: true
-    },
     productId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product'
