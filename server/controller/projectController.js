@@ -16,9 +16,8 @@ exports.checkProjectIdController = async (req, res) => {
 
 exports.addProjectController = async (req, res) => {
     try {
-        const { projectName, projectId, clientId, clientContact, startDate, endDate, projectManagerId, location, budget } = req.body;
+        const { projectName, projectId, clientId, clientContact, startDate, endDate, projectManagerId, location, budget, productId, quantity } = req.body;
 
-        // Check if project with the same ID already exists
         const existingProject = await Project.findOne({ projectId });
         if (existingProject) {
             return res.status(400).json({ message: 'Project with this ID already exists.' });
@@ -33,7 +32,9 @@ exports.addProjectController = async (req, res) => {
             endDate,
             projectManager: projectManagerId,
             location,
-            budget
+            budget,
+            productId,
+            quantity
         });
 
         await newProject.save();
@@ -48,7 +49,8 @@ exports.getProjectsController = async (req, res) => {
     try {
         const projects = await Project.find()
             .populate('clientId', 'clientName')
-            .populate('projectManager', 'name');
+            .populate('projectManager', 'name')
+            .populate('productId', 'name quantity model category subcategory');
 
         res.status(200).json({ message: 'Projects retrieved successfully!', data: projects });
     } catch (error) {

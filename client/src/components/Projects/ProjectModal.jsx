@@ -82,10 +82,7 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
                 setFormData(prev => ({
                     ...prev,
                     productId: selectedProduct._id,
-                    quantity: selectedProduct.quantity,
-                    category: selectedProduct.category,
-                    subcategory: selectedProduct.subcategory || 'N/A',
-                    model: selectedProduct.model
+                    quantity: '',
                 }));
             }
         }
@@ -157,7 +154,8 @@ const ProjectModal = ({ isOpen, onClose, onAdd }) => {
             ...formData,
             startDate: new Date(formData.startDate).toISOString(),
             endDate: new Date(formData.endDate).toISOString(),
-            budget: Number(formData.budget)
+            budget: Number(formData.budget),
+            quantity: Number(formData.quantity),
         };
 
         try {

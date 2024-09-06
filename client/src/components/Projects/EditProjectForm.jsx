@@ -26,7 +26,6 @@ const EditProjectForm = ({ project, onSave, onCancel }) => {
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
-        // Fetch clients, project managers, and products
         const fetchClientsManagersProducts = async () => {
             try {
                 const [clientsRes, managersRes, productsRes] = await Promise.all([
@@ -39,22 +38,23 @@ const EditProjectForm = ({ project, onSave, onCancel }) => {
                 setProjectManagers(managersRes.data.data);
                 setProducts(productsRes.data.data);
 
-                // Set form data based on the project
                 if (project) {
+                    const { productId, clientId, projectManager, ...rest } = project;
+
                     setFormData({
-                        projectName: project.projectName || '',
-                        projectId: project.projectId || '',
-                        clientId: project.clientId?._id || '',
-                        clientContact: project.clientContact || '',
-                        startDate: project.startDate ? new Date(project.startDate).toISOString().split('T')[0] : '',
-                        endDate: project.endDate ? new Date(project.endDate).toISOString().split('T')[0] : '',
-                        projectManagerId: project.projectManager?._id || '',
-                        productId: project.product?._id || '',
-                        quantity: project.product?.quantity || '',
-                        category: project.product?.category || '',
-                        subcategory: project.product?.subcategory || 'N/A',
-                        model: project.product?.model || '',
-                        budget: project.budget || ''
+                        projectName: rest.projectName || '',
+                        projectId: rest.projectId || '',
+                        clientId: clientId?._id || '',
+                        clientContact: rest.clientContact || '',
+                        startDate: rest.startDate ? new Date(rest.startDate).toISOString().split('T')[0] : '',
+                        endDate: rest.endDate ? new Date(rest.endDate).toISOString().split('T')[0] : '',
+                        projectManagerId: projectManager?._id || '',
+                        productId: productId?._id || '',
+                        quantity: rest.quantity || '',
+                        category: rest.category || '',
+                        subcategory: rest.subcategory || '',
+                        model: rest.model || '',
+                        budget: rest.budget || ''
                     });
                 }
             } catch (error) {
@@ -100,19 +100,15 @@ const EditProjectForm = ({ project, onSave, onCancel }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Ensure the URL is correctly formatted
             const url = `${Api.updateProject.url.replace(':projectId', project._id)}`;
 
-            // Update the project data on the server
             await axios.put(url, formData);
 
-            // Pass updated project data to onSave callback
             onSave({ ...project, ...formData });
         } catch (error) {
             console.error('Error updating project:', error);
         }
     };
-
 
     return (
         <div className="fixed inset-0 flex items-center justify-center p-6 bg-gray-800 bg-opacity-50">
@@ -253,7 +249,7 @@ const EditProjectForm = ({ project, onSave, onCancel }) => {
                             <label className="text-sm font-medium text-gray-700 mb-1">Subcategory:</label>
                             <input
                                 type="text"
-                                name="subCategory"
+                                name="subcategory"
                                 value={formData.subcategory}
                                 onChange={handleChange}
                                 className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
@@ -271,28 +267,33 @@ const EditProjectForm = ({ project, onSave, onCancel }) => {
                                 readOnly
                             />
                         </div>
-                        <div className="flex flex-col col-span-2">
+                        <div className="flex flex-col">
                             <label className="text-sm font-medium text-gray-700 mb-1">Budget:</label>
                             <input
                                 type="number"
                                 name="budget"
                                 value={formData.budget}
                                 onChange={handleChange}
-                                required
                                 className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
                             />
                         </div>
-                        <div className="flex justify-end col-span-2 mt-4">
+
+                        <div className="col-span-2 flex justify-end space-x-4">
+                            <button
+                                type="button"
+                                onClick={onCancel}
+                                className="bg-gray-400 text-white py-2 px-4 rounded hover:bg-gray-500"
+                            >
+                                Cancel
+                            </button>
                             <button
                                 type="submit"
-                                className="bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600"
+                                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
                             >
-                                Save Project
+                                Save Changes
                             </button>
                         </div>
                     </form>
-                </div>
-                <div className="flex justify-end p-6">
                 </div>
             </div>
         </div>

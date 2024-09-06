@@ -1,9 +1,9 @@
+// ProjectDetailsModal.js
 import PropTypes from 'prop-types';
 
 const ProjectDetailsModal = ({ project, onClose }) => {
     if (!project) return null;
 
-    // Ensure the product details are correctly displayed
     const product = project.productId || {};
 
     return (
@@ -19,7 +19,7 @@ const ProjectDetailsModal = ({ project, onClose }) => {
                     </button>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Existing fields */}
+                    {/* Existing project fields */}
                     <div className="flex flex-col">
                         <label className="font-medium text-gray-700">Project Name</label>
                         <div className="border border-gray-300 rounded-md p-2">{project.projectName}</div>
@@ -59,24 +59,24 @@ const ProjectDetailsModal = ({ project, onClose }) => {
 
                     {/* Product details */}
                     <div className="flex flex-col">
-                        <label className="font-medium text-gray-700">Product</label>
-                        <div className="border border-gray-300 rounded-md p-2">{product.productName || 'N/A'}</div>
+                        <label className="font-medium text-gray-700">Product Name</label>
+                        <div className="border border-gray-300 rounded-md p-2">{product.name || 'N/A'}</div>
                     </div>
                     <div className="flex flex-col">
-                        <label className="font-medium text-gray-700">Quantity</label>
+                        <label className="font-medium text-gray-700">Product Quantity</label>
                         <div className="border border-gray-300 rounded-md p-2">{project.quantity || 'N/A'}</div>
                     </div>
                     <div className="flex flex-col">
-                        <label className="font-medium text-gray-700">Category</label>
+                        <label className="font-medium text-gray-700">Product Model</label>
+                        <div className="border border-gray-300 rounded-md p-2">{product.model || 'N/A'}</div>
+                    </div>
+                    <div className="flex flex-col">
+                        <label className="font-medium text-gray-700">Product Category</label>
                         <div className="border border-gray-300 rounded-md p-2">{product.category || 'N/A'}</div>
                     </div>
                     <div className="flex flex-col">
-                        <label className="font-medium text-gray-700">Subcategory</label>
+                        <label className="font-medium text-gray-700">Product Subcategory</label>
                         <div className="border border-gray-300 rounded-md p-2">{product.subcategory || 'N/A'}</div>
-                    </div>
-                    <div className="flex flex-col">
-                        <label className="font-medium text-gray-700">Model</label>
-                        <div className="border border-gray-300 rounded-md p-2">{product.model || 'N/A'}</div>
                     </div>
                 </div>
             </div>
@@ -100,10 +100,11 @@ ProjectDetailsModal.propTypes = {
         location: PropTypes.string,
         budget: PropTypes.number,
         productId: PropTypes.shape({
-            productName: PropTypes.string,
+            name: PropTypes.string,
+            quantity: PropTypes.number,
+            model: PropTypes.string,
             category: PropTypes.string,
             subcategory: PropTypes.string,
-            model: PropTypes.string,
         }),
         quantity: PropTypes.number,
     }),

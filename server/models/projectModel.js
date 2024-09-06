@@ -38,6 +38,13 @@ const projectSchema = new mongoose.Schema({
     budget: {
         type: Number,
         required: true
+    },
+    productId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product'
+    },
+    quantity: {
+        type: Number
     }
 });
 
