@@ -104,7 +104,7 @@ const EditProjectForm = ({ project, onSave, onCancel }) => {
             const url = `${Api.updateProject.url.replace(':projectId', project._id)}`;
             const { data } = await axios.put(url, formData);
 
-            onSave(data);
+            onSave(data.data);
             onCancel();
         } catch (error) {
             console.error('Error updating project:', error);

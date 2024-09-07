@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import ProjectModal from './ProjectModal';
 import ProjectsTable from './ProjectsTable';
 import { FaPlusSquare } from 'react-icons/fa';
@@ -8,16 +8,10 @@ import Api from '../../common/index';
 
 const Projects = () => {
     const [isModalOpen, setModalOpen] = useState(false);
-    const [refreshKey, setRefreshKey] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [projects, setProjects] = useState([]);
 
-    const handleAddProject = () => {
-        setModalOpen(false);
-        setRefreshKey(prev => prev + 1);
-    };
-
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         setIsLoading(true);
         try {
             const response = await axios.get(Api.getProject.url);
@@ -27,11 +21,24 @@ const Projects = () => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
         fetchData();
-    }, [refreshKey]);
+    }, [fetchData]);
+
+    const handleAddProject = () => {
+        setModalOpen(false);
+        fetchData();
+    };
+
+    const handleUpdateProject = (updatedProject) => {
+        setProjects(prevProjects =>
+            prevProjects.map(project =>
+                project._id === updatedProject._id ? updatedProject : project
+            )
+        );
+    };
 
     return (
         <div className="p-6 bg-gray-50 rounded-lg shadow-md space-y-4">
@@ -48,7 +55,10 @@ const Projects = () => {
                 </div>
             ) : (
                 <div className="overflow-x-auto">
-                    <ProjectsTable projects={projects} />
+                    <ProjectsTable
+                        projects={projects}
+                        onUpdateProject={handleUpdateProject}
+                    />
                 </div>
             )}
             <ProjectModal
