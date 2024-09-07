@@ -33,7 +33,7 @@ function UserHome() {
 
     const getStatusColor = (status) => {
         switch (status) {
-            case 'Started':
+            case 'Assigned':
                 return 'text-yellow-400 font-medium';
             case 'In Progress':
                 return 'text-pink-800 font-medium';
@@ -203,7 +203,7 @@ function UserHome() {
     const filteredTasks = tasks.filter(task => {
         switch (activeTab) {
             case 0: return true; // All
-            case 1: return task.status === 'Started';
+            case 1: return task.status === 'Assigned';
             case 2: return task.status === 'In Progress';
             case 3: return task.status === 'Done';
             case 4: return task.status === 'Delayed';
@@ -237,7 +237,7 @@ function UserHome() {
                             <FaList className="mr-2" /> All ({tasks.length})
                         </Tab>
                         <Tab className="py-2 px-3 cursor-pointer flex items-center border-b-2 hover:text-yellow-600 transition duration-300 text-sm sm:text-base">
-                            <FaPlay className="mr-2" /> Started ({getTaskCountByStatus('Started')})
+                            <FaPlay className="mr-2" /> Assigned ({getTaskCountByStatus('Assigned')})
                         </Tab>
                         <Tab className="py-2 px-3 cursor-pointer flex items-center border-b-2 hover:text-pink-600 transition duration-300 text-sm sm:text-base">
                             <FaHourglassHalf className="mr-2" /> In Progress ({getTaskCountByStatus('In Progress')})
@@ -283,10 +283,10 @@ function UserHome() {
                             )}
                         </TabPanel>
                         <TabPanel>
-                            {filteredTasks.filter((task) => task.status === 'Started').length > 0 ? (
+                            {filteredTasks.filter((task) => task.status === 'Assigned').length > 0 ? (
                                 <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                                     {filteredTasks
-                                        .filter((task) => task.status === 'Started')
+                                        .filter((task) => task.status === 'Assigned')
                                         .map((task) => (
                                             <div
                                                 key={task._id}
@@ -313,7 +313,7 @@ function UserHome() {
                                         ))}
                                 </div>
                             ) : (
-                                <p className='text-center text-2xl font-semibold'>No tasks started yet</p>
+                                <p className='text-center text-2xl font-semibold'>No tasks Assigned yet</p>
                             )}
                         </TabPanel>
                         <TabPanel>

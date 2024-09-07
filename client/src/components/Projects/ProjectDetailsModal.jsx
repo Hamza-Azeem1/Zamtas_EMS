@@ -1,4 +1,4 @@
-// ProjectDetailsModal.js
+import { FaTimes } from 'react-icons/fa';
 import PropTypes from 'prop-types';
 
 const ProjectDetailsModal = ({ project, onClose }) => {
@@ -11,11 +11,14 @@ const ProjectDetailsModal = ({ project, onClose }) => {
             <div className="bg-white rounded-lg overflow-hidden shadow-lg w-full max-w-4xl p-8 m-4 max-h-[90vh] overflow-y-auto">
                 <div className="flex justify-between items-center mb-6 border-b border-gray-300 pb-4">
                     <h2 className="text-2xl font-semibold text-gray-800">Project Details</h2>
+                    <button className="bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 flex items-center">
+                        Fill Production Sheet
+                    </button>
                     <button
                         onClick={onClose}
-                        className="text-gray-700 hover:text-gray-900 text-3xl font-bold"
+                        className="text-gray-700 hover:text-gray-900 text-2xl"
                     >
-                        &times;
+                        <FaTimes />
                     </button>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
