@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaEdit, FaEye } from 'react-icons/fa';
+import { FaEdit, FaEye, FaFileAlt } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import Api from '../../common/index';
 import Pagination from '../Pagination';
 import EditProjectForm from './EditProjectForm';
@@ -12,6 +13,7 @@ const ProjectsTable = () => {
     const [projectsPerPage] = useState(10);
     const [editingProject, setEditingProject] = useState(null);
     const [selectedProject, setSelectedProject] = useState(null);
+    const navigate = useNavigate(); // Initialize useNavigate
 
     useEffect(() => {
         const fetchProjects = async () => {
@@ -43,6 +45,10 @@ const ProjectsTable = () => {
 
     const handleViewDetails = (project) => {
         setSelectedProject(project);
+    };
+
+    const handleFillProductionSheet = (project) => {
+        navigate('/sheet', { state: { project } }); // Pass project data as state
     };
 
     const closeModal = () => {
@@ -130,6 +136,14 @@ const ProjectsTable = () => {
                                                 title="Edit Project"
                                             >
                                                 <FaEdit />
+                                            </button>
+                                            <button
+                                                onClick={() => handleFillProductionSheet(project)}
+                                                className="text-red-500 hover:text-red-700 text-xl"
+                                                title="Fill Production Sheet"
+                                            >
+                                                {/* Replace with appropriate icon */}
+                                                <FaFileAlt />
                                             </button>
                                         </div>
                                     </td>

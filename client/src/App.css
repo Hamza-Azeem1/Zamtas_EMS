@@ -19,3 +19,31 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.production-table th,
+.production-table td {
+  border: 1px solid #0000ff; /* Blue color for column borders */
+  text-align: left;
+  padding: 10px; /* Increased padding for better readability */
+}
+
+.production-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.production-table th {
+  background-color: #f8f8f8;
+  font-weight: bold;
+}
+
+.production-table td {
+  background-color: #fff;
+}
+
+.production-table td input {
+  border: 1px solid #d1d5db; /* Light gray border for inputs */
+  border-radius: 4px; /* Rounded corners */
+  padding: 8px; /* Padding inside input fields */
+  box-sizing: border-box; /* Ensure padding and border are included in the width */
+}
