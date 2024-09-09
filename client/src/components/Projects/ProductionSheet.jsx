@@ -1,7 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import ProductDetails from './ProductDetails'
-import logo from '../../../public/logo.png'
+import ProductDetails from './ProductDetails';
+import logo from '../../../public/logo.png';
 
 const ProductionSheet = () => {
     const { state } = useLocation();
@@ -11,7 +11,6 @@ const ProductionSheet = () => {
         return <div>No project data available</div>;
     }
 
-
     // Safely access nested properties with fallbacks for undefined values
     const clientName = project?.clientId?.clientName || 'N/A';
     const clientContact = project?.clientContact || 'N/A';
@@ -20,7 +19,6 @@ const ProductionSheet = () => {
     const projectManagerName = project?.projectManager?.name || 'N/A';
     const startDate = project?.startDate ? new Date(project.startDate).toLocaleDateString() : 'N/A';
     const endDate = project?.endDate ? new Date(project.endDate).toLocaleDateString() : 'N/A';
-    const budget = project?.budget || '';
 
     // Product details
     const product = project?.productId || {};
@@ -29,6 +27,7 @@ const ProductionSheet = () => {
     const productCategory = product?.category || 'N/A';
     const productSubcategory = product?.subcategory || 'N/A';
     const productQuantity = project?.quantity || 'N/A';
+    const projectId = project?.projectId || 'N/A';
 
     return (
         <div className="p-10 bg-gray-100">
@@ -121,10 +120,10 @@ const ProductionSheet = () => {
                         />
                     </div>
                     <div className="w-1/3 p-4">
-                        <label className="font-bold">Budget</label>
+                        <label className="font-bold">Project ID</label>
                         <input
                             type="text"
-                            value={budget}
+                            value={projectId}
                             className="border-b border-gray-300 w-full p-2"
                             readOnly
                         />
