@@ -1,10 +1,31 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Api from '../../common';
 import PropTypes from 'prop-types';
 
+const AutoResizeTextarea = ({ value, onChange }) => {
+    const textareaRef = useRef(null);
+
+    useEffect(() => {
+        const textarea = textareaRef.current;
+        if (textarea) {
+            textarea.style.height = 'auto'; // Reset height
+            textarea.style.height = `${textarea.scrollHeight}px`; // Set new height
+        }
+    }, [value]); // Adjust height when value changes
+
+    return (
+        <textarea
+            ref={textareaRef}
+            className="w-full p-1 resize-none overflow-hidden"
+            rows="1"
+            value={value}
+            onChange={onChange}
+        />
+    );
+};
+
 const ProductDetails = ({ projectId }) => {
-    // State to hold the form data
     const [productDetails, setProductDetails] = useState({
         productDetails: ['', ''],
         sizes: ['', ''],
@@ -95,52 +116,40 @@ const ProductDetails = ({ projectId }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {Array.from({ length: 2 }).map((_, idx) => (
+                        {Array.from({ length: 3 }).map((_, idx) => (
                             <tr key={idx}>
                                 <td className="p-2 border">
-                                    <textarea
-                                        className="w-full p-1 resize-none overflow-hidden"
-                                        rows="1"
+                                    <AutoResizeTextarea
                                         value={productDetails.productDetails[idx] || ''}
                                         onChange={(e) => handleInputChange(e, 'productDetails', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
-                                    <textarea
-                                        className="w-full p-1 resize-none overflow-hidden"
-                                        rows="1"
+                                    <AutoResizeTextarea
                                         value={productDetails.sizes[idx] || ''}
                                         onChange={(e) => handleInputChange(e, 'sizes', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
-                                    <textarea
-                                        className="w-full p-1 resize-none overflow-hidden"
-                                        rows="1"
+                                    <AutoResizeTextarea
                                         value={productDetails.activationOption[idx] || ''}
                                         onChange={(e) => handleInputChange(e, 'activationOption', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
-                                    <textarea
-                                        className="w-full p-1 resize-none overflow-hidden"
-                                        rows="1"
+                                    <AutoResizeTextarea
                                         value={productDetails.qty[idx] || ''}
                                         onChange={(e) => handleInputChange(e, 'qty', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
-                                    <textarea
-                                        className="w-full p-1 resize-none overflow-hidden"
-                                        rows="1"
+                                    <AutoResizeTextarea
                                         value={productDetails.projectAddress[idx] || ''}
                                         onChange={(e) => handleInputChange(e, 'projectAddress', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
-                                    <textarea
-                                        className="w-full p-1 resize-none overflow-hidden"
-                                        rows="1"
+                                    <AutoResizeTextarea
                                         value={productDetails.otherDetails[idx] || ''}
                                         onChange={(e) => handleInputChange(e, 'otherDetails', idx)}
                                     />
@@ -168,41 +177,31 @@ const ProductDetails = ({ projectId }) => {
                         {Array.from({ length: 5 }).map((_, idx) => (
                             <tr key={idx}>
                                 <td className="p-2 border">
-                                    <textarea
-                                        className="w-full p-1 resize-none overflow-hidden"
-                                        rows="1"
+                                    <AutoResizeTextarea
                                         value={productDetails.sensorType[idx] || ''}
                                         onChange={(e) => handleInputChange(e, 'sensorType', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
-                                    <textarea
-                                        className="w-full p-1 resize-none overflow-hidden"
-                                        rows="1"
+                                    <AutoResizeTextarea
                                         value={productDetails.model[idx] || ''}
                                         onChange={(e) => handleInputChange(e, 'model', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
-                                    <textarea
-                                        className="w-full p-1 resize-none overflow-hidden"
-                                        rows="1"
+                                    <AutoResizeTextarea
                                         value={productDetails.sensorQty[idx] || ''}
                                         onChange={(e) => handleInputChange(e, 'sensorQty', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
-                                    <textarea
-                                        className="w-full p-1 resize-none overflow-hidden"
-                                        rows="1"
+                                    <AutoResizeTextarea
                                         value={productDetails.pickUpAddress[idx] || ''}
                                         onChange={(e) => handleInputChange(e, 'pickUpAddress', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
-                                    <textarea
-                                        className="w-full p-1 resize-none overflow-hidden"
-                                        rows="1"
+                                    <AutoResizeTextarea
                                         value={productDetails.sensorOtherDetails[idx] || ''}
                                         onChange={(e) => handleInputChange(e, 'sensorOtherDetails', idx)}
                                     />
@@ -239,20 +238,10 @@ const ProductDetails = ({ projectId }) => {
                                 <input type="checkbox" className="mr-2" />
                                 <span>Dimensions</span>
                             </div>
-                            <div className="ml-4 flex flex-col md:flex-row items-center">
-                                <div className="relative inline-flex w-full md:w-1/2">
-                                    <input
-                                        type="text"
-                                        className="border border-gray-300 rounded-md p-1 pl-20 pr-20 w-full"
-                                    />
-
-                                    <div
-                                        className="absolute inset-y-0 left-1/2 transform -translate-x-1/2 w-1 border-l border-gray-500"
-                                    ></div>
-                                </div>
-                            </div>
-
-
+                            <input
+                                type="text"
+                                className="border border-gray-300 rounded-md p-1 w-full"
+                            />
                             <div className="flex items-center">
                                 <input type="checkbox" className="mr-2" />
                                 <span>High Speed PVC Roll Up Doors</span>

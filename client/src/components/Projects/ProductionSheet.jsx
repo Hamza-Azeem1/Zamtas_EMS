@@ -27,7 +27,8 @@ const ProductionSheet = () => {
     const productCategory = product?.category || 'N/A';
     const productSubcategory = product?.subcategory || 'N/A';
     const productQuantity = project?.quantity || 'N/A';
-    const projectId = project?._id || 'N/A'; // Updated to match backend convention
+    const projectId = project?._id || 'N/A';
+    const projectID = project?.projectId || 'N/A';
 
     return (
         <div className="p-10 bg-gray-100">
@@ -39,6 +40,10 @@ const ProductionSheet = () => {
             <h2 className="text-3xl font-bold text-center text-blue-800 mb-8">
                 ZAMTAS Product Sheet
             </h2>
+
+            <div className='text-gray-900 text-right'>
+                Last Updated By: admin
+            </div>
 
             <div className="border border-gray-300 mb-4">
                 {/* Client Information */}
@@ -123,7 +128,7 @@ const ProductionSheet = () => {
                         <label className="font-bold">Project ID</label>
                         <input
                             type="text"
-                            value={projectId}
+                            value={projectID}
                             className="border-b border-gray-300 w-full p-2"
                             readOnly
                         />
