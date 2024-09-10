@@ -1,10 +1,88 @@
-const ProductDetails = () => {
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import Api from '../../common';
+import PropTypes from 'prop-types';
+
+const ProductDetails = ({ projectId }) => {
+    // State to hold the form data
+    const [productDetails, setProductDetails] = useState({
+        productDetails: ['', ''],
+        sizes: ['', ''],
+        activationOption: ['', ''],
+        qty: ['', ''],
+        projectAddress: ['', ''],
+        otherDetails: ['', ''],
+        sensorType: ['', '', '', '', ''],
+        model: ['', '', '', '', ''],
+        sensorQty: ['', '', '', '', ''],
+        pickUpAddress: ['', '', '', '', ''],
+        sensorOtherDetails: ['', '', '', '', '']
+    });
+
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    // Fetch data from backend when the component loads
+    useEffect(() => {
+        if (projectId) {
+            axios.get(`${Api.getSheet.url.replace(':projectId', projectId)}`)
+                .then(response => {
+                    if (response.data.success && response.data.data) {
+                        setProductDetails(response.data.data.sheetData);
+                    } else {
+                        setError('Failed to fetch production sheet data');
+                    }
+                    setLoading(false);
+                })
+                .catch(error => {
+                    console.error('Error fetching production sheet:', error);
+                    setError('Error fetching production sheet');
+                    setLoading(false);
+                });
+        }
+    }, [projectId]);
+
+    // Handle input changes for form fields
+    const handleInputChange = (e, category, index) => {
+        const updatedCategory = [...productDetails[category]];
+        updatedCategory[index] = e.target.value;
+        setProductDetails({
+            ...productDetails,
+            [category]: updatedCategory
+        });
+    };
+
+    // Submit the form and save data to the backend
+    const handleSubmit = () => {
+        axios.post(Api.saveSheet.url, {
+            projectId,
+            sheetData: productDetails
+        })
+            .then(response => {
+                if (response.data.success) {
+                    alert('Production sheet saved successfully');
+                } else {
+                    alert('Failed to save production sheet');
+                }
+            })
+            .catch(error => {
+                console.error('Error saving production sheet:', error);
+                alert('Error saving production sheet');
+            });
+    };
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
+
     return (
         <>
             <div className="mb-6">
-                <h3 className="text-xl font-bold text-blue-700 mb-4">
-                    Production Details
-                </h3>
+                <h3 className="text-xl font-bold text-blue-700 mb-4">Production Details</h3>
                 <table className="production-table w-full table-auto border-collapse">
                     <thead>
                         <tr className="bg-gray-100">
@@ -23,75 +101,59 @@ const ProductDetails = () => {
                                     <textarea
                                         className="w-full p-1 resize-none overflow-hidden"
                                         rows="1"
-                                        onInput={(e) => {
-                                            e.target.style.height = "auto";
-                                            e.target.style.height = e.target.scrollHeight + "px";
-                                        }}
+                                        value={productDetails.productDetails[idx] || ''}
+                                        onChange={(e) => handleInputChange(e, 'productDetails', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
                                     <textarea
                                         className="w-full p-1 resize-none overflow-hidden"
                                         rows="1"
-                                        onInput={(e) => {
-                                            e.target.style.height = "auto";
-                                            e.target.style.height = e.target.scrollHeight + "px";
-                                        }}
+                                        value={productDetails.sizes[idx] || ''}
+                                        onChange={(e) => handleInputChange(e, 'sizes', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
                                     <textarea
                                         className="w-full p-1 resize-none overflow-hidden"
                                         rows="1"
-                                        onInput={(e) => {
-                                            e.target.style.height = "auto";
-                                            e.target.style.height = e.target.scrollHeight + "px";
-                                        }}
+                                        value={productDetails.activationOption[idx] || ''}
+                                        onChange={(e) => handleInputChange(e, 'activationOption', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
                                     <textarea
                                         className="w-full p-1 resize-none overflow-hidden"
                                         rows="1"
-                                        onInput={(e) => {
-                                            e.target.style.height = "auto";
-                                            e.target.style.height = e.target.scrollHeight + "px";
-                                        }}
+                                        value={productDetails.qty[idx] || ''}
+                                        onChange={(e) => handleInputChange(e, 'qty', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
                                     <textarea
                                         className="w-full p-1 resize-none overflow-hidden"
                                         rows="1"
-                                        onInput={(e) => {
-                                            e.target.style.height = "auto";
-                                            e.target.style.height = e.target.scrollHeight + "px";
-                                        }}
+                                        value={productDetails.projectAddress[idx] || ''}
+                                        onChange={(e) => handleInputChange(e, 'projectAddress', idx)}
                                     />
                                 </td>
-
                                 <td className="p-2 border">
                                     <textarea
                                         className="w-full p-1 resize-none overflow-hidden"
                                         rows="1"
-                                        onInput={(e) => {
-                                            e.target.style.height = "auto";
-                                            e.target.style.height = e.target.scrollHeight + "px";
-                                        }}
+                                        value={productDetails.otherDetails[idx] || ''}
+                                        onChange={(e) => handleInputChange(e, 'otherDetails', idx)}
                                     />
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
-
-
             </div>
+
             {/* Activation and Sensors Section */}
             <div>
-                <h3 className="text-xl font-bold text-blue-700 mb-4">
-                    Activation and Sensors
-                </h3>
+                <h3 className="text-xl font-bold text-blue-700 mb-4">Activation and Sensors</h3>
                 <table className="production-table w-full table-auto border-collapse">
                     <thead>
                         <tr className="bg-gray-100">
@@ -109,50 +171,40 @@ const ProductDetails = () => {
                                     <textarea
                                         className="w-full p-1 resize-none overflow-hidden"
                                         rows="1"
-                                        onInput={(e) => {
-                                            e.target.style.height = "auto";
-                                            e.target.style.height = e.target.scrollHeight + "px";
-                                        }}
+                                        value={productDetails.sensorType[idx] || ''}
+                                        onChange={(e) => handleInputChange(e, 'sensorType', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
                                     <textarea
                                         className="w-full p-1 resize-none overflow-hidden"
                                         rows="1"
-                                        onInput={(e) => {
-                                            e.target.style.height = "auto";
-                                            e.target.style.height = e.target.scrollHeight + "px";
-                                        }}
+                                        value={productDetails.model[idx] || ''}
+                                        onChange={(e) => handleInputChange(e, 'model', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
                                     <textarea
                                         className="w-full p-1 resize-none overflow-hidden"
                                         rows="1"
-                                        onInput={(e) => {
-                                            e.target.style.height = "auto";
-                                            e.target.style.height = e.target.scrollHeight + "px";
-                                        }}
+                                        value={productDetails.sensorQty[idx] || ''}
+                                        onChange={(e) => handleInputChange(e, 'sensorQty', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
                                     <textarea
                                         className="w-full p-1 resize-none overflow-hidden"
                                         rows="1"
-                                        onInput={(e) => {
-                                            e.target.style.height = "auto";
-                                            e.target.style.height = e.target.scrollHeight + "px";
-                                        }}
+                                        value={productDetails.pickUpAddress[idx] || ''}
+                                        onChange={(e) => handleInputChange(e, 'pickUpAddress', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
                                     <textarea
                                         className="w-full p-1 resize-none overflow-hidden"
                                         rows="1"
-                                        onInput={(e) => {
-                                            e.target.style.height = "auto";
-                                            e.target.style.height = e.target.scrollHeight + "px";
-                                        }}
+                                        value={productDetails.sensorOtherDetails[idx] || ''}
+                                        onChange={(e) => handleInputChange(e, 'sensorOtherDetails', idx)}
                                     />
                                 </td>
                             </tr>
@@ -160,7 +212,6 @@ const ProductDetails = () => {
                     </tbody>
                 </table>
             </div>
-
 
             <div className="flex justify-between p-4 bg-gray-100 font-sans">
                 <div className="w-1/2 pr-4">
@@ -243,7 +294,22 @@ const ProductDetails = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Submit Button */}
+            <div className="mt-4">
+                <button
+                    onClick={handleSubmit}
+                    className="bg-blue-600 text-white px-4 py-2 rounded"
+                >
+                    Save Details
+                </button>
+            </div>
         </>
-    )
-}
-export default ProductDetails
+    );
+};
+
+ProductDetails.propTypes = {
+    projectId: PropTypes.string.isRequired
+};
+
+export default ProductDetails;

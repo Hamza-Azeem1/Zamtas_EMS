@@ -129,6 +129,14 @@ const Api = {
         url: `${backendDomain}/api/products/:id`,
         method: "delete"
     },
+    saveSheet: {
+        url: `${backendDomain}/api/production-sheet/save`,
+        method: "post"
+    },
+    getSheet: {
+        url: `${backendDomain}/api/production-sheet/:projectId`,
+        method: "get"
+    },
 };
 
 export default Api;

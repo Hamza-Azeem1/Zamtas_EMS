@@ -27,7 +27,7 @@ const ProductionSheet = () => {
     const productCategory = product?.category || 'N/A';
     const productSubcategory = product?.subcategory || 'N/A';
     const productQuantity = project?.quantity || 'N/A';
-    const projectId = project?.projectId || 'N/A';
+    const projectId = project?._id || 'N/A'; // Updated to match backend convention
 
     return (
         <div className="p-10 bg-gray-100">
@@ -181,23 +181,15 @@ const ProductionSheet = () => {
                         />
                     </div>
                 </div>
+                <ProductDetails projectId={projectId} />
 
-                <ProductDetails />
-
-            </div>
-            <div className="text-center mt-8">
-                <button
-                    className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700"
-                >
-                    Save Sheet
-                </button>
             </div>
         </div>
     );
 };
 
 ProductionSheet.propTypes = {
-    project: PropTypes.object.isRequired,
+    project: PropTypes.object,
 };
 
 export default ProductionSheet;
