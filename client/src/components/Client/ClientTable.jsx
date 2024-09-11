@@ -32,14 +32,14 @@ const ClientTable = ({ clients, onView, onEdit }) => {
                                     className="mr-2 text-blue-600 hover:text-blue-800 transition-colors duration-300"
                                     title="View Client"
                                 >
-                                    <FaEye className="text-lg" />
+                                    <FaEye size={20} />
                                 </button>
                                 <button
                                     onClick={() => onEdit(client)}
                                     className="text-green-600 hover:text-green-800 transition-colors duration-300"
                                     title="Edit Client"
                                 >
-                                    <FaEdit className="text-lg" />
+                                    <FaEdit size={20} />
                                 </button>
                             </td>
                         </tr>

@@ -60,14 +60,14 @@ const TaskTable = ({ tasks, onView, onEdit, showEdit }) => {
                                     onClick={() => onView(task)}
                                     className="text-blue-500 hover:text-blue-700 mr-2"
                                 >
-                                    <FaEye />
+                                    <FaEye size={20} />
                                 </button>
                                 {showEdit && (
                                     <button
                                         onClick={() => onEdit(task)}
                                         className="text-green-500 hover:text-green-700"
                                     >
-                                        <FaEdit />
+                                        <FaEdit size={20} />
                                     </button>
                                 )}
                             </td>

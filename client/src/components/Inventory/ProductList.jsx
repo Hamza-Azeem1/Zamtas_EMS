@@ -63,19 +63,19 @@ const ProductList = ({ onEditClick, onDelete, onViewClick }) => {
                                         className="text-blue-500 hover:text-blue-700 mr-2"
                                         onClick={() => onEditClick(product)}
                                     >
-                                        <FaEdit />
+                                        <FaEdit size={20} />
                                     </button>
                                     <button
                                         className="text-red-500 hover:text-red-700"
                                         onClick={() => handleDelete(product._id)}
                                     >
-                                        <FaTrash />
+                                        <FaTrash size={20} />
                                     </button>
                                     <button
                                         className="text-blue-500 hover:text-blue-700 ml-2"
                                         onClick={() => onViewClick(product)}
                                     >
-                                        <FaEye />
+                                        <FaEye size={20} />
                                     </button>
                                 </td>
                             </tr>

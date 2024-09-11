@@ -128,22 +128,21 @@ const ProjectsTable = () => {
                                                 className="text-blue-500 hover:text-blue-700 text-xl"
                                                 title="View Details"
                                             >
-                                                <FaEye />
+                                                <FaEye size={20} />
                                             </button>
                                             <button
                                                 onClick={() => handleEditProject(project)}
                                                 className="text-green-500 hover:text-green-700 text-xl"
                                                 title="Edit Project"
                                             >
-                                                <FaEdit />
+                                                <FaEdit size={20} />
                                             </button>
                                             <button
                                                 onClick={() => handleFillProductionSheet(project)}
                                                 className="text-red-500 hover:text-red-700 text-xl"
                                                 title="Fill Production Sheet"
                                             >
-                                                {/* Replace with appropriate icon */}
-                                                <FaFileAlt />
+                                                <FaFileAlt size={20} />
                                             </button>
                                         </div>
                                     </td>

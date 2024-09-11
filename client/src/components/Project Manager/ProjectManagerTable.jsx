@@ -42,17 +42,17 @@ const ProjectManagerTable = ({ managers, onEdit, onView }) => {
                                 <div className="flex justify-center space-x-4">
                                     <button
                                         onClick={() => onView(manager)}
-                                        className="text-blue-500 hover:text-blue-700 text-xl"
+                                        className="text-blue-500 hover:text-blue-700"
                                         title="View Details"
                                     >
-                                        <FaEye />
+                                        <FaEye size={20} />
                                     </button>
                                     <button
                                         onClick={() => onEdit(manager)}
-                                        className="text-green-500 hover:text-green-700 text-xl"
+                                        className="text-green-500 hover:text-green-700"
                                         title="Edit Manager"
                                     >
-                                        <FaEdit />
+                                        <FaEdit size={20} />
                                     </button>
                                 </div>
                             </td>
