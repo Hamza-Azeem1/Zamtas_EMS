@@ -5,6 +5,7 @@ import TaskModal from '../components/Task/TaskModal';
 import Spinner from '../components/Spinner';
 import Api from '../common/index';
 import { FaUsers, FaProjectDiagram, FaUserTie, FaUserFriends } from 'react-icons/fa';
+import NotificationBar from '../components/NotificationBar';
 
 const Dashboard = () => {
     const [clientCount, setClientCount] = useState(0);
@@ -116,6 +117,7 @@ const Dashboard = () => {
 
     return (
         <div className="p-6 bg-gray-100 overflow-x-hidden">
+            <NotificationBar />
             {isLoading ? (
                 <div className="flex justify-center items-center h-screen">
                     <Spinner />
@@ -141,7 +143,7 @@ const Dashboard = () => {
                     {/* Tabs Section */}
                     <h3 className='text-2xl font-semibold mb-4 mt-4'>Task Overview</h3>
                     <div className="bg-white p-4 rounded-lg shadow-md">
-                        <div className="flex space-x-4 mb-6">
+                        <div className="flex justify-center space-x-4 mb-6">
                             {['All', 'Assigned', 'In Progress', 'Done', 'Delayed'].map(status => (
                                 <button
                                     key={status}
@@ -155,14 +157,14 @@ const Dashboard = () => {
                                 </button>
                             ))}
                         </div>
+
                         {filteredTasks.length > 0 ? (
                             <div className="overflow-x-auto">
                                 <TaskTable
-                                    tasks={tasks}
+                                    tasks={filteredTasks} // Use filteredTasks instead of tasks
                                     onView={handleViewTask}
                                     showEdit={false} // Only show the eye icon
                                 />
-
                             </div>
                         ) : (
                             <p className="text-center font-bold text-gray-600">No tasks available for {activeTab} status</p>
