@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Api from '../../common/index';
 import { FaEdit, FaTrash, FaEye } from 'react-icons/fa';
+import Spinner from '../Spinner';
 
 const ProductList = ({ onEditClick, onDelete, onViewClick }) => {
     const [products, setProducts] = useState([]);
@@ -35,7 +36,7 @@ const ProductList = ({ onEditClick, onDelete, onViewClick }) => {
             .catch(error => console.error(error));
     };
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <Spinner />;
     if (error) return <div>Error: {error}</div>;
 
     return (

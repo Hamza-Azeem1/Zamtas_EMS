@@ -16,7 +16,6 @@ const ClientModal = ({ isOpen, onClose, onSave, onUpdate, clientData, modalType 
 
     useEffect(() => {
         if (clientData) {
-            // Filter out '_id' and '__v' fields
             const { _id, __v, ...filteredData } = clientData;
             setFormData(filteredData);
         }
@@ -29,14 +28,16 @@ const ClientModal = ({ isOpen, onClose, onSave, onUpdate, clientData, modalType 
 
     const validateForm = () => {
         const { clientName, clientContact, clientAddress, clientEmail, clientContactPerson } = formData;
+        const errors = {
+            clientName: !/^[A-Za-z\s]+$/.test(clientName) ? "should only contain alphabets and spaces." : '',
+            clientContact: !/^[0-9]+$/.test(clientContact) ? "should only contain numbers." : '',
+            clientAddress: !/^[A-Za-z\s]+$/.test(clientAddress) ? "should only contain alphabets and spaces." : '',
+            clientEmail: !/^\S+@\S+\.\S+$/.test(clientEmail) ? "Invalid email format." : '',
+            clientContactPerson: !/^[A-Za-z\s]+$/.test(clientContactPerson) ? "should only contain alphabets and spaces." : '',
+        };
 
-        if (!/^[A-Za-z\s]+$/.test(clientName)) return "Client Name should only contain alphabets and spaces.";
-        if (!/^[0-9]+$/.test(clientContact)) return "Client Contact should only contain numbers.";
-        if (!/^[A-Za-z\s]+$/.test(clientAddress)) return "Client Address should only contain alphabets and spaces.";
-        if (!/^\S+@\S+\.\S+$/.test(clientEmail)) return "Invalid email format.";
-        if (!/^[A-Za-z\s]+$/.test(clientContactPerson)) return "Client Contact Person should only contain alphabets and spaces.";
-
-        return '';
+        const errorMessage = Object.values(errors).find(msg => msg) || '';
+        return errorMessage;
     };
 
     const handleSubmit = async (e) => {
@@ -52,7 +53,7 @@ const ClientModal = ({ isOpen, onClose, onSave, onUpdate, clientData, modalType 
         try {
             let response;
             if (modalType === 'edit') {
-                response = await axios.put(`${Api.updateClient.url.replace(':id', clientData._id)}`, formData);
+                response = await axios.put(Api.updateClient.url.replace(':id', clientData._id), formData);
                 onUpdate(response.data.data);
             } else {
                 response = await axios.post(Api.addClient.url, formData);

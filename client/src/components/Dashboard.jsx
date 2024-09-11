@@ -30,7 +30,7 @@ const Dashboard = () => {
 
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
-    const [tasksPerPage] = useState(10);
+    const tasksPerPage = 10;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -51,7 +51,7 @@ const Dashboard = () => {
                 const allTasks = tasksRes.data.data || [];
                 setTasks(allTasks);
 
-                const taskCounts = {
+                const updatedTaskCounts = {
                     Assigned: allTasks.filter(task => task.status === 'Assigned').length,
                     Delayed: allTasks.filter(task => task.status === 'Delayed').length,
                     Done: allTasks.filter(task => task.status === 'Done').length,
@@ -59,7 +59,7 @@ const Dashboard = () => {
                     All: allTasks.length
                 };
 
-                setTaskCounts(taskCounts);
+                setTaskCounts(updatedTaskCounts);
                 setFilteredTasks(allTasks);
             } catch (error) {
                 console.error("Error fetching data", error);
@@ -73,24 +73,14 @@ const Dashboard = () => {
 
     useEffect(() => {
         const filterTasks = () => {
-            let filtered;
-            switch (activeTab) {
-                case 'Assigned':
-                    filtered = tasks.filter(task => task.status === 'Assigned');
-                    break;
-                case 'Delayed':
-                    filtered = tasks.filter(task => task.status === 'Delayed');
-                    break;
-                case 'Done':
-                    filtered = tasks.filter(task => task.status === 'Done');
-                    break;
-                case 'In Progress':
-                    filtered = tasks.filter(task => task.status === 'In Progress');
-                    break;
-                default:
-                    filtered = tasks;
-            }
-            setFilteredTasks(filtered);
+            const filterMap = {
+                Assigned: task => task.status === 'Assigned',
+                Delayed: task => task.status === 'Delayed',
+                Done: task => task.status === 'Done',
+                'In Progress': task => task.status === 'In Progress',
+                All: () => true
+            };
+            setFilteredTasks(tasks.filter(filterMap[activeTab]));
         };
 
         filterTasks();
@@ -101,7 +91,6 @@ const Dashboard = () => {
     const indexOfFirstTask = indexOfLastTask - tasksPerPage;
     const currentTasks = filteredTasks.slice(indexOfFirstTask, indexOfLastTask);
 
-    // Function to handle page changes
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     const handleViewTask = (task) => {
@@ -139,15 +128,15 @@ const Dashboard = () => {
                 <>
                     {/* Cards Section */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
-                        {cards.map((card, index) => (
+                        {cards.map(({ title, count, icon: Icon }, index) => (
                             <div
                                 key={index}
                                 className="p-6 bg-white border border-gray-200 rounded-xl shadow-md hover:shadow-2xl transition-shadow duration-300 flex items-center space-x-4 transform hover:scale-105"
                             >
-                                <card.icon className="text-4xl text-blue-500" />
+                                <Icon className="text-4xl text-blue-500" />
                                 <div>
-                                    <h3 className="text-xl font-semibold text-gray-800 mb-1">{card.title}</h3>
-                                    <p className="text-3xl font-medium text-center text-gray-900">{card.count}</p>
+                                    <h3 className="text-xl font-semibold text-gray-800 mb-1">{title}</h3>
+                                    <p className="text-3xl font-medium text-center text-gray-900">{count}</p>
                                 </div>
                             </div>
                         ))}

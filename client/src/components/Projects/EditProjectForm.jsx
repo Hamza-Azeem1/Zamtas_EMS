@@ -1,4 +1,3 @@
-
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -67,35 +66,35 @@ const EditProjectForm = ({ project, onSave, onCancel }) => {
     }, [project]);
 
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
+        setFormData(prev => ({
+            ...prev,
             [e.target.name]: e.target.value
-        });
+        }));
     };
 
     const handleClientChange = (e) => {
         const selectedClientId = e.target.value;
         const selectedClient = clients.find(client => client._id === selectedClientId);
 
-        setFormData({
-            ...formData,
+        setFormData(prev => ({
+            ...prev,
             clientId: selectedClientId,
             clientContact: selectedClient ? selectedClient.clientContact : ''
-        });
+        }));
     };
 
     const handleProductChange = (e) => {
         const selectedProductId = e.target.value;
         const selectedProduct = products.find(product => product._id === selectedProductId);
 
-        setFormData({
-            ...formData,
+        setFormData(prev => ({
+            ...prev,
             productId: selectedProductId,
             quantity: selectedProduct?.quantity || '',
             category: selectedProduct?.category || '',
             subcategory: selectedProduct?.subcategory || '',
             model: selectedProduct?.model || ''
-        });
+        }));
     };
 
     const handleSubmit = async (e) => {
@@ -224,7 +223,6 @@ const EditProjectForm = ({ project, onSave, onCancel }) => {
                                 ))}
                             </select>
                         </div>
-
                         <div className="flex flex-col">
                             <label className="text-sm font-medium text-gray-700 mb-1">Quantity:</label>
                             <input
@@ -235,7 +233,6 @@ const EditProjectForm = ({ project, onSave, onCancel }) => {
                                 className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
                             />
                         </div>
-
                         <div className="flex flex-col">
                             <label className="text-sm font-medium text-gray-700 mb-1">Category:</label>
                             <input
@@ -247,7 +244,6 @@ const EditProjectForm = ({ project, onSave, onCancel }) => {
                                 className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
                             />
                         </div>
-
                         <div className="flex flex-col">
                             <label className="text-sm font-medium text-gray-700 mb-1">Subcategory:</label>
                             <input
@@ -259,7 +255,6 @@ const EditProjectForm = ({ project, onSave, onCancel }) => {
                                 className="border border-gray-300 rounded-md shadow-sm p-3 w-full"
                             />
                         </div>
-
                         <div className="flex flex-col">
                             <label className="text-sm font-medium text-gray-700 mb-1">Model:</label>
                             <input
@@ -282,7 +277,7 @@ const EditProjectForm = ({ project, onSave, onCancel }) => {
                             />
                         </div>
 
-                        <div className="col-span-2 flex justify-end space-x-4">
+                        <div className="col-span-2 flex justify-end space-x-4 mt-4">
                             <button
                                 type="button"
                                 onClick={onCancel}
@@ -305,7 +300,29 @@ const EditProjectForm = ({ project, onSave, onCancel }) => {
 };
 
 EditProjectForm.propTypes = {
-    project: PropTypes.object,
+    project: PropTypes.shape({
+        _id: PropTypes.string,
+        projectName: PropTypes.string,
+        projectId: PropTypes.string,
+        clientId: PropTypes.shape({
+            _id: PropTypes.string,
+            clientContact: PropTypes.string
+        }),
+        startDate: PropTypes.string,
+        endDate: PropTypes.string,
+        projectManager: PropTypes.shape({
+            _id: PropTypes.string,
+            name: PropTypes.string
+        }),
+        productId: PropTypes.shape({
+            _id: PropTypes.string,
+            quantity: PropTypes.string,
+            category: PropTypes.string,
+            subcategory: PropTypes.string,
+            model: PropTypes.string
+        }),
+        budget: PropTypes.string
+    }),
     onSave: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired
 };

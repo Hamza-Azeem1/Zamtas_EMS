@@ -8,25 +8,29 @@ import Spinner from '../Spinner';
 import { TbUserShield } from "react-icons/tb";
 
 const Client = () => {
-    const [isAddModalOpen, setAddModalOpen] = useState(false);
-    const [isViewModalOpen, setViewModalOpen] = useState(false);
-    const [isEditModalOpen, setEditModalOpen] = useState(false);
     const [clients, setClients] = useState([]);
     const [currentClient, setCurrentClient] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isAddModalOpen, setAddModalOpen] = useState(false);
+    const [isViewModalOpen, setViewModalOpen] = useState(false);
+    const [isEditModalOpen, setEditModalOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [clientsPerPage] = useState(10);
+    const clientsPerPage = 10;
 
-    const fetchClients = async () => {
-        try {
-            const { data } = await axios.get(Api.getClient.url);
-            setClients(data.data);
-        } catch (error) {
-            console.error('Error fetching clients:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    useEffect(() => {
+        const fetchClients = async () => {
+            try {
+                const { data } = await axios.get(Api.getClient.url);
+                setClients(data.data);
+            } catch (error) {
+                console.error('Error fetching clients:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchClients();
+    }, []);
 
     const fetchClientById = async (id) => {
         try {
@@ -38,10 +42,6 @@ const Client = () => {
             console.error('Error fetching client data:', error);
         }
     };
-
-    useEffect(() => {
-        fetchClients();
-    }, []);
 
     const handleAddClient = (newClient) => {
         setClients(prevClients => [...prevClients, newClient]);
@@ -60,12 +60,11 @@ const Client = () => {
         setEditModalOpen(false);
     };
 
-    // Get current clients
+    // Pagination logic
     const indexOfLastClient = currentPage * clientsPerPage;
     const indexOfFirstClient = indexOfLastClient - clientsPerPage;
     const currentClients = clients.slice(indexOfFirstClient, indexOfLastClient);
 
-    // Change page
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
@@ -94,6 +93,7 @@ const Client = () => {
                     />
                 </>
             )}
+
             <ClientModal
                 isOpen={isAddModalOpen}
                 onClose={() => setAddModalOpen(false)}
