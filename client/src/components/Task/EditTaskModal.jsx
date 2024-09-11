@@ -17,6 +17,7 @@ const EditTaskModal = ({ isOpen, onClose, task, onUpdate }) => {
     });
     const [projects, setProjects] = useState([]);
     const [employees, setEmployees] = useState([]);
+    const [loading, setLoading] = useState(false); // Loading state for spinner
 
     useEffect(() => {
         if (task) {
@@ -79,6 +80,7 @@ const EditTaskModal = ({ isOpen, onClose, task, onUpdate }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!task) return;
+        setLoading(true); // Show spinner when the task update starts
         try {
             const response = await axios.put(`${Api.updateTask.url.replace(':taskId', task._id)}`, editedTask);
             if (response.data.success) {
@@ -87,6 +89,8 @@ const EditTaskModal = ({ isOpen, onClose, task, onUpdate }) => {
             }
         } catch (error) {
             console.error('Error updating task:', error);
+        } finally {
+            setLoading(false); // Hide spinner once the update is complete
         }
     };
 
@@ -265,14 +269,19 @@ const EditTaskModal = ({ isOpen, onClose, task, onUpdate }) => {
                             type="button"
                             onClick={onClose}
                             className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+                            disabled={loading} // Disable button when loading
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 flex items-center"
+                            disabled={loading} // Disable button when loading
                         >
-                            Update Task
+                            {loading && (
+                                <div className="spinner mr-2 h-5 w-5"></div>
+                            )}
+                            {loading ? 'Updating...' : 'Update Task'}
                         </button>
                     </div>
                 </form>

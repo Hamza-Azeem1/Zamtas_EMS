@@ -235,6 +235,27 @@ async function updateTaskController(req, res) {
             });
         }
 
+        // Send notifications to all assigned users when the task is updated
+        for (const userId of updatedTask.assignedTo) {
+            const assignedUser = await User.findById(userId);
+            if (assignedUser) {
+                let mobileNo = assignedUser.mobileNo;
+
+                if (mobileNo && !mobileNo.startsWith('+')) {
+                    mobileNo = `+92${mobileNo.slice(1)}`;
+                }
+
+                // Send WhatsApp notification
+                if (mobileNo) {
+                    await client.messages.create({
+                        body: `Hello ${assignedUser.name}! The task "${updatedTask.title}" has been updated. Kindly review the changes on the portal: https://zamtas-ems.vercel.app`,
+                        from: twilioWhatsapp,
+                        to: `whatsapp:${mobileNo}`
+                    });
+                }
+            }
+        }
+
         res.status(200).json({
             message: 'Task updated successfully',
             data: updatedTask,
