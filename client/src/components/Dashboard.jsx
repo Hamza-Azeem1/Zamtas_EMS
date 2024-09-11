@@ -18,12 +18,13 @@ const Dashboard = () => {
         Assigned: 0,
         Delayed: 0,
         Done: 0,
-        'In Progress': 0,  // Ensure 'In Progress' status is included
+        'In Progress': 0,
         All: 0
     });
     const [isLoading, setIsLoading] = useState(true);
     const [selectedTask, setSelectedTask] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isViewOnly, setIsViewOnly] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -91,11 +92,18 @@ const Dashboard = () => {
 
     const handleViewTask = (task) => {
         setSelectedTask(task);
+        setIsViewOnly(true);
         setIsModalOpen(true);
     };
 
     const handleCloseModal = () => {
         setSelectedTask(null);
+        setIsViewOnly(false);
+        setIsModalOpen(false);
+    };
+
+    const handleAddTask = (newTask) => {
+        setTasks(prevTasks => [...prevTasks, newTask]);
         setIsModalOpen(false);
     };
 
@@ -149,7 +157,12 @@ const Dashboard = () => {
                         </div>
                         {filteredTasks.length > 0 ? (
                             <div className="overflow-x-auto">
-                                <TaskTable tasks={filteredTasks} onView={handleViewTask} />
+                                <TaskTable
+                                    tasks={tasks}
+                                    onView={handleViewTask}
+                                    showEdit={false} // Only show the eye icon
+                                />
+
                             </div>
                         ) : (
                             <p className="text-center font-bold text-gray-600">No tasks available for {activeTab} status</p>
@@ -162,6 +175,8 @@ const Dashboard = () => {
                             isOpen={isModalOpen}
                             onClose={handleCloseModal}
                             taskDetails={selectedTask}
+                            onAdd={handleAddTask}
+                            isViewOnly={isViewOnly} // Pass isViewOnly prop to TaskModal
                         />
                     )}
                 </>
