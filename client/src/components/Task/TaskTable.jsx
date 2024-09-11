@@ -1,7 +1,7 @@
 import { FaEdit, FaEye } from 'react-icons/fa';
 import PropTypes from 'prop-types';
 
-const TaskTable = ({ tasks, onView }) => {
+const TaskTable = ({ tasks, onView, onEdit }) => {
     const getStatusColor = (status) => {
         switch (status) {
             case 'Assigned':
@@ -64,6 +64,7 @@ const TaskTable = ({ tasks, onView }) => {
                                     <FaEye />
                                 </button>
                                 <button
+                                    onClick={() => onEdit(task)}
                                     className="text-green-500 hover:text-green-700"
                                 >
                                     <FaEdit />
@@ -79,7 +80,8 @@ const TaskTable = ({ tasks, onView }) => {
 
 TaskTable.propTypes = {
     tasks: PropTypes.array.isRequired,
-    onView: PropTypes.func.isRequired
+    onView: PropTypes.func.isRequired,
+    onEdit: PropTypes.func.isRequired
 };
 
 export default TaskTable;

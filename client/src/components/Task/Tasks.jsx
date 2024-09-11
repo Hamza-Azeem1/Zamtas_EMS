@@ -6,16 +6,18 @@ import Pagination from '../Pagination';
 import Api from '../../common/index';
 import Spinner from '../Spinner';
 import { TbListDetails } from "react-icons/tb";
+import EditTaskModal from './EditTaskModal';
 
 const Tasks = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [taskDetails, setTaskDetails] = useState(null);
     const [tasks, setTasks] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [tasksPerPage] = useState(10);
 
-    // Function to fetch tasks from the API
     const fetchTasks = async () => {
         try {
             const { data } = await axios.get(Api.getTask.url);
@@ -31,25 +33,33 @@ const Tasks = () => {
         }
     };
 
-    // Fetch tasks when component mounts
     useEffect(() => {
         fetchTasks();
     }, []);
 
-    // Function to handle adding a new task
     const handleAddTask = async () => {
         try {
-            await fetchTasks(); // Refetch tasks to get the latest data
-            setIsModalOpen(false);
+            await fetchTasks();
+            setIsAddModalOpen(false);
         } catch (error) {
             console.error('Error fetching tasks after adding:', error);
         }
     };
 
-    // Function to handle viewing a task
     const handleViewTask = (task) => {
         setTaskDetails(task);
-        setIsModalOpen(true);
+        setIsViewModalOpen(true);
+    };
+
+    const handleEditTask = (task) => {
+        setTaskDetails(task);
+        setIsEditModalOpen(true);
+    };
+
+    const handleUpdateTask = (updatedTask) => {
+        setTasks(prevTasks => prevTasks.map(task =>
+            task._id === updatedTask._id ? updatedTask : task
+        ));
     };
 
     // Pagination logic
@@ -63,7 +73,7 @@ const Tasks = () => {
     return (
         <div className="p-6 bg-white rounded-lg shadow-lg space-y-6">
             <button
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => setIsAddModalOpen(true)}
                 className="bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 flex items-center"
             >
                 <TbListDetails className="mr-2 text-xl" />
@@ -76,7 +86,11 @@ const Tasks = () => {
                 <>
                     {tasks.length > 0 ? (
                         <>
-                            <TaskTable tasks={currentTasks} onView={handleViewTask} />
+                            <TaskTable
+                                tasks={currentTasks}
+                                onView={handleViewTask}
+                                onEdit={handleEditTask}
+                            />
                             <Pagination
                                 currentPage={currentPage}
                                 totalPages={Math.ceil(tasks.length / tasksPerPage)}
@@ -90,13 +104,23 @@ const Tasks = () => {
             )}
 
             <TaskModal
-                isOpen={isModalOpen}
-                onClose={() => {
-                    setIsModalOpen(false);
-                    setTaskDetails(null);
-                }}
-                taskDetails={taskDetails}
+                isOpen={isAddModalOpen}
+                onClose={() => setIsAddModalOpen(false)}
                 onAdd={handleAddTask}
+            />
+
+            <TaskModal
+                isOpen={isViewModalOpen}
+                onClose={() => setIsViewModalOpen(false)}
+                taskDetails={taskDetails}
+                isViewOnly={true}
+            />
+
+            <EditTaskModal
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                task={taskDetails}
+                onUpdate={handleUpdateTask}
             />
         </div>
     );

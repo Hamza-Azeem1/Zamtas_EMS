@@ -44,7 +44,9 @@ router.post('/tasks', addTaskController);
 router.get('/tasks', getTasksController);
 router.get('/projects/:projectId', getProjectDetailsController);
 
+
 router.get('/user-tasks', auth, getUserTasksController);
+router.put('/task/:taskId', updateTaskController);
 router.post('/task-start', upload.single('startImage'), startTaskController);
 router.post('/task-submit', upload.single('completeImage'), completeTaskController);
 

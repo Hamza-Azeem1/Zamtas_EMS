@@ -218,6 +218,38 @@ async function completeTaskController(req, res) {
     }
 }
 
+async function updateTaskController(req, res) {
+    try {
+        const { taskId } = req.params;
+        const updatedTask = await Task.findByIdAndUpdate(taskId, req.body, { new: true })
+            .populate('project')
+            .populate('projectManager')
+            .populate('assignedTo')
+            .populate('teamLead');
+
+        if (!updatedTask) {
+            return res.status(404).json({
+                message: 'Task not found',
+                error: true,
+                success: false
+            });
+        }
+
+        res.status(200).json({
+            message: 'Task updated successfully',
+            data: updatedTask,
+            success: true,
+            error: false
+        });
+    } catch (err) {
+        res.status(500).json({
+            message: err.message || 'Server Error',
+            error: true,
+            success: false
+        });
+    }
+}
+
 
 module.exports = {
     addTaskController,
@@ -225,5 +257,6 @@ module.exports = {
     getUserTasksController,
     getProjectDetailsController,
     startTaskController,
-    completeTaskController
+    completeTaskController,
+    updateTaskController
 };
