@@ -6,6 +6,7 @@ import Spinner from '../components/Spinner';
 import Api from '../common/index';
 import { FaUsers, FaProjectDiagram, FaUserTie, FaUserFriends } from 'react-icons/fa';
 import NotificationBar from '../components/NotificationBar';
+import Pagination from '../components/Pagination';
 
 const Dashboard = () => {
     const [clientCount, setClientCount] = useState(0);
@@ -26,6 +27,10 @@ const Dashboard = () => {
     const [selectedTask, setSelectedTask] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isViewOnly, setIsViewOnly] = useState(false);
+
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const [tasksPerPage] = useState(10);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -91,6 +96,14 @@ const Dashboard = () => {
         filterTasks();
     }, [activeTab, tasks]);
 
+    // Pagination logic
+    const indexOfLastTask = currentPage * tasksPerPage;
+    const indexOfFirstTask = indexOfLastTask - tasksPerPage;
+    const currentTasks = filteredTasks.slice(indexOfFirstTask, indexOfLastTask);
+
+    // Function to handle page changes
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
     const handleViewTask = (task) => {
         setSelectedTask(task);
         setIsViewOnly(true);
@@ -151,7 +164,10 @@ const Dashboard = () => {
                                         ? 'bg-blue-600 text-white'
                                         : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
                                         }`}
-                                    onClick={() => setActiveTab(status)}
+                                    onClick={() => {
+                                        setActiveTab(status);
+                                        setCurrentPage(1); // Reset to first page when tab changes
+                                    }}
                                 >
                                     {status} ({taskCounts[status]})
                                 </button>
@@ -159,13 +175,20 @@ const Dashboard = () => {
                         </div>
 
                         {filteredTasks.length > 0 ? (
-                            <div className="overflow-x-auto">
-                                <TaskTable
-                                    tasks={filteredTasks} // Use filteredTasks instead of tasks
-                                    onView={handleViewTask}
-                                    showEdit={false} // Only show the eye icon
+                            <>
+                                <div className="overflow-x-auto">
+                                    <TaskTable
+                                        tasks={currentTasks} // Use currentTasks for pagination
+                                        onView={handleViewTask}
+                                        showEdit={false} // Only show the eye icon
+                                    />
+                                </div>
+                                <Pagination
+                                    currentPage={currentPage}
+                                    totalPages={Math.ceil(filteredTasks.length / tasksPerPage)}
+                                    onPageChange={paginate}
                                 />
-                            </div>
+                            </>
                         ) : (
                             <p className="text-center font-bold text-gray-600">No tasks available for {activeTab} status</p>
                         )}
