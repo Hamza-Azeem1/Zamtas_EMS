@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Api from '../../common/index';
-import { FaEdit, FaTrash, FaEye } from 'react-icons/fa';
+import { FaEdit, FaEye } from 'react-icons/fa';
 import Spinner from '../Spinner';
 
 const ProductList = ({ onEditClick, onDelete, onViewClick }) => {
@@ -27,14 +27,14 @@ const ProductList = ({ onEditClick, onDelete, onViewClick }) => {
             .finally(() => setLoading(false));
     }, [onDelete]);
 
-    const handleDelete = (productId) => {
-        axios.delete(Api.deleteProduct.url.replace(':id', productId))
-            .then(() => {
-                setProducts(products.filter(product => product._id !== productId));
-                onDelete();
-            })
-            .catch(error => console.error(error));
-    };
+    // const handleDelete = (productId) => {
+    //     axios.delete(Api.deleteProduct.url.replace(':id', productId))
+    //         .then(() => {
+    //             setProducts(products.filter(product => product._id !== productId));
+    //             onDelete();
+    //         })
+    //         .catch(error => console.error(error));
+    // };
 
     if (loading) return <Spinner />;
     if (error) return <div>Error: {error}</div>;
@@ -60,17 +60,17 @@ const ProductList = ({ onEditClick, onDelete, onViewClick }) => {
                                 <td className="py-3 px-3 border-b border-gray-300 text-base text-center">{product.category}</td>
                                 <td className="py-3 px-3 border-b border-gray-300 text-center">
                                     <button
-                                        className="text-blue-500 hover:text-blue-700 mr-2"
+                                        className="text-green-500 hover:text-green-700 mr-2"
                                         onClick={() => onEditClick(product)}
                                     >
                                         <FaEdit size={20} />
                                     </button>
-                                    <button
+                                    {/* <button
                                         className="text-red-500 hover:text-red-700"
                                         onClick={() => handleDelete(product._id)}
                                     >
                                         <FaTrash size={20} />
-                                    </button>
+                                    </button> */}
                                     <button
                                         className="text-blue-500 hover:text-blue-700 ml-2"
                                         onClick={() => onViewClick(product)}

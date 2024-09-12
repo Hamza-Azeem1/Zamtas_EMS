@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import Api from '../../common/index';
 import ROLE from '../../common/role';
 import Select from 'react-select';
+import moment from 'moment'
 
 const TaskModal = ({ isOpen, onClose, taskDetails, onAdd, isViewOnly }) => {
     const [task, setTask] = useState({
@@ -152,12 +153,12 @@ const TaskModal = ({ isOpen, onClose, taskDetails, onAdd, isViewOnly }) => {
 
                             <div className="flex items-center justify-between text-lg">
                                 <span className="text-gray-700 font-bold">Start Date:</span>
-                                <span className="text-gray-900 font-medium">{new Date(task.startDate).toLocaleDateString()}</span>
+                                <span className="text-gray-900 font-medium">{moment(task.startDate).format('LL')}</span>
                             </div>
 
                             <div className="flex items-center justify-between text-lg">
                                 <span className="text-gray-700 font-bold">Due Date:</span>
-                                <span className="text-gray-900 font-medium">{new Date(task.endDate).toLocaleDateString()}</span>
+                                <span className="text-gray-900 font-medium">{moment(task.endDate).format('LL')}</span>
                             </div>
 
                             <div className="flex items-center justify-between text-lg">

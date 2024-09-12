@@ -6,6 +6,7 @@ import Api from '../../common/index';
 import Pagination from '../Pagination';
 import EditProjectForm from './EditProjectForm';
 import ProjectDetailsModal from './ProjectDetailsModal';
+import moment from 'moment'
 
 const ProjectsTable = () => {
     const [projects, setProjects] = useState([]);
@@ -110,10 +111,10 @@ const ProjectsTable = () => {
                                         {project.clientContact}
                                     </td>
                                     <td className="py-4 px-6 border-b border-gray-300 text-center truncate">
-                                        {new Date(project.startDate).toLocaleDateString()}
+                                        {truncateText(moment(project.startDate).format('LL'))}
                                     </td>
                                     <td className="py-4 px-6 border-b border-gray-300 text-center truncate">
-                                        {new Date(project.endDate).toLocaleDateString()}
+                                        {truncateText(moment(project.endDate).format('LL'))}
                                     </td>
                                     <td className="py-4 px-6 border-b border-gray-300 text-center truncate">
                                         {truncateText(project.projectManager?.name)}

@@ -1,5 +1,6 @@
 import { FaTimes } from 'react-icons/fa';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
 const ProjectDetailsModal = ({ project, onClose }) => {
     if (!project) return null;
@@ -38,11 +39,11 @@ const ProjectDetailsModal = ({ project, onClose }) => {
                     </div>
                     <div className="flex flex-col">
                         <label className="font-medium text-gray-700">Start Date</label>
-                        <div className="border border-gray-300 rounded-md p-2">{new Date(project.startDate).toLocaleDateString()}</div>
+                        <div className="border border-gray-300 rounded-md p-2">{moment(project.startDate).format('LL')}</div>
                     </div>
                     <div className="flex flex-col">
                         <label className="font-medium text-gray-700">End Date</label>
-                        <div className="border border-gray-300 rounded-md p-2">{new Date(project.endDate).toLocaleDateString()}</div>
+                        <div className="border border-gray-300 rounded-md p-2">{moment(project.endDate).format('LL')}</div>
                     </div>
                     <div className="flex flex-col">
                         <label className="font-medium text-gray-700">Project Manager</label>
