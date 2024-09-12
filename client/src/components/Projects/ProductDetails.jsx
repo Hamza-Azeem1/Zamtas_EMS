@@ -9,10 +9,10 @@ const AutoResizeTextarea = ({ value, onChange }) => {
     useEffect(() => {
         const textarea = textareaRef.current;
         if (textarea) {
-            textarea.style.height = 'auto'; // Reset height
-            textarea.style.height = `${textarea.scrollHeight}px`; // Set new height
+            textarea.style.height = 'auto';
+            textarea.style.height = `${textarea.scrollHeight}px`;
         }
-    }, [value]); // Adjust height when value changes
+    }, [value]);
 
     return (
         <textarea
@@ -26,7 +26,10 @@ const AutoResizeTextarea = ({ value, onChange }) => {
 };
 
 const ProductDetails = ({ projectId }) => {
-    const [productDetails, setProductDetails] = useState({
+    const [productDetails, setProductDetails] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    const emptyProductDetails = {
         productDetails: ['', ''],
         sizes: ['', ''],
         activationOption: ['', ''],
@@ -38,67 +41,69 @@ const ProductDetails = ({ projectId }) => {
         sensorQty: ['', '', '', '', ''],
         pickUpAddress: ['', '', '', '', ''],
         sensorOtherDetails: ['', '', '', '', '']
-    });
+    };
 
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    // Fetch data from backend when the component loads
     useEffect(() => {
-        if (projectId) {
-            axios.get(`${Api.getSheet.url.replace(':projectId', projectId)}`)
-                .then(response => {
+        const fetchProductDetails = async () => {
+            if (projectId) {
+                try {
+                    const url = `${Api.getSheet.url.replace(':projectId', projectId)}`;
+                    const response = await axios.get(url);
                     if (response.data.success && response.data.data) {
                         setProductDetails(response.data.data.sheetData);
                     } else {
-                        setError('Failed to fetch production sheet data');
+                        setProductDetails(null);
                     }
+                } catch (error) {
+                    // Silently handle 404 errors
+                    if (error.response && error.response.status === 404) {
+                        setProductDetails(null);
+                    } else {
+                        console.error('Error fetching production sheet:', error);
+                    }
+                } finally {
                     setLoading(false);
-                })
-                .catch(error => {
-                    console.error('Error fetching production sheet:', error);
-                    setError('Error fetching production sheet');
-                    setLoading(false);
-                });
-        }
+                }
+            }
+        };
+
+        fetchProductDetails();
     }, [projectId]);
 
-    // Handle input changes for form fields
+
     const handleInputChange = (e, category, index) => {
-        const updatedCategory = [...productDetails[category]];
+        const updatedDetails = productDetails ? { ...productDetails } : { ...emptyProductDetails };
+        const updatedCategory = [...updatedDetails[category]];
         updatedCategory[index] = e.target.value;
         setProductDetails({
-            ...productDetails,
+            ...updatedDetails,
             [category]: updatedCategory
         });
     };
 
-    // Submit the form and save data to the backend
-    const handleSubmit = () => {
-        axios.post(Api.saveSheet.url, {
-            projectId,
-            sheetData: productDetails
-        })
-            .then(response => {
-                if (response.data.success) {
-                    alert('Production sheet saved successfully');
-                } else {
-                    alert('Failed to save production sheet');
-                }
-            })
-            .catch(error => {
-                console.error('Error saving production sheet:', error);
-                alert('Error saving production sheet');
+    const handleSubmit = async () => {
+        if (!productDetails) return;
+        try {
+            const response = await axios.post(Api.saveSheet.url, {
+                projectId,
+                sheetData: productDetails
             });
+            if (response.data.success) {
+                alert('Production sheet saved successfully');
+            } else {
+                alert('Failed to save production sheet');
+            }
+        } catch (error) {
+            console.error('Error saving production sheet:', error);
+            alert('Error saving production sheet');
+        }
     };
 
     if (loading) {
         return <div>Loading...</div>;
     }
 
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
+    const details = productDetails || emptyProductDetails;
 
     return (
         <>
@@ -120,37 +125,37 @@ const ProductDetails = ({ projectId }) => {
                             <tr key={idx}>
                                 <td className="p-2 border">
                                     <AutoResizeTextarea
-                                        value={productDetails.productDetails[idx] || ''}
+                                        value={details.productDetails[idx] || ''}
                                         onChange={(e) => handleInputChange(e, 'productDetails', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
                                     <AutoResizeTextarea
-                                        value={productDetails.sizes[idx] || ''}
+                                        value={details.sizes[idx] || ''}
                                         onChange={(e) => handleInputChange(e, 'sizes', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
                                     <AutoResizeTextarea
-                                        value={productDetails.activationOption[idx] || ''}
+                                        value={details.activationOption[idx] || ''}
                                         onChange={(e) => handleInputChange(e, 'activationOption', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
                                     <AutoResizeTextarea
-                                        value={productDetails.qty[idx] || ''}
+                                        value={details.qty[idx] || ''}
                                         onChange={(e) => handleInputChange(e, 'qty', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
                                     <AutoResizeTextarea
-                                        value={productDetails.projectAddress[idx] || ''}
+                                        value={details.projectAddress[idx] || ''}
                                         onChange={(e) => handleInputChange(e, 'projectAddress', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
                                     <AutoResizeTextarea
-                                        value={productDetails.otherDetails[idx] || ''}
+                                        value={details.otherDetails[idx] || ''}
                                         onChange={(e) => handleInputChange(e, 'otherDetails', idx)}
                                     />
                                 </td>
@@ -178,31 +183,31 @@ const ProductDetails = ({ projectId }) => {
                             <tr key={idx}>
                                 <td className="p-2 border">
                                     <AutoResizeTextarea
-                                        value={productDetails.sensorType[idx] || ''}
+                                        value={details.sensorType[idx] || ''}
                                         onChange={(e) => handleInputChange(e, 'sensorType', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
                                     <AutoResizeTextarea
-                                        value={productDetails.model[idx] || ''}
+                                        value={details.model[idx] || ''}
                                         onChange={(e) => handleInputChange(e, 'model', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
                                     <AutoResizeTextarea
-                                        value={productDetails.sensorQty[idx] || ''}
+                                        value={details.sensorQty[idx] || ''}
                                         onChange={(e) => handleInputChange(e, 'sensorQty', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
                                     <AutoResizeTextarea
-                                        value={productDetails.pickUpAddress[idx] || ''}
+                                        value={details.pickUpAddress[idx] || ''}
                                         onChange={(e) => handleInputChange(e, 'pickUpAddress', idx)}
                                     />
                                 </td>
                                 <td className="p-2 border">
                                     <AutoResizeTextarea
-                                        value={productDetails.sensorOtherDetails[idx] || ''}
+                                        value={details.sensorOtherDetails[idx] || ''}
                                         onChange={(e) => handleInputChange(e, 'sensorOtherDetails', idx)}
                                     />
                                 </td>
@@ -284,11 +289,11 @@ const ProductDetails = ({ projectId }) => {
                 </div>
             </div>
 
-            {/* Submit Button */}
             <div className="mt-4">
                 <button
                     onClick={handleSubmit}
                     className="bg-blue-600 text-white px-4 py-2 rounded"
+                    disabled={!productDetails}
                 >
                     Save Details
                 </button>
