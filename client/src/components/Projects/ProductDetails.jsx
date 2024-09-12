@@ -302,6 +302,11 @@ const ProductDetails = ({ projectId }) => {
     );
 };
 
+AutoResizeTextarea.propTypes = {
+    value: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired
+};
+
 ProductDetails.propTypes = {
     projectId: PropTypes.string.isRequired
 };
