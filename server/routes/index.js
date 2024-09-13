@@ -14,6 +14,7 @@ const auth = require('../middleware/auth');
 const { sendForgotPasswordOTP, resetPassword, verifyOTP } = require('../controller/forgotPasswordController');
 const { addProductController, getProductsController, updateProductController, deleteProductController } = require('../controller/productController');
 const { saveProductionSheetController, getProductionSheetController } = require('../controller/productionSheetController');
+const { markNotificationAsReadController, getNotificationsController } = require('../controller/notificationController');
 
 router.post('/sign-in', userSignInController);
 router.post('/sign-up', userSignUpController);
@@ -63,6 +64,8 @@ router.delete('/products/:id', deleteProductController);
 router.post('/production-sheet/save', saveProductionSheetController);
 router.get('/production-sheet/:projectId', getProductionSheetController);
 
+router.post('/notifications/mark-as-read', markNotificationAsReadController);
+router.get('/notifications', getNotificationsController);
 
 // Protected Routes
 router.use(authMiddleware);

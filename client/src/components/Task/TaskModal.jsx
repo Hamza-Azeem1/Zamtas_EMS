@@ -15,6 +15,7 @@ const TaskModal = ({ isOpen, onClose, taskDetails, onAdd, isViewOnly }) => {
         projectManager: '',
         startDate: '',
         endDate: '',
+        endTime: '', // New endTime field
         assignedTo: [],
         teamLead: '',
         status: 'Assigned',
@@ -71,6 +72,8 @@ const TaskModal = ({ isOpen, onClose, taskDetails, onAdd, isViewOnly }) => {
         const date = new Date(dateString);
         return date.toISOString().split('T')[0];
     };
+
+    const formattedEndTime = task.endTime ? moment(task.endTime, 'HH:mm').format('h:mm A') : '';
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -159,6 +162,10 @@ const TaskModal = ({ isOpen, onClose, taskDetails, onAdd, isViewOnly }) => {
                             <div className="flex items-center justify-between text-lg">
                                 <span className="text-gray-700 font-bold">Due Date:</span>
                                 <span className="text-gray-900 font-medium">{moment(task.endDate).format('LL')}</span>
+                            </div>
+                            <div className="flex items-center justify-between text-lg">
+                                <span className="text-gray-700 font-bold">Due Time:</span>
+                                <span className="text-gray-900 font-medium">{formattedEndTime}</span>
                             </div>
 
                             <div className="flex items-center justify-between text-lg">
@@ -281,6 +288,17 @@ const TaskModal = ({ isOpen, onClose, taskDetails, onAdd, isViewOnly }) => {
                                         value={task.endDate}
                                         onChange={handleChange}
                                         className="form-input mt-1 block w-full border-2 border-gray-500 focus:border-blue-700 focus:ring focus:ring-blue-300 bg-gray-50 text-gray-800 rounded-md shadow-md px-4 py-2 transition duration-150 ease-in-out hover:shadow-lg"
+                                        required
+                                    />
+                                </label>
+                                <label className="block">
+                                    <span className="text-gray-700 font-medium mb-1 block">Due Time</span>
+                                    <input
+                                        type="time"
+                                        name="endTime" // New time input
+                                        value={task.endTime}
+                                        onChange={handleChange}
+                                        className="form-input mt-1 block w-full"
                                         required
                                     />
                                 </label>

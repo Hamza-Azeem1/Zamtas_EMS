@@ -11,6 +11,7 @@ const EditTaskModal = ({ isOpen, onClose, task, onUpdate }) => {
         project: '',
         startDate: '',
         endDate: '',
+        endTime: '', // Add endTime field
         teamLead: '',
         assignedTo: [],
         status: 'Assigned'
@@ -27,6 +28,7 @@ const EditTaskModal = ({ isOpen, onClose, task, onUpdate }) => {
                 project: task.project?._id || '',
                 startDate: task.startDate ? new Date(task.startDate).toISOString().split('T')[0] : '',
                 endDate: task.endDate ? new Date(task.endDate).toISOString().split('T')[0] : '',
+                endTime: task.endTime || '', // Initialize endTime
                 teamLead: task.teamLead?._id || '',
                 assignedTo: task.assignedTo?.map(user => user._id) || [],
                 status: task.status || 'Assigned'
@@ -163,9 +165,7 @@ const EditTaskModal = ({ isOpen, onClose, task, onUpdate }) => {
                                     required
                                 />
                             </label>
-                        </div>
 
-                        <div className="space-y-4">
                             <label className="block">
                                 <span className="text-gray-700 font-medium">Due Date</span>
                                 <input
@@ -178,6 +178,20 @@ const EditTaskModal = ({ isOpen, onClose, task, onUpdate }) => {
                                 />
                             </label>
 
+                            <label className="block">
+                                <span className="text-gray-700 font-medium mb-1 block">Due Time</span>
+                                <input
+                                    type="time"
+                                    name="endTime" // New time input
+                                    value={editedTask.endTime}
+                                    onChange={handleChange}
+                                    className="form-input mt-1 block w-full border-2 border-gray-500 focus:border-blue-700 focus:ring focus:ring-blue-300 bg-gray-50 text-gray-800 rounded-md shadow-md px-4 py-2 transition duration-150 ease-in-out hover:shadow-lg"
+                                    required
+                                />
+                            </label>
+                        </div>
+
+                        <div className="space-y-4">
                             <label className="block">
                                 <span className="text-gray-700 font-medium">Team Lead</span>
                                 <select
@@ -245,7 +259,6 @@ const EditTaskModal = ({ isOpen, onClose, task, onUpdate }) => {
                                         }),
                                     }}
                                 />
-
                             </label>
 
                             <label className="block">

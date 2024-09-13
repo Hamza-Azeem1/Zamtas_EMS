@@ -3,6 +3,9 @@ const Project = require('../models/projectModel');
 const User = require('../models/userModel');
 const cloudinary = require('../config/cloudinary');
 const twilio = require('twilio');
+const moment = require('moment');
+const cron = require('node-cron');
+const Notification = require('../models/notificationModel');
 
 const accountSid = process.env.ACCOUNT_SID;
 const authToken = process.env.AUTH_TOKEN;
@@ -13,7 +16,21 @@ const client = twilio(accountSid, authToken);
 // Add a new task
 async function addTaskController(req, res) {
     try {
-        const task = new Task(req.body);
+        const { title, category, project, projectManager, startDate, endDate, endTime, assignedTo, teamLead } = req.body;
+
+        const task = new Task({
+            title,
+            category,
+            project,
+            projectManager,
+            startDate,
+            endDate,
+            endTime: '',
+            endTime, // Ensure this is passed in the request
+            assignedTo,
+            teamLead
+        });
+
         await task.save();
 
         // Send notifications to all assigned users
@@ -29,7 +46,7 @@ async function addTaskController(req, res) {
                 // Send WhatsApp notification
                 if (mobileNo) {
                     await client.messages.create({
-                        body: `Hello ${assignedUser.name}!. A new task of ${task.category} has been assigned to you. Kindly Login to your Portal using this link: https://zamtas-ems.vercel.app`,
+                        body: `Hello ${assignedUser.name}!. A new task of ${task.category} has been assigned to you. Kindly login to your portal. https://zamtas-ems.vercel.app`,
                         from: twilioWhatsapp,
                         to: `whatsapp:${mobileNo}`
                     });
@@ -272,6 +289,69 @@ async function updateTaskController(req, res) {
 }
 
 
+async function checkAndUpdateDelayedTasks() {
+    try {
+        const currentDateTime = moment(); // Get the current date and time
+
+        // Find tasks that are not done and should be checked for delay
+        const tasks = await Task.find({ status: { $in: ['Assigned', 'In Progress'] } });
+
+        console.log(`Checking ${tasks.length} tasks for delay...`);
+
+        for (const task of tasks) {
+            // Combine both the endDate and endTime into a single datetime for comparison
+            const taskDeadline = moment(`${task.endDate.toISOString().split('T')[0]} ${task.endTime}`, 'YYYY-MM-DD HH:mm');
+            console.log(`Task ${task._id}: Deadline is ${taskDeadline.toISOString()}, Current time is ${currentDateTime.toISOString()}`);
+
+            // If the current time is after the deadline, update the task status to 'Delayed'
+            if (currentDateTime.isAfter(taskDeadline)) {
+                // Update the task status
+                task.status = 'Delayed';
+                await task.save(); // Save the updated task status
+                console.log(`Task ${task._id} marked as delayed.`);
+
+                // Create notifications for the user assigned to the task
+                for (const userId of task.assignedTo) {
+                    const assignedUser = await User.findById(userId);
+                    if (assignedUser) {
+                        // Create a notification for the delayed task
+                        const notification = new Notification({
+                            userId: assignedUser._id,
+                            message: `Task "${task.title}" has been marked as delayed.`,
+                        });
+                        await notification.save();
+
+                        let mobileNo = assignedUser.mobileNo;
+
+                        if (mobileNo && !mobileNo.startsWith('+')) {
+                            mobileNo = `+92${mobileNo.slice(1)}`;
+                        }
+
+                        // Send WhatsApp notification
+                        if (mobileNo) {
+                            await client.messages.create({
+                                body: `Hello ${assignedUser.name}, the task "${task.title}" assigned to you has been marked as delayed. Please check your portal for details.`,
+                                from: twilioWhatsapp,
+                                to: `whatsapp:${mobileNo}`
+                            });
+                        }
+                    }
+                }
+            }
+        }
+    } catch (err) {
+        console.error('Error updating delayed tasks:', err);
+    }
+}
+
+
+// This will run the function every 5 minutes
+cron.schedule('*/5 * * * *', () => {
+    console.log('Running task delay check...');
+    checkAndUpdateDelayedTasks();
+});
+
+
 module.exports = {
     addTaskController,
     getTasksController,
@@ -279,5 +359,6 @@ module.exports = {
     getProjectDetailsController,
     startTaskController,
     completeTaskController,
-    updateTaskController
+    updateTaskController,
+    checkAndUpdateDelayedTasks
 };

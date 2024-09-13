@@ -141,6 +141,14 @@ const Api = {
         url: `${backendDomain}/api/production-sheet/:projectId`,
         method: "get"
     },
+    readNotifications: {
+        url: `${backendDomain}/api/notifications/mark-as-read`,
+        method: "post"
+    },
+    getNotifications: {
+        url: `${backendDomain}/api/notifications`,
+        method: "get"
+    },
 };
 
 export default Api;
