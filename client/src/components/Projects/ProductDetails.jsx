@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Api from '../../common';
 import PropTypes from 'prop-types';
+import Spinner from '../Spinner'
 
 const AutoResizeTextarea = ({ value, onChange }) => {
     const textareaRef = useRef(null);
@@ -100,7 +101,7 @@ const ProductDetails = ({ projectId }) => {
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <Spinner />;
     }
 
     const details = productDetails || emptyProductDetails;
@@ -117,7 +118,7 @@ const ProductDetails = ({ projectId }) => {
                             <th className="p-2 text-left w-2/12">Activation Option</th>
                             <th className="p-2 text-left w-1/12">QTY</th>
                             <th className="p-2 text-left w-3/12">Project Address</th>
-                            <th className="p-2 text-left w-1/12">Other Details</th>
+                            <th className="p-2 text-left w-1/12">Door ID</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -175,7 +176,7 @@ const ProductDetails = ({ projectId }) => {
                             <th className="p-2 text-left w-2/12">Model</th>
                             <th className="p-2 text-left w-1/12">QTY</th>
                             <th className="p-2 text-left w-3/12">Pick Up Address</th>
-                            <th className="p-2 text-left w-2/12">Other Details</th>
+                            <th className="p-2 text-left w-2/12">Pick Up Person Details</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -247,6 +248,14 @@ const ProductDetails = ({ projectId }) => {
                                 type="text"
                                 className="border border-gray-300 rounded-md p-1 w-full"
                             />
+                            <div className="flex items-center">
+                                <input type="checkbox" className="mr-2" />
+                                <span>Framed</span>
+                            </div>
+                            <div className="flex items-center">
+                                <input type="checkbox" className="mr-2" />
+                                <span>Un Framed</span>
+                            </div>
                             <div className="flex items-center">
                                 <input type="checkbox" className="mr-2" />
                                 <span>High Speed PVC Roll Up Doors</span>

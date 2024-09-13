@@ -1,7 +1,7 @@
 import { FaEdit, FaEye } from 'react-icons/fa';
 import PropTypes from 'prop-types';
 
-const TaskTable = ({ tasks, onView, onEdit, showEdit }) => {
+const TaskTable = ({ tasks, onView, onEdit, showEdit = true }) => { // Default parameter for showEdit
     const getStatusColor = (status) => {
         switch (status) {
             case 'Assigned':
@@ -44,15 +44,29 @@ const TaskTable = ({ tasks, onView, onEdit, showEdit }) => {
                 </thead>
                 <tbody>
                     {tasks.map((task) => (
-                        <tr key={task._id} className={`transition-colors duration-150 ${task._id % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100`}>
-                            <td className="py-3 px-3 border-b border-gray-300 text-base">{truncateText(task.title) || 'N/A'}</td>
-                            <td className="py-3 px-3 border-b border-gray-300 text-base">{task.category || 'N/A'}</td>
-                            <td className="py-3 px-3 border-b border-gray-300 text-base">{truncateText(task.project?.projectName) || 'N/A'}</td>
-                            <td className="py-3 px-3 border-b border-gray-300 text-base">{truncateText(task.projectManager?.name) || 'N/A'}</td>
+                        <tr
+                            key={task._id}
+                            className={`transition-colors duration-150 ${task._id % 2 === 0 ? 'bg-gray-50' : 'bg-white'
+                                } hover:bg-gray-100`}
+                        >
+                            <td className="py-3 px-3 border-b border-gray-300 text-base">
+                                {truncateText(task.title) || 'N/A'}
+                            </td>
+                            <td className="py-3 px-3 border-b border-gray-300 text-base">
+                                {task.category || 'N/A'}
+                            </td>
+                            <td className="py-3 px-3 border-b border-gray-300 text-base">
+                                {truncateText(task.project?.projectName) || 'N/A'}
+                            </td>
+                            <td className="py-3 px-3 border-b border-gray-300 text-base">
+                                {truncateText(task.projectManager?.name) || 'N/A'}
+                            </td>
                             <td className="py-3 px-3 border-b border-gray-300 text-base">
                                 {task.teamLead?.name || 'N/A'}
                             </td>
-                            <td className={`py-3 px-3 border-b border-gray-300 text-base ${getStatusColor(task.status)}`}>
+                            <td
+                                className={`py-3 px-3 border-b border-gray-300 text-base ${getStatusColor(task.status)}`}
+                            >
                                 {task.status || 'N/A'}
                             </td>
                             <td className="py-3 px-3 border-b border-gray-300 text-center">
@@ -64,7 +78,7 @@ const TaskTable = ({ tasks, onView, onEdit, showEdit }) => {
                                 </button>
                                 {showEdit && (
                                     <button
-                                        onClick={() => onEdit(task)}
+                                        onClick={() => onEdit && onEdit(task)} // Ensure onEdit exists before calling
                                         className="text-green-500 hover:text-green-700"
                                     >
                                         <FaEdit size={20} />
@@ -82,12 +96,8 @@ const TaskTable = ({ tasks, onView, onEdit, showEdit }) => {
 TaskTable.propTypes = {
     tasks: PropTypes.array.isRequired,
     onView: PropTypes.func.isRequired,
-    onEdit: PropTypes.func.isRequired,
-    showEdit: PropTypes.bool
-};
-
-TaskTable.defaultProps = {
-    showEdit: true
+    onEdit: PropTypes.func,
+    showEdit: PropTypes.bool,
 };
 
 export default TaskTable;

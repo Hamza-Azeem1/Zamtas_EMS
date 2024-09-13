@@ -91,14 +91,14 @@ const NotificationBar = () => {
                     <h3 className="text-xl font-semibold mb-2">Notifications</h3>
                     <button
                         onClick={markAllAsRead}
-                        className="text-blue-500 mb-2"
+                        className="text-blue-500 underline mb-2 hover:text-blue-800"
                     >
                         Read All
                     </button>
                     <Tabs selectedIndex={selectedTab} onSelect={index => setSelectedTab(index)}>
                         <TabList>
-                            <Tab>New</Tab>
-                            <Tab>Old</Tab>
+                            <Tab>Unread</Tab>
+                            <Tab>Read</Tab>
                         </TabList>
                         <TabPanel>
                             <div className="p-2 overflow-y-auto h-96">
