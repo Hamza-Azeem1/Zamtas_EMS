@@ -1,7 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import ProductDetails from './ProductDetails';
-import logo from '../../../public/logo.png';
+import logo from '../../assets/logo.png';
 
 const ProductionSheet = () => {
     const { state } = useLocation();
