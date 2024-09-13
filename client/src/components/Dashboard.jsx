@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
 import TaskTable from '../components/Task/TaskTable';
 import TaskModal from '../components/Task/TaskModal';
@@ -9,19 +9,20 @@ import NotificationBar from '../components/NotificationBar';
 import Pagination from '../components/Pagination';
 
 const Dashboard = () => {
-    const [clientCount, setClientCount] = useState(0);
-    const [projectCount, setProjectCount] = useState(0);
-    const [projectManagerCount, setProjectManagerCount] = useState(0);
-    const [employeeCount, setEmployeeCount] = useState(0);
+    const [counts, setCounts] = useState({
+        clientCount: 0,
+        projectCount: 0,
+        projectManagerCount: 0,
+        employeeCount: 0,
+    });
     const [tasks, setTasks] = useState([]);
-    const [filteredTasks, setFilteredTasks] = useState([]);
     const [activeTab, setActiveTab] = useState('All');
     const [taskCounts, setTaskCounts] = useState({
         Assigned: 0,
         Delayed: 0,
         Done: 0,
         'In Progress': 0,
-        All: 0
+        All: 0,
     });
     const [isLoading, setIsLoading] = useState(true);
     const [selectedTask, setSelectedTask] = useState(null);
@@ -35,6 +36,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                // Fetch data concurrently
                 const [clientsRes, projectsRes, projectManagersRes, employeesRes, tasksRes] = await Promise.all([
                     axios.get(Api.getClient.url),
                     axios.get(Api.getProject.url),
@@ -43,26 +45,29 @@ const Dashboard = () => {
                     axios.get(Api.getTask.url),
                 ]);
 
-                setClientCount(clientsRes.data.data.length);
-                setProjectCount(projectsRes.data.data.length);
-                setProjectManagerCount(projectManagersRes.data.data.length);
-                setEmployeeCount(employeesRes.data.data.length);
+                setCounts({
+                    clientCount: clientsRes.data.data.length,
+                    projectCount: projectsRes.data.data.length,
+                    projectManagerCount: projectManagersRes.data.data.length,
+                    employeeCount: employeesRes.data.data.length,
+                });
 
                 const allTasks = tasksRes.data.data || [];
                 setTasks(allTasks);
 
-                const updatedTaskCounts = {
-                    Assigned: allTasks.filter(task => task.status === 'Assigned').length,
-                    Delayed: allTasks.filter(task => task.status === 'Delayed').length,
-                    Done: allTasks.filter(task => task.status === 'Done').length,
-                    'In Progress': allTasks.filter(task => task.status === 'In Progress').length,
-                    All: allTasks.length
-                };
+                // Compute task counts only once
+                const updatedTaskCounts = allTasks.reduce(
+                    (acc, task) => {
+                        acc[task.status] = (acc[task.status] || 0) + 1;
+                        acc.All++;
+                        return acc;
+                    },
+                    { Assigned: 0, Delayed: 0, Done: 0, 'In Progress': 0, All: 0 }
+                );
 
                 setTaskCounts(updatedTaskCounts);
-                setFilteredTasks(allTasks);
             } catch (error) {
-                console.error("Error fetching data", error);
+                console.error('Error fetching data', error);
             } finally {
                 setIsLoading(false);
             }
@@ -71,25 +76,16 @@ const Dashboard = () => {
         fetchData();
     }, []);
 
-    useEffect(() => {
-        const filterTasks = () => {
-            const filterMap = {
-                Assigned: task => task.status === 'Assigned',
-                Delayed: task => task.status === 'Delayed',
-                Done: task => task.status === 'Done',
-                'In Progress': task => task.status === 'In Progress',
-                All: () => true
-            };
-            setFilteredTasks(tasks.filter(filterMap[activeTab]));
-        };
-
-        filterTasks();
+    const filteredTasks = useMemo(() => {
+        return tasks.filter(task => activeTab === 'All' || task.status === activeTab);
     }, [activeTab, tasks]);
 
     // Pagination logic
-    const indexOfLastTask = currentPage * tasksPerPage;
-    const indexOfFirstTask = indexOfLastTask - tasksPerPage;
-    const currentTasks = filteredTasks.slice(indexOfFirstTask, indexOfLastTask);
+    const currentTasks = useMemo(() => {
+        const indexOfLastTask = currentPage * tasksPerPage;
+        const indexOfFirstTask = indexOfLastTask - tasksPerPage;
+        return filteredTasks.slice(indexOfFirstTask, indexOfLastTask);
+    }, [filteredTasks, currentPage]);
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -111,10 +107,10 @@ const Dashboard = () => {
     };
 
     const cards = [
-        { title: 'Total Clients', count: clientCount, icon: FaUsers },
-        { title: 'Total Projects', count: projectCount, icon: FaProjectDiagram },
-        { title: 'Total Project Managers', count: projectManagerCount, icon: FaUserTie },
-        { title: 'Total Team Members', count: employeeCount, icon: FaUserFriends },
+        { title: 'Total Clients', count: counts.clientCount, icon: FaUsers },
+        { title: 'Total Projects', count: counts.projectCount, icon: FaProjectDiagram },
+        { title: 'Total Project Managers', count: counts.projectManagerCount, icon: FaUserTie },
+        { title: 'Total Team Members', count: counts.employeeCount, icon: FaUserFriends },
     ];
 
     return (
@@ -167,9 +163,9 @@ const Dashboard = () => {
                             <>
                                 <div className="overflow-x-auto">
                                     <TaskTable
-                                        tasks={currentTasks} // Use currentTasks for pagination
+                                        tasks={currentTasks}
                                         onView={handleViewTask}
-                                        showEdit={false} // Only show the eye icon
+                                        showEdit={false}
                                     />
                                 </div>
                                 <Pagination
@@ -190,7 +186,7 @@ const Dashboard = () => {
                             onClose={handleCloseModal}
                             taskDetails={selectedTask}
                             onAdd={handleAddTask}
-                            isViewOnly={isViewOnly} // Pass isViewOnly prop to TaskModal
+                            isViewOnly={isViewOnly}
                         />
                     )}
                 </>
