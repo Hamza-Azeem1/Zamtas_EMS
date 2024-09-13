@@ -6,6 +6,7 @@ import { FaList, FaPlay, FaHourglassHalf, FaCheckCircle, FaExclamationCircle } f
 import Api from '../common/index';
 import Modal from 'react-modal';
 import Spinner from '../components/Spinner';
+import moment from 'moment';
 import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 
@@ -443,7 +444,10 @@ function UserHome() {
                             </div>
                             <div className="border border-gray-300 p-4 rounded-lg shadow-sm">
                                 <p className="text-lg font-base mb-2"><strong>Assigned By:</strong> {selectedTask.projectManager.name}</p>
-                                <p className="text-lg font-base mb-2"><strong>End Date:</strong> {new Date(selectedTask.endDate).toLocaleDateString()}</p>
+                                <p className="text-lg font-base mb-2"><strong>End Date:</strong> {moment(selectedTask.endDate).format('LL')}</p>
+                                <p className="text-lg font-base mb-2">
+                                    <strong>End Time:</strong> {selectedTask.endTime ? moment(selectedTask.endTime, 'HH:mm').format('h:mm A') : 'N/A'}
+                                </p>
                                 <p className={`text-lg font-base mb-2 ${getStatusColor(selectedTask.status)}`}>
                                     <strong>Status:</strong> {selectedTask.status}
                                 </p>
