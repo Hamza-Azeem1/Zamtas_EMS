@@ -296,19 +296,19 @@ async function checkAndUpdateDelayedTasks() {
         // Find tasks that are not done and should be checked for delay
         const tasks = await Task.find({ status: { $in: ['Assigned', 'In Progress'] } });
 
-        console.log(`Checking ${tasks.length} tasks for delay...`);
+        //   console.log(`Checking ${tasks.length} tasks for delay...`);
 
         for (const task of tasks) {
             // Combine both the endDate and endTime into a single datetime for comparison
             const taskDeadline = moment(`${task.endDate.toISOString().split('T')[0]} ${task.endTime}`, 'YYYY-MM-DD HH:mm');
-            console.log(`Task ${task._id}: Deadline is ${taskDeadline.toISOString()}, Current time is ${currentDateTime.toISOString()}`);
+            //        console.log(`Task ${task._id}: Deadline is ${taskDeadline.toISOString()}, Current time is ${currentDateTime.toISOString()}`);
 
             // If the current time is after the deadline, update the task status to 'Delayed'
             if (currentDateTime.isAfter(taskDeadline)) {
                 // Update the task status
                 task.status = 'Delayed';
                 await task.save(); // Save the updated task status
-                console.log(`Task ${task._id} marked as delayed.`);
+                //              console.log(`Task ${task._id} marked as delayed.`);
 
                 // Create notifications for the user assigned to the task
                 for (const userId of task.assignedTo) {
@@ -345,9 +345,8 @@ async function checkAndUpdateDelayedTasks() {
 }
 
 
-// This will run the function every 5 minutes
 cron.schedule('*/5 * * * *', () => {
-    console.log('Running task delay check...');
+    //    console.log('Running task delay check...');
     checkAndUpdateDelayedTasks();
 });
 

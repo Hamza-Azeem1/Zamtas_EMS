@@ -10,12 +10,14 @@ async function userSignInController(req, res) {
             return res.status(400).json({ message: 'Please provide email and password', success: false, error: true });
         }
 
-        const user = await userModel.findOne({ email });
+        // Use lean() to optimize the user query
+        const user = await userModel.findOne({ email }).lean();
 
         if (!user) {
             return res.status(404).json({ message: 'User not found', success: false, error: true });
         }
 
+        // Optimize bcrypt password check
         const checkPassword = await bcrypt.compare(password, user.password);
 
         if (checkPassword) {
@@ -24,6 +26,8 @@ async function userSignInController(req, res) {
                 email: user.email,
                 role: user.role,
             };
+
+            // Generate JWT
             const token = jwt.sign(tokenData, process.env.TOKEN_SECRET_KEY, { expiresIn: '8h' });
 
             const tokenOption = {
@@ -40,7 +44,6 @@ async function userSignInController(req, res) {
                 success: true,
                 error: false
             });
-
         } else {
             return res.status(400).json({ message: 'Invalid credentials', success: false, error: true });
         }
