@@ -11,14 +11,14 @@ const EditTaskModal = ({ isOpen, onClose, task, onUpdate }) => {
         project: '',
         startDate: '',
         endDate: '',
-        endTime: '', // Add endTime field
+        endTime: '',
         teamLead: '',
         assignedTo: [],
         status: 'Assigned'
     });
     const [projects, setProjects] = useState([]);
     const [employees, setEmployees] = useState([]);
-    const [loading, setLoading] = useState(false); // Loading state for spinner
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (task) {
@@ -28,7 +28,7 @@ const EditTaskModal = ({ isOpen, onClose, task, onUpdate }) => {
                 project: task.project?._id || '',
                 startDate: task.startDate ? new Date(task.startDate).toISOString().split('T')[0] : '',
                 endDate: task.endDate ? new Date(task.endDate).toISOString().split('T')[0] : '',
-                endTime: task.endTime || '', // Initialize endTime
+                endTime: task.endTime || '',
                 teamLead: task.teamLead?._id || '',
                 assignedTo: task.assignedTo?.map(user => user._id) || [],
                 status: task.status || 'Assigned'
