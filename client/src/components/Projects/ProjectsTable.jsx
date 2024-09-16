@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaEdit, FaEye, FaFileAlt } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 import Api from '../../common/index';
 import Pagination from '../Pagination';
 import EditProjectForm from './EditProjectForm';
 import ProjectDetailsModal from './ProjectDetailsModal';
-import moment from 'moment'
 
 const ProjectsTable = () => {
     const [projects, setProjects] = useState([]);
@@ -14,7 +13,7 @@ const ProjectsTable = () => {
     const [projectsPerPage] = useState(10);
     const [editingProject, setEditingProject] = useState(null);
     const [selectedProject, setSelectedProject] = useState(null);
-    const navigate = useNavigate(); // Initialize useNavigate
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProjects = async () => {
@@ -88,8 +87,6 @@ const ProjectsTable = () => {
                                 <th className="py-2 px-3 border-b border-gray-300">Project Name</th>
                                 <th className="py-2 px-3 border-b border-gray-300">Customer Name</th>
                                 <th className="py-2 px-3 border-b border-gray-300">Customer Contact</th>
-                                <th className="py-2 px-3 border-b border-gray-300">Start Date</th>
-                                <th className="py-2 px-3 border-b border-gray-300">End Date</th>
                                 <th className="py-2 px-3 border-b border-gray-300">Project Manager</th>
                                 <th className="py-2 px-3 border-b border-gray-300">Location</th>
                                 <th className="py-2 px-3 border-b border-gray-300">Actions</th>
@@ -109,12 +106,6 @@ const ProjectsTable = () => {
                                     </td>
                                     <td className="py-4 px-6 border-b border-gray-300 text-center truncate">
                                         {project.clientContact}
-                                    </td>
-                                    <td className="py-4 px-6 border-b border-gray-300 text-center truncate">
-                                        {truncateText(moment(project.startDate).format('LL'))}
-                                    </td>
-                                    <td className="py-4 px-6 border-b border-gray-300 text-center truncate">
-                                        {truncateText(moment(project.endDate).format('LL'))}
                                     </td>
                                     <td className="py-4 px-6 border-b border-gray-300 text-center truncate">
                                         {truncateText(project.projectManager?.name)}
