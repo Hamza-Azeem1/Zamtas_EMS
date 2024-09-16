@@ -144,7 +144,7 @@ const EmployeeModal = ({ showForm, setShowForm, fetchEmployees, userDetails, set
                                 </div>
                             )}
                         </div>
-                        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 z-10">
                             <div className="col-span-2 text-center">
                                 <div className="mb-4">
                                     <div className="relative w-32 h-32 mx-auto">
@@ -306,7 +306,7 @@ const EmployeeModal = ({ showForm, setShowForm, fetchEmployees, userDetails, set
             )}
 
             {showDetailsModal && userDetails && (
-                <div className="fixed inset-0 bg-gray-600 bg-opacity-20 overflow-y-auto h-full w-full" id="details-modal">
+                <div className="fixed inset-0 bg-gray-600 bg-opacity-20 overflow-y-auto h-full w-full z-10" id="details-modal">
                     <div className="relative top-20 mx-auto p-6 border w-3/4 md:w-2/3 lg:w-1/2 shadow-lg rounded-md bg-white">
                         <div className="text-center mb-4">
                             <h3 className="text-xl leading-6 font-medium text-gray-900">User Details</h3>
