@@ -2,7 +2,7 @@ const ProductionSheet = require('../models/productionSheetModel');
 
 async function saveProductionSheetController(req, res) {
     try {
-        const { projectId, sheetData } = req.body;
+        const { projectId, sheetData, doorPanel, additionalMaterial } = req.body;
 
         let productionSheet = await ProductionSheet.findOne({ projectId });
 
@@ -12,11 +12,15 @@ async function saveProductionSheetController(req, res) {
                 ...productionSheet.sheetData,
                 ...sheetData
             };
+            productionSheet.doorPanel = doorPanel;
+            productionSheet.additionalMaterial = additionalMaterial;
         } else {
             // Create new sheet
             productionSheet = new ProductionSheet({
                 projectId,
-                sheetData
+                sheetData,
+                doorPanel,
+                additionalMaterial
             });
         }
 
@@ -29,6 +33,7 @@ async function saveProductionSheetController(req, res) {
             error: false
         });
     } catch (err) {
+        console.error('Error saving production sheet:', err);
         res.status(500).json({
             message: err.message || 'Server Error',
             error: true,
@@ -58,6 +63,7 @@ async function getProductionSheetController(req, res) {
             error: false
         });
     } catch (err) {
+        console.error('Error fetching production sheet:', err);
         res.status(500).json({
             message: err.message || 'Server Error',
             error: true,

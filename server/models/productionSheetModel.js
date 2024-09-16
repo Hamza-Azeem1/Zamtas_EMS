@@ -19,6 +19,21 @@ const ProductionSheetSchema = new mongoose.Schema({
         pickUpAddress: [String],
         sensorOtherDetails: [String]
     },
+    doorPanel: {
+        sliding: Boolean,
+        swing: Boolean,
+        singleLeaf: Boolean,
+        doubleLeaf: Boolean,
+        modelType: Boolean,
+        dimensions: String,
+        framed: Boolean,
+        unFramed: Boolean,
+        highSpeedPVC: Boolean
+    },
+    additionalMaterial: [{
+        material: String,
+        value: String
+    }],
     createdAt: {
         type: Date,
         default: Date.now
